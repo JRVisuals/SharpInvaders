@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-
+using System;
 using System.Collections.Generic;
 
 namespace SharpInvaders
@@ -14,6 +14,8 @@ namespace SharpInvaders
         private Player player;
         private Entity ground;
         private BunkerGroup bunkers;
+        private SpriteFont spriteFont;
+        private FrameCounter _frameCounter = new FrameCounter();
 
 
         public Core()
@@ -24,6 +26,8 @@ namespace SharpInvaders
             };
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            // IsFixedTimeStep = true;
+            // TargetElapsedTime = TimeSpan.FromMilliseconds(15); // 20 milliseconds, or 50 FPS.
         }
 
         protected override void Initialize()
@@ -46,7 +50,7 @@ namespace SharpInvaders
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            spriteFont = Content.Load<SpriteFont>("Arial");
             ground = new Entity();
             ground.Texture = Content.Load<Texture2D>("ground");
             ground.Position = new Vector2(0, Constants.GAME_HEIGHT - ground.Texture.Height);
@@ -61,12 +65,12 @@ namespace SharpInvaders
             var keyboardState = Keyboard.GetState();
 
             if (keyboardState.IsKeyDown(Keys.A))
-                player.MoveLeft();
+                player.MoveLeft((float)gameTime.ElapsedGameTime.TotalMilliseconds);
 
             if (keyboardState.IsKeyDown(Keys.D))
-                player.MoveRight();
+                player.MoveRight((float)gameTime.ElapsedGameTime.TotalMilliseconds);
 
-            if (keyboardState.IsKeyDown(Keys.I))
+            if (keyboardState.IsKeyDown(Keys.I) || keyboardState.IsKeyDown(Keys.W))
                 player.FireBullet();
 
             player.Update(gameTime);
@@ -76,6 +80,17 @@ namespace SharpInvaders
 
         protected override void Draw(GameTime gameTime)
         {
+
+            var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            _frameCounter.Update(deltaTime);
+
+            var fps = string.Format("FPS: {0}", _frameCounter.AverageFramesPerSecond);
+
+
+
+
+
             GraphicsDevice.Clear(new Color(106, 106, 106));
 
             // Static Stuff
@@ -84,10 +99,17 @@ namespace SharpInvaders
             spriteBatch.End();
 
 
+            // Game Stuff
             spriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.AlphaBlend);
             player.Draw(gameTime, spriteBatch);
             bunkers.Draw(gameTime, spriteBatch);
             spriteBatch.End();
+
+            // Debug Stuff
+            spriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.AlphaBlend);
+            spriteBatch.DrawString(spriteFont, fps, new Vector2(10, 10), Color.Black);
+            spriteBatch.End();
+
 
 
             base.Draw(gameTime);

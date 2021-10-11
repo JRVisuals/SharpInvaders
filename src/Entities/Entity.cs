@@ -14,6 +14,23 @@ namespace SharpInvaders
 
     }
 
+    class Entity : EntityBase, IEntity
+    {
+        public Entity()
+        {
+
+            // Defaults
+            this.Position = new Vector2(0, 0);
+            this.Origin = new Vector2(0, 0);
+            this.Opacity = 1.0f;
+            this.Scale = Vector2.One;
+            this.isContainedX = isContainedY = true;
+            this.isMovable = true;
+
+        }
+
+    }
+
     internal class EntityBase
     {
         public Vector2 Position;
@@ -28,39 +45,52 @@ namespace SharpInvaders
         // Contain Entity Within Screen Bounds
         public bool isContainedX;
         public bool isContainedY;
+        public bool isMovable;
 
-        public void Update(GameTime gameTime)
+
+        public virtual void Update(GameTime gameTime)
         {
-            MoveEntity();
+            if (this.isMovable) MoveEntity((float)gameTime.ElapsedGameTime.TotalSeconds);
+
         }
 
-        private void MoveEntity()
+        private void MoveEntity(float deltaTime)
         {
-            if (isContainedX) { Position.X += Position.X + Velocity.X <= Constants.GAME_WIDTH - Texture.Width / 2 && Position.X + Velocity.X + -Texture.Width / 2 >= 0 ? Velocity.X : 0; } else { Position.X += Velocity.X; }
-            if (isContainedY) { Position.Y += Position.Y + Velocity.Y <= Constants.GAME_HEIGHT && Position.Y + Velocity.Y >= Texture.Height ? Velocity.Y : 0; } else { Position.Y += Velocity.Y; }
+
+            if (Math.Abs(Velocity.X) < 10) Velocity.X = 0;
+
+            if (this.isContainedX)
+            {
+                Position.X += Velocity.X * deltaTime;
+                var rightBound = Constants.GAME_WIDTH - Texture.Width / 2;
+                if (Position.X > rightBound) { Position.X = rightBound; Velocity.X = (float)(Velocity.X * -.5); }
+                var leftBound = Texture.Width / 2;
+                if (Position.X < leftBound) { Position.X = leftBound; Velocity.X = (float)(Velocity.X * -.5); }
+            }
+            else
+            {
+                Position.X += Velocity.X * deltaTime;
+            }
+
+            if (this.isContainedY)
+            {
+                Position.Y += Position.Y + Velocity.Y <= Constants.GAME_HEIGHT &&
+                Position.Y + Velocity.Y >= Texture.Height
+                ? Velocity.Y * deltaTime : 0;
+            }
+            else
+            {
+                Position.Y += Velocity.Y * deltaTime;
+            }
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, Position, null, Color.White * Opacity, Rotation, Origin, Scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(this.Texture, this.Position, null, Color.White * this.Opacity, this.Rotation, this.Origin, this.Scale, SpriteEffects.None, 0f);
 
         }
 
     }
 
-    class Entity : EntityBase, IEntity
-    {
-        public Entity()
-        {
 
-            // Defaults
-            Position = new Vector2(0, 0);
-            Origin = new Vector2(0, 0);
-            Opacity = 1.0f;
-            Scale = Vector2.One;
-            isContainedX = isContainedY = true;
-
-        }
-
-    }
 }

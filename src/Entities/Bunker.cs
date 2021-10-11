@@ -10,7 +10,6 @@ namespace SharpInvaders
     class Bunker : Entity
     {
 
-        public int BunkerIndex;
 
         public Bunker(ContentManager Content, float X)
         {

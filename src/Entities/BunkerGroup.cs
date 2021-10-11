@@ -10,7 +10,6 @@ namespace SharpInvaders
     class BunkerGroup
     {
 
-        public int BunkerIndex;
 
         private List<Bunker> Bunkers;
 
