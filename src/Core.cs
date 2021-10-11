@@ -39,6 +39,7 @@ namespace SharpInvaders
             bunkers = new BunkerGroup(Content);
 
 
+
             base.Initialize();
         }
 
@@ -65,6 +66,9 @@ namespace SharpInvaders
             if (keyboardState.IsKeyDown(Keys.D))
                 player.MoveRight();
 
+            if (keyboardState.IsKeyDown(Keys.I))
+                player.FireBullet();
+
             player.Update(gameTime);
 
             base.Update(gameTime);
@@ -74,12 +78,15 @@ namespace SharpInvaders
         {
             GraphicsDevice.Clear(new Color(106, 106, 106));
 
+            // Static Stuff
             spriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.AlphaBlend);
-
             ground.Draw(gameTime, spriteBatch);
-            bunkers.Draw(gameTime, spriteBatch);
-            player.Draw(gameTime, spriteBatch);
+            spriteBatch.End();
 
+
+            spriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.AlphaBlend);
+            player.Draw(gameTime, spriteBatch);
+            bunkers.Draw(gameTime, spriteBatch);
             spriteBatch.End();
 
 
