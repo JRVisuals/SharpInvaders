@@ -1,8 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
+using Microsoft.Xna.Framework.Audio;
 
 namespace SharpInvaders
 {
@@ -13,9 +15,20 @@ namespace SharpInvaders
 
         private Player player;
         private Entity ground;
+        private Entity logo;
         private BunkerGroup bunkers;
         private SpriteFont spriteFont;
-        private FrameCounter _frameCounter = new FrameCounter();
+        private FrameCounter frameCounter = new FrameCounter();
+
+        // TODO: Bullet stuff might want to be in a controller
+        private PlayerBulletGroup PlayerBullets;
+        private DateTime LastTimeCheck;
+        private DateTime NextBulletFireTime;
+        private SoundEffect sfxFire;
+        private SoundEffect sfxDryfire;
+        private SoundEffect sfxReload;
+        private SoundEffectInstance sfxReloadI;
+        private bool didPlayReload;
 
 
         public Core()
@@ -26,8 +39,8 @@ namespace SharpInvaders
             };
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            // IsFixedTimeStep = true;
-            // TargetElapsedTime = TimeSpan.FromMilliseconds(15); // 20 milliseconds, or 50 FPS.
+            IsFixedTimeStep = true;
+            TargetElapsedTime = TimeSpan.FromMilliseconds(10); // 20 milliseconds, or 50 FPS.
         }
 
         protected override void Initialize()
@@ -43,6 +56,17 @@ namespace SharpInvaders
             bunkers = new BunkerGroup(Content);
 
 
+            LastTimeCheck = DateTime.Now;
+            NextBulletFireTime = DateTime.Now;
+
+            sfxFire = Content.Load<SoundEffect>("laser");
+            sfxReload = Content.Load<SoundEffect>("reload");
+            sfxReloadI = sfxReload.CreateInstance();
+            didPlayReload = false;
+            sfxDryfire = Content.Load<SoundEffect>("dryfire");
+
+            PlayerBullets = new PlayerBulletGroup(Content, player);
+
 
             base.Initialize();
         }
@@ -52,13 +76,99 @@ namespace SharpInvaders
             spriteBatch = new SpriteBatch(GraphicsDevice);
             spriteFont = Content.Load<SpriteFont>("Arial");
             ground = new Entity();
-            ground.Texture = Content.Load<Texture2D>("ground");
-            ground.Position = new Vector2(0, Constants.GAME_HEIGHT - ground.Texture.Height);
+            ground.Texture = Content.Load<Texture2D>("groundHighres");
+            ground.Origin = new Vector2(ground.Texture.Width / 2, ground.Texture.Height);
+            ground.Position = new Vector2(Constants.GAME_WIDTH / 2, Constants.GAME_HEIGHT);
+
+            logo = new Entity();
+            logo.Texture = Content.Load<Texture2D>("logo");
+            logo.Origin = new Vector2(logo.Texture.Width / 2, 0);
+            logo.Position = new Vector2(Constants.GAME_WIDTH / 2, 50);
+
 
         }
 
+        public void FireBullet()
+        {
+
+            if (NextBulletFireTime < LastTimeCheck)
+            {
+                NextBulletFireTime = DateTime.Now.AddSeconds(Constants.PLAYER_BULLETDELAY);
+                if (PlayerBullets.Bullets.Count < Constants.PLAYER_BULLETMAX)
+                {
+                    PlayerBullets.AddBullet();
+
+                    sfxFire.Play(0.5f, 0.0f, 0.0f);
+                    didPlayReload = false;
+
+                    // Reload Sound
+                    if (PlayerBullets.Bullets.Count == Constants.PLAYER_BULLETMAX && !didPlayReload && sfxReloadI.State == SoundState.Stopped)
+                    {
+                        didPlayReload = true;
+                        //   sfxReloadI.Play();
+
+                    }
+                }
+                else
+                {
+                    //Dry fire sound
+                    sfxDryfire.Play();
+                }
+            }
+
+        }
+
+        protected void CollisionCheck()
+        {
+
+            // Check bullets on bunkers
+
+            foreach (PlayerBullet b in this.PlayerBullets.Bullets)
+            {
+                var bX = b.Position.X;
+                var bY = b.Position.Y;
+                var bH = b.Texture.Height;
+                var bW = b.Texture.Width;
+
+                foreach (Bunker k in this.bunkers.Bunkers)
+                {
+                    var kX = k.Position.X;
+                    var kY = k.Position.Y;
+                    var kW = k.Texture.Width;
+                    var kH = k.Texture.Height;
+
+                    // Check for overlap
+                    if (bY > kY - kH / 2 && bY < kY + kH / 2 &&
+                        bX > kX - kW / 2 && bX < kX + kW / 2)
+                    {
+                        // Calculate World Space to Texture Space
+                        var btX = bX + kW / 2 - kX;
+                        var btY = bY + kH / 2 - kY;
+                        // Console.WriteLine($"btX: {btX}");
+                        // Console.WriteLine($"btY: {btY}");
+
+                        // Check Pixels
+                        var bR = new Rectangle(x: (int)btX, y: (int)btY, width: bW, height: bH);
+                        if (k.CheckArea(bR))
+                        {
+                            k.DestroyArea(bR);
+                            PlayerBullets.KillBullet(b.BulletIndex);
+                            return;
+                        }
+
+
+                    }
+                }
+
+            }
+
+        }
+
+
         protected override void Update(GameTime gameTime)
         {
+
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
@@ -71,11 +181,16 @@ namespace SharpInvaders
                 player.MoveRight((float)gameTime.ElapsedGameTime.TotalMilliseconds);
 
             if (keyboardState.IsKeyDown(Keys.I) || keyboardState.IsKeyDown(Keys.W))
-                player.FireBullet();
+                this.FireBullet();
 
             player.Update(gameTime);
 
+            LastTimeCheck = DateTime.Now;
+            PlayerBullets.Update(gameTime);
+
             base.Update(gameTime);
+
+            CollisionCheck();
         }
 
         protected override void Draw(GameTime gameTime)
@@ -83,32 +198,34 @@ namespace SharpInvaders
 
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            _frameCounter.Update(deltaTime);
-
-            var fps = string.Format("FPS: {0}", _frameCounter.AverageFramesPerSecond);
-
-
-
-
-
-            GraphicsDevice.Clear(new Color(106, 106, 106));
+            GraphicsDevice.Clear(new Color(30, 30, 40));
 
             // Static Stuff
             spriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.AlphaBlend);
             ground.Draw(gameTime, spriteBatch);
+            logo.Draw(gameTime, spriteBatch);
             spriteBatch.End();
 
 
             // Game Stuff
             spriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.AlphaBlend);
-            player.Draw(gameTime, spriteBatch);
             bunkers.Draw(gameTime, spriteBatch);
+            player.Draw(gameTime, spriteBatch);
+            PlayerBullets.Draw(gameTime, spriteBatch);
             spriteBatch.End();
 
             // Debug Stuff
-            spriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.AlphaBlend);
-            spriteBatch.DrawString(spriteFont, fps, new Vector2(10, 10), Color.Black);
-            spriteBatch.End();
+            if (Constants.DEBUG)
+            {
+                frameCounter.Update(deltaTime);
+                var fps = string.Format("FPS: {0}", frameCounter.AverageFramesPerSecond);
+
+                spriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.AlphaBlend);
+                spriteBatch.DrawString(spriteFont, fps, new Vector2(10, 10), Color.Black);
+                spriteBatch.End();
+
+            }
+
 
 
 

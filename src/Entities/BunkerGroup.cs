@@ -11,17 +11,17 @@ namespace SharpInvaders
     {
 
 
-        private List<Bunker> Bunkers;
-
+        public List<Bunker> Bunkers;
 
         public BunkerGroup(ContentManager contentManager)
         {
 
-            var positionX = 185;
-            Bunkers = new List<Bunker>(4);
+            var positionX = Constants.GAME_WIDTH / Constants.BUNKERS_TOTAL;
+            Bunkers = new List<Bunker>(Constants.BUNKERS_TOTAL);
             for (int i = 0; i < Bunkers.Capacity; i++)
             {
-                Bunkers.Add(new Bunker(contentManager, positionX * (i) + positionX / 2));
+                Texture2D tex = contentManager.Load<Texture2D>($"bunker{i + 1}");
+                Bunkers.Add(new Bunker(contentManager, tex, positionX * (i) + positionX / 2));
             }
 
 

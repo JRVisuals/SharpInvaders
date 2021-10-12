@@ -19,7 +19,7 @@ namespace SharpInvaders
         {
             Random r = new Random();
             int randomPuff = r.Next(1, 4);
-            Console.WriteLine(randomPuff);
+
             Texture = Content.Load<Texture2D>($"smallPuff{randomPuff}");
             Position = new Vector2(bullet.Position.X, bullet.Position.Y - 5);
             Origin = new Vector2(16, 16);
@@ -32,7 +32,7 @@ namespace SharpInvaders
 
             float randomSmokeY = (float)(-0.01 * (r.Next(-5, 15)));
 
-            Velocity = new Vector2((float)(bullet.Velocity.X * 1.5), (float)(bullet.Velocity.Y * randomSmokeY));
+            Velocity = new Vector2((float)(bullet.Velocity.X * 0.75), (float)(bullet.Velocity.Y * randomSmokeY));
             isContainedY = false;
 
             isActive = true;
