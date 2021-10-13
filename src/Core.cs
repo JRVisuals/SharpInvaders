@@ -6,6 +6,15 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 
+
+
+using MonoGame.Extended;
+using MonoGame.Extended.Animations;
+using EContent = MonoGame.Extended.Content.ContentManagerExtensions;
+using MonoGame.Extended.Serialization;
+using MonoGame.Extended.Sprites;
+using MonoGame.Extended.TextureAtlases;
+
 namespace SharpInvaders
 {
     public class Core : Game
@@ -29,6 +38,9 @@ namespace SharpInvaders
         private SoundEffect sfxReload;
         private SoundEffectInstance sfxReloadI;
         private bool didPlayReload;
+
+        // Sprite Sheet Test 
+        private AnimatedSprite spriteTest;
 
 
         public Core()
@@ -84,6 +96,12 @@ namespace SharpInvaders
             logo.Texture = Content.Load<Texture2D>("logo");
             logo.Origin = new Vector2(logo.Texture.Width / 2, 0);
             logo.Position = new Vector2(Constants.GAME_WIDTH / 2, 50);
+
+            // Spritesheet test
+            var _spriteSheet = EContent.Load<SpriteSheet>(Content, "SpriteSheets.json", new JsonContentLoader());
+            var sprite = new AnimatedSprite(_spriteSheet, "idle");
+
+            spriteTest = sprite;
 
 
         }
@@ -212,7 +230,10 @@ namespace SharpInvaders
             bunkers.Draw(gameTime, spriteBatch);
             player.Draw(gameTime, spriteBatch);
             PlayerBullets.Draw(gameTime, spriteBatch);
+
             spriteBatch.End();
+
+            spriteBatch.Draw(spriteTest, new Vector2(100, 100));
 
             // Debug Stuff
             if (Constants.DEBUG)
