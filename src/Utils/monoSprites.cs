@@ -4,17 +4,17 @@
  * Contains references to each image within the sprite sheet.
  *
  * https://www.codeandweb.com/texturepacker
- * $TexturePacker:SmartUpdate:91473e0b20e12c013dc99ed674cdf8bb:481e4aaaa09ed003483d2a7fc257dd1d:e76696c31d8f8d2b79caa79fd6323a72$
+ * $TexturePacker:SmartUpdate:cbb900c2beb4bfd572bf01e1c1466ad3:481e4aaaa09ed003483d2a7fc257dd1d:e76696c31d8f8d2b79caa79fd6323a72$
  *
  */
 namespace TexturePackerMonoGameDefinitions
 {
 	public class tpSprites
 	{
-		public const string EnemyEyes_idle1 = "EnemyEyes/idle1";
-		public const string EnemyEyes_idle2 = "EnemyEyes/idle2";
-		public const string EnemyEyes_idle3 = "EnemyEyes/idle3";
-		public const string EnemyEyes_idle4 = "EnemyEyes/idle4";
-		public const string EnemyEyes_idle5 = "EnemyEyes/idle5";
+		public const string EnemyEyes_idle_0 = "EnemyEyes/idle/0";
+		public const string EnemyEyes_idle_1 = "EnemyEyes/idle/1";
+		public const string EnemyEyes_idle_2 = "EnemyEyes/idle/2";
+		public const string EnemyEyes_idle_3 = "EnemyEyes/idle/3";
+		public const string EnemyEyes_idle_4 = "EnemyEyes/idle/4";
 	}
 }

@@ -17,7 +17,7 @@ namespace TexturePackerLoader
         }
 
         // <param name="position">This should be where you want the pivot point of the sprite image to be rendered.</param>
-        public void Draw(SpriteFrame sprite, Vector2 position, Color? color = null, float rotation = 0, float scale = 1, SpriteEffects spriteEffects = SpriteEffects.None)
+        public void Draw(SpriteFrame sprite, Vector2 position, Color color, float rotation = 0, float scale = 1, SpriteEffects spriteEffects = SpriteEffects.None)
         {
             Vector2 origin = sprite.Origin;
             if (sprite.IsRotated)
@@ -39,7 +39,7 @@ namespace TexturePackerLoader
                 texture: sprite.Texture,
                 position: position,
                 sourceRectangle: sprite.SourceRectangle,
-                color: (Color)color,
+                color: color,
                 rotation: rotation,
                 origin: origin,
                 scale: new Vector2(scale, scale),
