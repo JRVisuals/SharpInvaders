@@ -11,7 +11,7 @@ namespace TexturePackerLoader
 
         private SpriteBatch spriteBatch;
 
-        public SpriteRender (SpriteBatch spriteBatch)
+        public SpriteRender(SpriteBatch spriteBatch)
         {
             this.spriteBatch = spriteBatch;
         }
@@ -39,7 +39,7 @@ namespace TexturePackerLoader
                 texture: sprite.Texture,
                 position: position,
                 sourceRectangle: sprite.SourceRectangle,
-                color: color,
+                color: (Color)color,
                 rotation: rotation,
                 origin: origin,
                 scale: new Vector2(scale, scale),
