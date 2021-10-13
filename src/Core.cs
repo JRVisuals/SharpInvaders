@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 
+using TexturePackerLoader;
 namespace SharpInvaders
 {
     public class Core : Game
@@ -84,6 +85,8 @@ namespace SharpInvaders
             logo.Texture = Content.Load<Texture2D>("logo");
             logo.Origin = new Vector2(logo.Texture.Width / 2, 0);
             logo.Position = new Vector2(Constants.GAME_WIDTH / 2, 50);
+
+            var spriteSheetLoader = new SpriteSheetLoader(Content, GraphicsDevice);
 
 
         }
