@@ -4,7 +4,7 @@
  * Contains references to each image within the sprite sheet.
  *
  * https://www.codeandweb.com/texturepacker
- * $TexturePacker:SmartUpdate:b03b6d109cccca649004c2521c4528f0:481e4aaaa09ed003483d2a7fc257dd1d:af633d31c3393ae9fd430138abbd6857$
+ * $TexturePacker:SmartUpdate:02c75979177f208949cff87340f403d0:6bea0fac264c2df817fdebac44f8d442:af633d31c3393ae9fd430138abbd6857$
  *
  */
 namespace TexturePackerMonoGameDefinitions
@@ -16,5 +16,11 @@ namespace TexturePackerMonoGameDefinitions
 		public const string EnemyEyes_idle_2 = "EnemyEyes/idle/2";
 		public const string EnemyEyes_idle_3 = "EnemyEyes/idle/3";
 		public const string EnemyEyes_idle_4 = "EnemyEyes/idle/4";
+		public const string EnemyEyes_pop_0 = "EnemyEyes/pop/0";
+		public const string EnemyEyes_pop_1 = "EnemyEyes/pop/1";
+		public const string EnemyEyes_pop_2 = "EnemyEyes/pop/2";
+		public const string EnemyEyes_pop_3 = "EnemyEyes/pop/3";
+		public const string EnemyEyes_pop_4 = "EnemyEyes/pop/4";
+		public const string EnemyEyes_pop_5 = "EnemyEyes/pop/5";
 	}
 }

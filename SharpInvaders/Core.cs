@@ -37,10 +37,9 @@ namespace SharpInvaders
         private bool didPlayReload;
 
         // TP Sprite Sheets
+        //private SpriteRender tpSpriteRender;
         private SpriteSheet tpSpriteSheet;
-        private SpriteRender tpSpriteRender;
-        private AnimationManager tpAnimationManager;
-        private readonly TimeSpan timePerFrame = TimeSpan.FromSeconds(1f / 10f); // sprite specific
+        private Enemy testEnemy;
 
         public Core()
         {
@@ -50,8 +49,9 @@ namespace SharpInvaders
             };
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            IsFixedTimeStep = true;
-            TargetElapsedTime = TimeSpan.FromMilliseconds(10); // 20 milliseconds, or 50 FPS.
+
+            if (Global.USE_FIXED_STEP) IsFixedTimeStep = true;
+            if (Global.USE_FIXED_STEP) TargetElapsedTime = TimeSpan.FromMilliseconds(Global.FIXED_STEP_MS);
         }
 
         protected override void Initialize()
@@ -98,8 +98,10 @@ namespace SharpInvaders
 
             var spriteSheetLoader = new SpriteSheetLoader(Content, GraphicsDevice);
             tpSpriteSheet = spriteSheetLoader.Load("tpSpriteSheet.png");
-            tpSpriteRender = new SpriteRender(spriteBatch);
-            InitialiseAnimationManager();
+            // tpSpriteRender = new SpriteRender(spriteBatch);
+
+            this.testEnemy = new Enemy(spriteBatch, tpSpriteSheet);
+
         }
 
         public void FireBullet()
@@ -206,7 +208,7 @@ namespace SharpInvaders
 
             CollisionCheck();
 
-            tpAnimationManager.Update(gameTime);
+            testEnemy.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -230,7 +232,7 @@ namespace SharpInvaders
             PlayerBullets.Draw(gameTime, spriteBatch);
 
 
-            // Single Sprite
+            // Single Sprite (not animated)
             // tpSpriteRender.Draw(
             //     tpSpriteSheet.Sprite(
             //         tpSprites.EnemyEyes_idle1
@@ -240,11 +242,7 @@ namespace SharpInvaders
             // );
 
             // Animated Sprite
-            tpSpriteRender.Draw(
-                tpAnimationManager.CurrentSprite,
-                tpAnimationManager.CurrentPosition,
-                Color.White, 0, 1,
-                tpAnimationManager.CurrentSpriteEffects);
+            testEnemy.Draw();
 
 
             spriteBatch.End();
@@ -268,29 +266,5 @@ namespace SharpInvaders
         }
 
 
-        private void InitialiseAnimationManager()
-        {
-            var characterStartPosition = new Vector2(100, 200);
-
-            var idleSprites = new[] {
-                TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_idle_0,
-                TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_idle_1,
-                TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_idle_2,
-                TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_idle_3,
-                TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_idle_4,
-
-            };
-
-
-            var animationIdle = new Animation(new Vector2(0, 0), timePerFrame, SpriteEffects.None, idleSprites);
-
-
-            var tpAnimations = new[]
-            {
-               animationIdle,animationIdle,animationIdle,animationIdle
-            };
-
-            tpAnimationManager = new AnimationManager(tpSpriteSheet, characterStartPosition, tpAnimations);
-        }
     }
 }

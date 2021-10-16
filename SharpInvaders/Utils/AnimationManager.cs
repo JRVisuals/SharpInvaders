@@ -68,8 +68,6 @@ namespace SharpInvaders
 
             this.CurrentSprite = this.spriteSheet.Sprite(animation.Sprites[this.CurrentFrame]);
 
-            this.currentPosition.X += animation.CharacterVelocity.X * dtPosition.Ticks / TimeSpan.TicksPerSecond;
-            this.currentPosition.Y += animation.CharacterVelocity.Y * dtPosition.Ticks / TimeSpan.TicksPerSecond;
             this.previousMovementTime = nowTime;
         }
     }
