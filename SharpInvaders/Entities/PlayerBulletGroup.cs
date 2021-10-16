@@ -51,7 +51,14 @@ namespace SharpInvaders
 
         public void KillBullet(int index)
         {
-            Bullets.RemoveAt(0);
+            try
+            {
+                Bullets.RemoveAt(0);
+            }
+            catch (System.InvalidOperationException e)
+            {
+                Console.WriteLine($"Tried removing bullet but '{e}'");
+            }
         }
 
         public void KillSmoke(int index)

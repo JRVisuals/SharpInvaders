@@ -14,40 +14,53 @@ namespace SharpInvaders.Entities
     {
 
         public Dictionary<AnimKeys, Animation[]> Animations { get; set; }
-        public Animation[] animationSequence { get; set; }
+        public Animation[] CurrentAnimationSequence { get; set; }
+        public bool shouldPlayOnceAndDie;
+        public bool isActive;
 
-        private TimeSpan previousFrameChangeTime = TimeSpan.Zero;
-        private TimeSpan previousMovementTime = TimeSpan.Zero;
+        public TimeSpan previousFrameChangeTime = TimeSpan.Zero;
+        public TimeSpan previousMovementTime = TimeSpan.Zero;
         private SpriteSheet spriteSheet;
         private SpriteBatch spriteBatch;
 
         private const float ClockwiseNinetyDegreeRotation = (float)(Math.PI / 2.0f);
 
 
-        public AnimatedSprite(SpriteBatch spriteBatch, SpriteSheet spriteSheet, Dictionary<AnimKeys, Animation[]> animationDictionary, Animation[] defaultAnimationSequence)
+        public AnimatedSprite(SpriteBatch spriteBatch, SpriteSheet spriteSheet, Dictionary<AnimKeys, Animation[]> animationDictionary, Animation[] defaultAnimationSequence, bool shouldStartOnRandomFrame = false, bool shouldPlayOnceAndDie = false)
         {
             this.Animations = animationDictionary;
             this.spriteSheet = spriteSheet;
-            this.animationSequence = defaultAnimationSequence;
+            this.CurrentAnimationSequence = defaultAnimationSequence;
             this.spriteBatch = spriteBatch;
+            this.shouldPlayOnceAndDie = shouldPlayOnceAndDie;
+            this.isActive = true;
+
+            if (shouldStartOnRandomFrame)
+            {
+                var rand = new Random();
+                CurrentFrame = rand.Next(1, this.CurrentAnimationSequence[this.CurrentAnimation].Sprites.Length);
+            }
+
 
         }
 
 
-
         public SpriteFrame CurrentSprite { get; private set; }
         public SpriteEffects CurrentSpriteEffects { get; private set; }
-        public int CurrentFrame { get; private set; }
+        public int CurrentFrame { get; set; }
         public int CurrentAnimation { get; private set; }
+
 
         public override void Update(GameTime gameTime)
         {
+            if (!this.isActive) return;
+
             var nowTime = gameTime.TotalGameTime;
             var dtFrame = nowTime - this.previousFrameChangeTime;
             var dtPosition = nowTime - this.previousMovementTime;
 
             // Allows for sequencing of multiple animations
-            var animation = this.animationSequence[this.CurrentAnimation];
+            var animation = this.CurrentAnimationSequence[this.CurrentAnimation];
 
             if (dtFrame >= animation.TimePerFrame)
             {
@@ -56,13 +69,21 @@ namespace SharpInvaders.Entities
 
                 if (this.CurrentFrame >= animation.Sprites.Length)
                 {
-                    this.CurrentFrame = 0;
-                    if (++this.CurrentAnimation >= this.animationSequence.Length)
+                    if (!this.shouldPlayOnceAndDie)
                     {
-                        this.CurrentAnimation = 0;
-                    }
+                        this.CurrentFrame = 0;
+                        if (++this.CurrentAnimation >= this.CurrentAnimationSequence.Length)
+                        {
+                            this.CurrentAnimation = 0;
+                        }
 
-                    animation = this.animationSequence[this.CurrentAnimation];
+                        animation = this.CurrentAnimationSequence[this.CurrentAnimation];
+                    }
+                    else
+                    {
+                        this.isActive = false;
+                        return;
+                    }
                 }
 
                 this.CurrentSpriteEffects = animation.Effect;
@@ -74,6 +95,8 @@ namespace SharpInvaders.Entities
 
         public void Draw()
         {
+
+            if (!this.isActive) return;
 
             // Supports rotated sprites in spritesheets
             if (this.CurrentSprite.IsRotated)

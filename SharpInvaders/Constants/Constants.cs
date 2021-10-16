@@ -16,15 +16,15 @@ namespace SharpInvaders.Constants
         public const float PLAYER_ACCEL_X = 2f;
         public const float PLAYER_MAXVEL_X = 450f;
         public const float PLAYER_FRICMULT_X = 7f;
-        public const float PLAYER_BULLINIT_Y = (float)(-GAME_HEIGHT * 0.75);
-        public const double PLAYER_BULLETDELAY = 0.15;
-        public const int PLAYER_BULLETMAX = 10;
+        public const float PLAYER_BULLINIT_Y = (float)(-GAME_HEIGHT * 0.5);
+        public const double PLAYER_BULLETDELAY = 0.25;
+        public const int PLAYER_BULLETMAX = 3;
 
         // Bunkers
         public const int BUNKERS_TOTAL = 3;
 
         // Audio
-        public const float VOLUME_GLOBAL = 0.2f;
+        public const float VOLUME_GLOBAL = 0.5f;
     }
 
 }

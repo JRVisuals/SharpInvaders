@@ -20,6 +20,20 @@
 /processorParam:TextureFormat=Compressed
 /build:Arial.spritefont
 
+
+#begin tpSpriteSheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:tpSpriteSheet.png
+
+
 #begin blackBox.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -104,11 +118,23 @@
 /processorParam:TextureFormat=Color
 /build:groundHighres.png
 
+#begin boom.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:boom.ogg
+
 #begin laser.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:laser.ogg
+
+#begin laser2.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:laser2.ogg
 
 #begin logo.png
 /importer:TextureImporter
@@ -163,6 +189,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:reload.ogg
+
+#begin squish.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:squish.ogg
 
 #begin smallPuff1.png
 /importer:TextureImporter

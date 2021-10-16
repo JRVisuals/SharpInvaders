@@ -31,15 +31,18 @@ namespace SharpInvaders
         private DateTime LastTimeCheck;
         private DateTime NextBulletFireTime;
         private SoundEffect sfxFire;
+        private SoundEffect sfxBoom;
         private SoundEffect sfxDryfire;
         private SoundEffect sfxReload;
+        private SoundEffect sfxSquish;
         private SoundEffectInstance sfxReloadI;
         private bool didPlayReload;
 
         // TP Sprite Sheets
         //private SpriteRender tpSpriteRender;
         private SpriteSheet tpSpriteSheet;
-        private Enemy testEnemy;
+        //  private Enemy testEnemy;
+        private EnemyGroup EnemyGroup;
 
         public Core()
         {
@@ -61,6 +64,7 @@ namespace SharpInvaders
 
             graphics.PreferredBackBufferWidth = Global.GAME_WIDTH;
             graphics.PreferredBackBufferHeight = Global.GAME_HEIGHT;
+            //graphics.IsFullScreen = true;
             graphics.ApplyChanges();
 
             player = new Player(Content);
@@ -70,13 +74,16 @@ namespace SharpInvaders
             LastTimeCheck = DateTime.Now;
             NextBulletFireTime = DateTime.Now;
 
-            sfxFire = Content.Load<SoundEffect>("laser");
+            sfxBoom = Content.Load<SoundEffect>("boom");
+            sfxSquish = Content.Load<SoundEffect>("squish");
+            sfxFire = Content.Load<SoundEffect>("laser2");
             sfxReload = Content.Load<SoundEffect>("reload");
             sfxReloadI = sfxReload.CreateInstance();
             didPlayReload = false;
             sfxDryfire = Content.Load<SoundEffect>("dryfire");
 
             PlayerBullets = new PlayerBulletGroup(Content, player);
+
 
 
             base.Initialize();
@@ -98,9 +105,8 @@ namespace SharpInvaders
 
             var spriteSheetLoader = new SpriteSheetLoader(Content, GraphicsDevice);
             tpSpriteSheet = spriteSheetLoader.Load("tpSpriteSheet.png");
-            // tpSpriteRender = new SpriteRender(spriteBatch);
 
-            this.testEnemy = new Enemy(spriteBatch, tpSpriteSheet);
+            this.EnemyGroup = new EnemyGroup(spriteBatch, tpSpriteSheet);
 
         }
 
@@ -134,10 +140,9 @@ namespace SharpInvaders
 
         }
 
-        protected void CollisionCheck()
+        protected void CollisionCheck(GameTime gameTime)
         {
 
-            // Check bullets on bunkers
 
             foreach (PlayerBullet b in this.PlayerBullets.Bullets)
             {
@@ -145,6 +150,36 @@ namespace SharpInvaders
                 var bY = b.Position.Y;
                 var bH = b.Texture.Height;
                 var bW = b.Texture.Width;
+
+                // Enemies
+                foreach (Enemy e in this.EnemyGroup.Enemies)
+                {
+
+                    if (!e.AnimatedSprite.isActive || !e.isHittable) continue;
+
+                    var eW = e.SpriteWidth;
+                    var eH = e.SpriteHeight;
+                    var eX = e.Position.X + eW / 2;
+                    var eY = e.Position.Y + eH / 2;
+
+                    // Check for overlap
+                    if (bY > eY - eH / 2 && bY < eY + eH / 2 &&
+                        bX > eX - eW / 2 && bX < eX + eW / 2)
+                    {
+                        e.AnimatedSprite.CurrentFrame = 0;
+                        e.AnimatedSprite.CurrentAnimationSequence = e.Animations[Enemy.EnemyAnims.Pop];
+                        e.AnimatedSprite.shouldPlayOnceAndDie = true;
+
+                        e.AnimatedSprite.previousFrameChangeTime = gameTime.TotalGameTime;
+                        e.isHittable = false;
+                        PlayerBullets.KillBullet(b.BulletIndex);
+                        sfxSquish.Play(Global.VOLUME_GLOBAL, 0.0f, 0.0f);
+                        return;
+                    }
+
+                }
+
+                // Bunkers
 
                 foreach (Bunker k in this.bunkers.Bunkers)
                 {
@@ -167,8 +202,11 @@ namespace SharpInvaders
                         var bR = new Rectangle(x: (int)btX, y: (int)btY, width: bW, height: bH);
                         if (k.CheckArea(bR))
                         {
-                            k.DestroyArea(bR);
+
+                            var dR = new Rectangle(x: (int)btX - bW, y: (int)btY - bH / 2, width: bW * 2, height: bH * 2);
+                            k.DestroyArea(dR);
                             PlayerBullets.KillBullet(b.BulletIndex);
+                            sfxBoom.Play(Global.VOLUME_GLOBAL, 0.0f, 0.0f);
                             return;
                         }
 
@@ -203,12 +241,13 @@ namespace SharpInvaders
 
             LastTimeCheck = DateTime.Now;
             PlayerBullets.Update(gameTime);
+            EnemyGroup.Update(gameTime);
 
             base.Update(gameTime);
 
-            CollisionCheck();
+            CollisionCheck(gameTime);
 
-            testEnemy.Update(gameTime);
+            //testEnemy.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -230,6 +269,7 @@ namespace SharpInvaders
             bunkers.Draw(gameTime, spriteBatch);
             player.Draw(gameTime, spriteBatch);
             PlayerBullets.Draw(gameTime, spriteBatch);
+            EnemyGroup.Draw(gameTime, spriteBatch);
 
 
             // Single Sprite (not animated)
@@ -242,7 +282,7 @@ namespace SharpInvaders
             // );
 
             // Animated Sprite
-            testEnemy.Draw();
+            //testEnemy.Draw();
 
 
             spriteBatch.End();
@@ -258,9 +298,6 @@ namespace SharpInvaders
                 spriteBatch.End();
 
             }
-
-
-
 
             base.Draw(gameTime);
         }

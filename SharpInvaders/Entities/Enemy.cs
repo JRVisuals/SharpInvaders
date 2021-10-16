@@ -24,6 +24,12 @@ namespace SharpInvaders.Entities
         public SpriteBatch SpriteBatch;
         public SpriteSheet SpriteSheet;
 
+        public Vector2 Position { get; set; }
+        public float SpriteHeight;
+        public float SpriteWidth;
+
+        public bool isHittable;
+
         public enum EnemyAnims
         {
             Idle,
@@ -31,25 +37,52 @@ namespace SharpInvaders.Entities
             Pop,
             Test
         }
-        private Dictionary<EnemyAnims, Animation[]> Animations { get; set; }
+        public Dictionary<EnemyAnims, Animation[]> Animations { get; set; }
         public AnimatedSprite<EnemyAnims> AnimatedSprite;
 
-        public Enemy(SpriteBatch spriteBatch, SpriteSheet spriteSheet)
+        public Enemy(SpriteBatch spriteBatch, SpriteSheet spriteSheet, Vector2 initialPosition)
         {
 
             this.SpriteBatch = spriteBatch;
             this.SpriteSheet = spriteSheet;
 
+            this.Position = initialPosition;
+
             this.Animations = AnimationDictionary();
 
-            this.AnimatedSprite = new AnimatedSprite<EnemyAnims>(spriteBatch, spriteSheet, this.Animations, this.Animations[EnemyAnims.Idle]);
+            this.isHittable = true;
 
-            this.AnimatedSprite.Position = new Vector2(100f, 300f);
+            this.AnimatedSprite = new AnimatedSprite<EnemyAnims>(
+                spriteBatch, spriteSheet, this.Animations,
+                this.Animations[EnemyAnims.Idle],
+                shouldStartOnRandomFrame: true
+            );
 
-            // TODO: Sort out a way to pull these as enumarations rather than string
-            this.AnimatedSprite.animationSequence = this.Animations[EnemyAnims.Test];
+            this.AnimatedSprite.Position = this.Position;
+
+            this.AnimatedSprite.CurrentAnimationSequence = this.Animations[EnemyAnims.Idle];
+
+            // Used for collision detection
+            this.SpriteHeight = this.SpriteWidth = 32;
 
         }
+
+
+        public void Update(GameTime gameTime)
+        {
+            this.AnimatedSprite.Update(gameTime);
+            if (!this.isHittable) this.AnimatedSprite.Position.Y += 50 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        }
+
+        public void Draw()
+        {
+            AnimatedSprite<EnemyAnims> Anim = this.AnimatedSprite;
+            if (Anim.CurrentAnimationSequence == Anim.Animations[EnemyAnims.Pop] && Anim.CurrentFrame > 4) return;
+            this.AnimatedSprite.Draw();
+        }
+
+
+
 
         // TODO: Is it crazy innefficient to generate these for every instance??
         private Dictionary<EnemyAnims, Animation[]> AnimationDictionary()
@@ -73,9 +106,9 @@ namespace SharpInvaders.Entities
                 TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_pop_5,
             };
 
-            var idle = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 12f), SpriteEffects.None, EyesIdleFrames);
-            var idleFast = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 18f), SpriteEffects.None, EyesIdleFrames);
-            var pop = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 18f), SpriteEffects.None, EyesPopFrames);
+            var idle = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 10f), SpriteEffects.None, EyesIdleFrames);
+            var idleFast = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 15f), SpriteEffects.None, EyesIdleFrames);
+            var pop = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 15f), SpriteEffects.None, EyesPopFrames);
 
             Dictionary<EnemyAnims, Animation[]> AnimationDictionary =
                 new Dictionary<EnemyAnims, Animation[]>();
@@ -86,16 +119,6 @@ namespace SharpInvaders.Entities
             AnimationDictionary.Add(EnemyAnims.Test, new[] { idle, idle, idle, idle, pop });
 
             return AnimationDictionary;
-        }
-
-        public void Update(GameTime gameTime)
-        {
-            this.AnimatedSprite.Update(gameTime);
-        }
-
-        public void Draw()
-        {
-            this.AnimatedSprite.Draw();
         }
 
 
