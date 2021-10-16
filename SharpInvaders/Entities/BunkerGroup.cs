@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 
 using System.Collections.Generic;
+using SharpInvaders.Constants;
 
 namespace SharpInvaders
 {
@@ -16,8 +17,8 @@ namespace SharpInvaders
         public BunkerGroup(ContentManager contentManager)
         {
 
-            var positionX = Constants.GAME_WIDTH / Constants.BUNKERS_TOTAL;
-            Bunkers = new List<Bunker>(Constants.BUNKERS_TOTAL);
+            var positionX = Global.GAME_WIDTH / Global.BUNKERS_TOTAL;
+            Bunkers = new List<Bunker>(Global.BUNKERS_TOTAL);
             for (int i = 0; i < Bunkers.Capacity; i++)
             {
                 Texture2D tex = contentManager.Load<Texture2D>($"bunker{i + 1}");

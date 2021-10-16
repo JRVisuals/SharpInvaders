@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework.Content;
 using System.Collections.Generic;
 using System;
 
+using SharpInvaders.Constants;
+
 namespace SharpInvaders
 {
     class Bunker : Entity
@@ -16,7 +18,7 @@ namespace SharpInvaders
         {
 
             Texture = tex;
-            Position = new Vector2(X, Constants.GAME_HEIGHT - 115);
+            Position = new Vector2(X, Global.GAME_HEIGHT - 115);
             Origin = new Vector2(32, 64);
             Velocity = new Vector2(0, 0);
 

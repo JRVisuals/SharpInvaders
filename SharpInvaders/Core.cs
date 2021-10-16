@@ -8,6 +8,8 @@ using Microsoft.Xna.Framework.Audio;
 
 using TexturePackerLoader;
 using TexturePackerMonoGameDefinitions;
+
+using SharpInvaders.Constants;
 namespace SharpInvaders
 {
     public class Core : Game
@@ -35,8 +37,8 @@ namespace SharpInvaders
         // TP Sprite Sheets
         private SpriteSheet tpSpriteSheet;
         private SpriteRender tpSpriteRender;
-        private AnimationManager characterAnimationManager;
-        private readonly TimeSpan timePerFrame = TimeSpan.FromSeconds(1f / 10f);
+        private AnimationManager tpAnimationManager;
+        private readonly TimeSpan timePerFrame = TimeSpan.FromSeconds(1f / 10f); // sprite specific
 
         public Core()
         {
@@ -55,8 +57,8 @@ namespace SharpInvaders
 
             Window.Title = "SharpInvaders";
 
-            graphics.PreferredBackBufferWidth = Constants.GAME_WIDTH;
-            graphics.PreferredBackBufferHeight = Constants.GAME_HEIGHT;
+            graphics.PreferredBackBufferWidth = Global.GAME_WIDTH;
+            graphics.PreferredBackBufferHeight = Global.GAME_HEIGHT;
             graphics.ApplyChanges();
 
             player = new Player(Content);
@@ -85,15 +87,15 @@ namespace SharpInvaders
             ground = new Entity();
             ground.Texture = Content.Load<Texture2D>("groundHighres");
             ground.Origin = new Vector2(ground.Texture.Width / 2, ground.Texture.Height);
-            ground.Position = new Vector2(Constants.GAME_WIDTH / 2, Constants.GAME_HEIGHT);
+            ground.Position = new Vector2(Global.GAME_WIDTH / 2, Global.GAME_HEIGHT);
 
             logo = new Entity();
             logo.Texture = Content.Load<Texture2D>("logo");
             logo.Origin = new Vector2(logo.Texture.Width / 2, 0);
-            logo.Position = new Vector2(Constants.GAME_WIDTH / 2, 50);
+            logo.Position = new Vector2(Global.GAME_WIDTH / 2, 50);
 
             var spriteSheetLoader = new SpriteSheetLoader(Content, GraphicsDevice);
-            tpSpriteSheet = spriteSheetLoader.Load("monoSprites.png");
+            tpSpriteSheet = spriteSheetLoader.Load("tpSpriteSheet.png");
             tpSpriteRender = new SpriteRender(spriteBatch);
             InitialiseAnimationManager();
         }
@@ -103,16 +105,16 @@ namespace SharpInvaders
 
             if (NextBulletFireTime < LastTimeCheck)
             {
-                NextBulletFireTime = DateTime.Now.AddSeconds(Constants.PLAYER_BULLETDELAY);
-                if (PlayerBullets.Bullets.Count < Constants.PLAYER_BULLETMAX)
+                NextBulletFireTime = DateTime.Now.AddSeconds(Global.PLAYER_BULLETDELAY);
+                if (PlayerBullets.Bullets.Count < Global.PLAYER_BULLETMAX)
                 {
                     PlayerBullets.AddBullet();
 
-                    sfxFire.Play(0.5f, 0.0f, 0.0f);
+                    sfxFire.Play(Global.VOLUME_GLOBAL, 0.0f, 0.0f);
                     didPlayReload = false;
 
                     // Reload Sound
-                    if (PlayerBullets.Bullets.Count == Constants.PLAYER_BULLETMAX && !didPlayReload && sfxReloadI.State == SoundState.Stopped)
+                    if (PlayerBullets.Bullets.Count == Global.PLAYER_BULLETMAX && !didPlayReload && sfxReloadI.State == SoundState.Stopped)
                     {
                         didPlayReload = true;
                         //   sfxReloadI.Play();
@@ -202,7 +204,7 @@ namespace SharpInvaders
 
             CollisionCheck();
 
-            characterAnimationManager.Update(gameTime);
+            tpAnimationManager.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -237,16 +239,16 @@ namespace SharpInvaders
 
             // Animated Sprite
             tpSpriteRender.Draw(
-                characterAnimationManager.CurrentSprite,
-                characterAnimationManager.CurrentPosition,
+                tpAnimationManager.CurrentSprite,
+                tpAnimationManager.CurrentPosition,
                 Color.White, 0, 1,
-                characterAnimationManager.CurrentSpriteEffects);
+                tpAnimationManager.CurrentSpriteEffects);
 
 
             spriteBatch.End();
 
             // Debug Stuff
-            if (Constants.DEBUG)
+            if (Global.DEBUG)
             {
                 frameCounter.Update(deltaTime);
                 var fps = string.Format("FPS: {0}", frameCounter.AverageFramesPerSecond);
@@ -286,7 +288,7 @@ namespace SharpInvaders
                animationIdle,animationIdle,animationIdle,animationIdle
             };
 
-            characterAnimationManager = new AnimationManager(tpSpriteSheet, characterStartPosition, tpAnimations);
+            tpAnimationManager = new AnimationManager(tpSpriteSheet, characterStartPosition, tpAnimations);
         }
     }
 }

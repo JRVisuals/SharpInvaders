@@ -1,10 +1,11 @@
-namespace SharpInvaders
+
+namespace SharpInvaders.Constants
 {
-    public class Constants
+    public static class Global
     {
 
-        public const int GAME_WIDTH = 640;
-        public const int GAME_HEIGHT = 900;
+        public const int GAME_WIDTH = 600;
+        public const int GAME_HEIGHT = 800;
 
         public const float PLAYER_ACCEL_X = 2f;
         public const float PLAYER_MAXVEL_X = 450f;
@@ -17,7 +18,10 @@ namespace SharpInvaders
         public const int BUNKERS_TOTAL = 3;
 
         public const bool DEBUG = false;
-    }
 
+
+        // Audio
+        public const float VOLUME_GLOBAL = 0.5f;
+    }
 
 }

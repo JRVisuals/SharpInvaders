@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 
+using SharpInvaders.Constants;
+
 namespace SharpInvaders
 {
     class PlayerBullet : Entity
@@ -17,7 +19,7 @@ namespace SharpInvaders
             Texture = Content.Load<Texture2D>("playerBullet");
             Position = new Vector2(player.Position.X, player.Position.Y - 60);
             Origin = new Vector2(3, 0);
-            Velocity = new Vector2(0, Constants.PLAYER_BULLINIT_Y);
+            Velocity = new Vector2(0, Global.PLAYER_BULLINIT_Y);
             isContainedY = false;
 
             BulletIndex = bulletIndex;

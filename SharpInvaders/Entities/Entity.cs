@@ -3,6 +3,8 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using SharpInvaders.Constants;
+
 namespace SharpInvaders
 {
 
@@ -62,7 +64,7 @@ namespace SharpInvaders
             if (this.isContainedX)
             {
                 Position.X += Velocity.X * deltaTime;
-                var rightBound = Constants.GAME_WIDTH - Texture.Width / 2;
+                var rightBound = Global.GAME_WIDTH - Texture.Width / 2;
                 if (Position.X > rightBound) { Position.X = rightBound; Velocity.X = (float)(Velocity.X * -.5); }
                 var leftBound = Texture.Width / 2;
                 if (Position.X < leftBound) { Position.X = leftBound; Velocity.X = (float)(Velocity.X * -.5); }
@@ -74,7 +76,7 @@ namespace SharpInvaders
 
             if (this.isContainedY)
             {
-                Position.Y += Position.Y + Velocity.Y <= Constants.GAME_HEIGHT &&
+                Position.Y += Position.Y + Velocity.Y <= Global.GAME_HEIGHT &&
                 Position.Y + Velocity.Y >= Texture.Height
                 ? Velocity.Y * deltaTime : 0;
             }

@@ -7,6 +7,9 @@ using System.Collections.Generic;
 using System;
 using System.Diagnostics;
 
+using SharpInvaders.Constants;
+
+
 namespace SharpInvaders
 {
     class PlayerBulletGroup
@@ -25,8 +28,8 @@ namespace SharpInvaders
         {
 
             Content = contentManager;
-            Bullets = new List<PlayerBullet>(Constants.PLAYER_BULLETMAX);
-            Smokes = new List<SmokePuff>(Constants.PLAYER_BULLETMAX);
+            Bullets = new List<PlayerBullet>(Global.PLAYER_BULLETMAX);
+            Smokes = new List<SmokePuff>(Global.PLAYER_BULLETMAX);
             PlayerRef = player;
 
         }

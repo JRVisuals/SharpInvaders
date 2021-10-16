@@ -9,7 +9,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/src/bin/Debug/netcoreapp3.1/SharpInvaders.dll",
+      "program": "${workspaceFolder}/SharpInvaders/bin/Debug/netcoreapp3.1/SharpInvaders.dll",
       "args": "",
       "cwd": "${workspaceFolder}",
       "stopAtEntry": false,
