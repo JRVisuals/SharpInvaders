@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using System;
 
+using SharpInvaders.Entities;
 namespace SharpInvaders
 {
     class SmokePuff : Entity

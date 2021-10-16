@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 using SharpInvaders.Constants;
 
-namespace SharpInvaders
+namespace SharpInvaders.Entities
 {
 
     public interface IEntity

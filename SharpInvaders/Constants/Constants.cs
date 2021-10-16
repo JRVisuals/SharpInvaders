@@ -21,7 +21,7 @@ namespace SharpInvaders.Constants
 
 
         // Audio
-        public const float VOLUME_GLOBAL = 0.5f;
+        public const float VOLUME_GLOBAL = 0.2f;
     }
 
 }

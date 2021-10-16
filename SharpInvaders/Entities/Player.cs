@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 
 using SharpInvaders.Constants;
+using SharpInvaders.Entities;
 
 namespace SharpInvaders
 {

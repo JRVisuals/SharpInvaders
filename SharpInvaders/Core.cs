@@ -10,6 +10,8 @@ using TexturePackerLoader;
 using TexturePackerMonoGameDefinitions;
 
 using SharpInvaders.Constants;
+using SharpInvaders.Entities;
+
 namespace SharpInvaders
 {
     public class Core : Game

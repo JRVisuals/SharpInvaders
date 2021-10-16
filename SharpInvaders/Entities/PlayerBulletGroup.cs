@@ -8,6 +8,7 @@ using System;
 using System.Diagnostics;
 
 using SharpInvaders.Constants;
+using SharpInvaders.Entities;
 
 
 namespace SharpInvaders
