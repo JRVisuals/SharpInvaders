@@ -11,12 +11,10 @@ namespace SharpInvaders
     class BunkerGroup
     {
 
-
         public List<Bunker> Bunkers;
 
         public BunkerGroup(ContentManager contentManager)
         {
-
             var positionX = Global.GAME_WIDTH / Global.BUNKERS_TOTAL;
             Bunkers = new List<Bunker>(Global.BUNKERS_TOTAL);
             for (int i = 0; i < Bunkers.Capacity; i++)
@@ -24,13 +22,10 @@ namespace SharpInvaders
                 Texture2D tex = contentManager.Load<Texture2D>($"bunker{i + 1}");
                 Bunkers.Add(new Bunker(contentManager, tex, positionX * (i) + positionX / 2));
             }
-
-
         }
 
         public void Update(GameTime gameTime)
         {
-
 
         }
 
@@ -42,10 +37,5 @@ namespace SharpInvaders
                 Bunkers[i].Draw(gameTime, spriteBatch);
             }
         }
-
-
-
-
     }
-
 }
