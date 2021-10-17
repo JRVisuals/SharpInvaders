@@ -25,56 +25,39 @@ namespace SharpInvaders
 
         }
 
-        /* Clears the texture to transparent in the area defined by a rectangle.
-           Currently there is no bounds checking. Do the right thing.
-           */
-        public void DestroyArea(Rectangle rect)
+        public bool CheckArea(Rectangle rect)
         {
 
-            int cs = rect.X;
-            int ce = rect.X + rect.Width;
-            int rs = rect.Y;
-            int re = rect.Y + rect.Height;
+            var more = -2;
+            int cs = rect.X - more;
+            int ce = rect.X + rect.Width + more;
+            int rs = rect.Y - more;
+            int re = rect.Y + rect.Height + more;
 
             Color[] data = new Color[Texture.Width * Texture.Height];
             Texture.GetData(data);
 
             Color clear = new Color(0);
+
+            var isSolid = false;
+
             for (int i = 0; i < data.Length; i++)
             {
                 var row = i / Texture.Width;
                 var col = i % 64;
+
                 if ((row >= rs && row <= re) &&
                     (col >= cs && col <= ce))
-                    data[i] = clear;
+                {
+                    if (data[i] != clear)
+                    {
+                        isSolid = true;
+                        data[i] = clear;
+                    }
+                }
             }
 
             Texture.SetData(data);
-
-        }
-
-        public bool CheckArea(Rectangle rect)
-        {
-
-            int cs = rect.X;
-            int ce = rect.X + rect.Width;
-            int rs = rect.Y;
-            int re = rect.Y + rect.Height;
-
-            Color[] data = new Color[Texture.Width * Texture.Height];
-            Texture.GetData(data);
-
-            var isSolid = false;
-            for (int i = 0; i < data.Length; i++)
-            {
-                var row = i / Texture.Width;
-                var col = i % 64;
-                if ((row >= rs && row <= re) &&
-                    (col >= cs && col <= ce) &&
-                    data[i].A != 0
-                    ) isSolid = true;
-
-            }
 
             return isSolid;
 

@@ -8,8 +8,8 @@ namespace SharpInvaders.Constants
         public const int GAME_WIDTH = 600;
         public const int GAME_HEIGHT = 800;
 
-        public const bool USE_FIXED_STEP = false;
-        public const double FIXED_STEP_MS = 10;
+        public const bool USE_FIXED_STEP = true;
+        public const double FIXED_STEP_MS = 10; // 10 is good and fast
         public const bool DEBUG = false;
 
         // Player
@@ -17,8 +17,8 @@ namespace SharpInvaders.Constants
         public const float PLAYER_MAXVEL_X = 450f;
         public const float PLAYER_FRICMULT_X = 7f;
         public const float PLAYER_BULLINIT_Y = (float)(-GAME_HEIGHT * 0.5);
-        public const double PLAYER_BULLETDELAY = 0.25;
-        public const int PLAYER_BULLETMAX = 3;
+        public const double PLAYER_BULLETDELAY = 0.15;
+        public const int PLAYER_BULLETMAX = 10;
 
         // Bunkers
         public const int BUNKERS_TOTAL = 3;

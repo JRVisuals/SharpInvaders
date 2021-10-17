@@ -1,4 +1,3 @@
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
@@ -13,10 +12,7 @@ namespace SharpInvaders
     class EnemyGroup
     {
 
-
         public List<Enemy> Enemies;
-
-
 
         public EnemyGroup(SpriteBatch spriteBatch, SpriteSheet spriteSheet)
         {
@@ -28,8 +24,6 @@ namespace SharpInvaders
 
             var positionX = (Global.GAME_WIDTH - 50) / perRow;
             Enemies = new List<Enemy>(totalRows * perRow);
-
-
 
 
             for (int row = 0; row < totalRows; row++)

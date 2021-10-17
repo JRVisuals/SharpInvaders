@@ -188,23 +188,22 @@ namespace SharpInvaders
                     var kW = k.Texture.Width;
                     var kH = k.Texture.Height;
 
+                    // TODO: add drawing helpers here to see these bounding rectangles and sort out the math mo betta
                     // Check for overlap
-                    if (bY > kY - kH / 2 && bY < kY + kH / 2 &&
-                        bX > kX - kW / 2 && bX < kX + kW / 2)
+                    if ((bY > kY - (kH) && bY < kY) &&
+                        (bX > kX - kW / 2 && bX < kX + kW / 2))
                     {
+
                         // Calculate World Space to Texture Space
-                        var btX = bX + kW / 2 - kX;
-                        var btY = bY + kH / 2 - kY;
-                        // Console.WriteLine($"btX: {btX}");
-                        // Console.WriteLine($"btY: {btY}");
+                        var btX = bX + (kW / 2) - kX;
+                        var btY = bY + (kH / 2) - kY + (bH * 2);
+                        Console.WriteLine($"btX: {btX}");
+                        Console.WriteLine($"btY: {btY}");
 
                         // Check Pixels
-                        var bR = new Rectangle(x: (int)btX, y: (int)btY, width: bW, height: bH);
+                        var bR = new Rectangle(x: (int)btX - bW, y: (int)btY, width: bW * 2, height: bH * 2);
                         if (k.CheckArea(bR))
                         {
-
-                            var dR = new Rectangle(x: (int)btX - bW, y: (int)btY - bH / 2, width: bW * 2, height: bH * 2);
-                            k.DestroyArea(dR);
                             PlayerBullets.KillBullet(b.BulletIndex);
                             sfxBoom.Play(Global.VOLUME_GLOBAL, 0.0f, 0.0f);
                             return;
