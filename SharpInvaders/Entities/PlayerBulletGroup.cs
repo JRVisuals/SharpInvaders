@@ -85,7 +85,6 @@ namespace SharpInvaders
                     if (!b.isActive) continue;
                     if (b.BulletIndex == index)
                     {
-                        Console.WriteLine($"removing {b.BulletIndex}");
                         b.isActive = false;
                         // Bullets.RemoveAt(bi);
                         return;
