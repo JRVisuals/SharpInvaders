@@ -23,6 +23,8 @@ namespace SharpInvaders.Entities
 
         public SpriteBatch SpriteBatch;
         public SpriteSheet SpriteSheet;
+        public EnemyGroup EnemyGroup;
+        public int EnemyIndex;
 
         public Vector2 Position { get; set; }
         public float SpriteHeight;
@@ -40,11 +42,13 @@ namespace SharpInvaders.Entities
         public Dictionary<EnemyAnims, Animation[]> Animations { get; set; }
         public AnimatedSprite<EnemyAnims> AnimatedSprite;
 
-        public Enemy(SpriteBatch spriteBatch, SpriteSheet spriteSheet, Vector2 initialPosition)
+        public Enemy(SpriteBatch spriteBatch, SpriteSheet spriteSheet, EnemyGroup enemyGroup, int enemyIndex, Vector2 initialPosition)
         {
 
             this.SpriteBatch = spriteBatch;
             this.SpriteSheet = spriteSheet;
+            this.EnemyGroup = enemyGroup;
+            this.EnemyIndex = enemyIndex;
 
             this.Position = initialPosition;
 
@@ -65,6 +69,15 @@ namespace SharpInvaders.Entities
             // Used for collision detection
             this.SpriteHeight = this.SpriteWidth = 32;
 
+        }
+
+        public void Die(GameTime gameTime)
+        {
+            this.AnimatedSprite.CurrentFrame = 0;
+            this.AnimatedSprite.CurrentAnimationSequence = this.Animations[Enemy.EnemyAnims.Pop];
+            this.AnimatedSprite.shouldPlayOnceAndDie = true;
+            this.AnimatedSprite.previousFrameChangeTime = gameTime.TotalGameTime;
+            this.isHittable = false;
         }
 
 

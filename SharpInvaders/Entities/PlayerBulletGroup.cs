@@ -33,27 +33,65 @@ namespace SharpInvaders
             Smokes = new List<SmokePuff>(Global.PLAYER_BULLETMAX);
             PlayerRef = player;
 
+            // create finite pool
+            for (int i = 0; i < Global.PLAYER_BULLETMAX; i++)
+            {
+                var b = new PlayerBullet(Content, PlayerRef, i, this);
+                b.isContainedX = false;
+                b.isContainedY = false;
+                b.Velocity.X = 0;
+                b.isActive = false;
+                Bullets.Add(b);
+            }
+
         }
 
-        public void AddBullet()
+        private PlayerBullet BulletFromPool()
+        {
+            for (int i = 0; i < Global.PLAYER_BULLETMAX; i++)
+            {
+                var b = Bullets[i];
+                if (!b.isActive)
+                {
+                    return b;
+                }
+            }
+            return null;
+        }
+
+        public PlayerBullet EnqueueBullet()
         {
 
+            //var b = new PlayerBullet(Content, PlayerRef, Bullets.Count, this);
+            var b = BulletFromPool();
+            if (b == null) return null;
 
-            var b = new PlayerBullet(Content, PlayerRef, Bullets.Count, this);
-            b.isContainedX = false;
-            b.isContainedY = false;
-            b.Velocity.X = (float)(PlayerRef.Velocity.X * 0.25);
-            Bullets.Add(b);
-
+            b.Fire();
             var s = new SmokePuff(Content, this, b);
             Smokes.Add(s);
+
+            return b;
         }
 
-        public void KillBullet(int index)
+        public void DequeueBullet(int index)
         {
+
             try
             {
-                Bullets.RemoveAt(0);
+                // Inefficient Deque
+                var bi = 0;
+                foreach (var b in Bullets)
+                {
+                    if (!b.isActive) continue;
+                    if (b.BulletIndex == index)
+                    {
+                        Console.WriteLine($"removing {b.BulletIndex}");
+                        b.isActive = false;
+                        // Bullets.RemoveAt(bi);
+                        return;
+                    }
+                    bi++;
+                }
             }
             catch (System.InvalidOperationException e)
             {
@@ -68,9 +106,9 @@ namespace SharpInvaders
 
         public void Update(GameTime gameTime)
         {
-            for (int i = 0; i < Bullets.Count; i++)
+            for (int i = 0; i < Global.PLAYER_BULLETMAX; i++)
             {
-                Bullets[i].Update(gameTime);
+                if (Bullets[i].isActive) Bullets[i].Update(gameTime);
             }
 
             for (int i = 0; i < Smokes.Count; i++)
@@ -78,10 +116,7 @@ namespace SharpInvaders
                 Smokes[i].Update(gameTime);
             }
 
-
-
         }
-
 
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -89,7 +124,7 @@ namespace SharpInvaders
 
             for (int i = 0; i < Bullets.Count; i++)
             {
-                Bullets[i].Draw(gameTime, spriteBatch);
+                if (Bullets[i].isActive) Bullets[i].Draw(gameTime, spriteBatch);
             }
 
             for (int i = 0; i < Smokes.Count; i++)

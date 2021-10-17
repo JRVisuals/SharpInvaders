@@ -83,9 +83,6 @@ namespace SharpInvaders
             sfxDryfire = Content.Load<SoundEffect>("dryfire");
 
             PlayerBullets = new PlayerBulletGroup(Content, player);
-
-
-
             base.Initialize();
         }
 
@@ -116,26 +113,19 @@ namespace SharpInvaders
             if (NextBulletFireTime < LastTimeCheck)
             {
                 NextBulletFireTime = DateTime.Now.AddSeconds(Global.PLAYER_BULLETDELAY);
-                if (PlayerBullets.Bullets.Count < Global.PLAYER_BULLETMAX)
+
+                var b = PlayerBullets.EnqueueBullet();
+                if (b == null)
                 {
-                    PlayerBullets.AddBullet();
-
-                    sfxFire.Play(Global.VOLUME_GLOBAL, 0.0f, 0.0f);
-                    didPlayReload = false;
-
-                    // Reload Sound
-                    if (PlayerBullets.Bullets.Count == Global.PLAYER_BULLETMAX && !didPlayReload && sfxReloadI.State == SoundState.Stopped)
-                    {
-                        didPlayReload = true;
-                        //   sfxReloadI.Play();
-
-                    }
+                    //Dry fire
+                    sfxDryfire.Play();
                 }
                 else
                 {
-                    //Dry fire sound
-                    sfxDryfire.Play();
+                    sfxFire.Play(Global.VOLUME_GLOBAL, 0.0f, 0.0f);
                 }
+
+
             }
 
         }
@@ -146,10 +136,14 @@ namespace SharpInvaders
 
             foreach (PlayerBullet b in this.PlayerBullets.Bullets)
             {
+                if (!b.isActive) continue;
+
                 var bX = b.Position.X;
                 var bY = b.Position.Y;
                 var bH = b.Texture.Height;
                 var bW = b.Texture.Width;
+
+                var bTb = b.Texture.Bounds; // TODO: Are there efficiencies pulling bounding rects and checking intersections, etc over the mathy way I'm doing below
 
                 // Enemies
                 foreach (Enemy e in this.EnemyGroup.Enemies)
@@ -166,13 +160,8 @@ namespace SharpInvaders
                     if (bY > eY - eH / 2 && bY < eY + eH / 2 &&
                         bX > eX - eW / 2 && bX < eX + eW / 2)
                     {
-                        e.AnimatedSprite.CurrentFrame = 0;
-                        e.AnimatedSprite.CurrentAnimationSequence = e.Animations[Enemy.EnemyAnims.Pop];
-                        e.AnimatedSprite.shouldPlayOnceAndDie = true;
-
-                        e.AnimatedSprite.previousFrameChangeTime = gameTime.TotalGameTime;
-                        e.isHittable = false;
-                        PlayerBullets.KillBullet(b.BulletIndex);
+                        EnemyGroup.KillEnemy(e.EnemyIndex, gameTime);
+                        PlayerBullets.DequeueBullet(b.BulletIndex);
                         sfxSquish.Play(Global.VOLUME_GLOBAL, 0.0f, 0.0f);
                         return;
                     }
@@ -188,7 +177,6 @@ namespace SharpInvaders
                     var kW = k.Texture.Width;
                     var kH = k.Texture.Height;
 
-                    // TODO: add drawing helpers here to see these bounding rectangles and sort out the math mo betta
                     // Check for overlap
                     if ((bY > kY - (kH) && bY < kY) &&
                         (bX > kX - kW / 2 && bX < kX + kW / 2))
@@ -197,14 +185,12 @@ namespace SharpInvaders
                         // Calculate World Space to Texture Space
                         var btX = bX + (kW / 2) - kX;
                         var btY = bY + (kH / 2) - kY + (bH * 2);
-                        Console.WriteLine($"btX: {btX}");
-                        Console.WriteLine($"btY: {btY}");
 
                         // Check Pixels
                         var bR = new Rectangle(x: (int)btX - bW, y: (int)btY, width: bW * 2, height: bH * 2);
                         if (k.CheckArea(bR))
                         {
-                            PlayerBullets.KillBullet(b.BulletIndex);
+                            PlayerBullets.DequeueBullet(b.BulletIndex);
                             sfxBoom.Play(Global.VOLUME_GLOBAL, 0.0f, 0.0f);
                             return;
                         }

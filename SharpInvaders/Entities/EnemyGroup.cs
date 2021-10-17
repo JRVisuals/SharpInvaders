@@ -19,22 +19,35 @@ namespace SharpInvaders
 
             var startY = 180;
             var perRow = 12;
-            var totalRows = 6;
+            var totalRows = 7;
             var rowGap = 40;
 
             var positionX = (Global.GAME_WIDTH - 50) / perRow;
             Enemies = new List<Enemy>(totalRows * perRow);
 
 
+            var enemyIndex = 0;
             for (int row = 0; row < totalRows; row++)
             {
 
                 for (int i = 0; i < perRow; i++)
                 {
                     var initialPosition = new Vector2(15 + (positionX * (i) + positionX / 2), startY + (row * rowGap));
-                    Enemies.Add(new Enemy(spriteBatch, spriteSheet, initialPosition));
+                    var e = new Enemy(spriteBatch, spriteSheet, this, enemyIndex, initialPosition);
+
+                    Enemies.Add(e);
+                    enemyIndex++;
                 }
             }
+        }
+
+        public void KillEnemy(int index, GameTime gameTime)
+        {
+            foreach (var e in Enemies)
+            {
+                if (e.EnemyIndex == index) e.Die(gameTime);
+            }
+
         }
 
         public void Update(GameTime gameTime)
