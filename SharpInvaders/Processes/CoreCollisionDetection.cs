@@ -45,8 +45,8 @@ namespace SharpInvaders.Processes
 
                     var eW = e.SpriteWidth;
                     var eH = e.SpriteHeight;
-                    var eX = e.Position.X + eW / 2;
-                    var eY = e.Position.Y + eH / 2;
+                    var eX = e.AnimatedSprite.Position.X + eW / 2;
+                    var eY = e.AnimatedSprite.Position.Y + eH / 2;
 
                     // Check for overlap
                     if (bY > eY - eH / 2 && bY < eY + eH / 2 &&

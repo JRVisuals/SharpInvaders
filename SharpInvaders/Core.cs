@@ -173,11 +173,11 @@ namespace SharpInvaders
             spriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.AlphaBlend);
             ground.Draw(gameTime, spriteBatch);
             logo.Draw(gameTime, spriteBatch);
-            spriteBatch.End();
+            //spriteBatch.End();
 
 
             // Game Stuff
-            spriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.AlphaBlend);
+            // spriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.AlphaBlend);
             bunkerGroup.Draw(gameTime, spriteBatch);
             player.Draw(gameTime, spriteBatch);
             playerBulletGroup.Draw(gameTime, spriteBatch);

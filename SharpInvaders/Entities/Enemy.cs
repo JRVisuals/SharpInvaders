@@ -26,7 +26,9 @@ namespace SharpInvaders.Entities
         public EnemyGroup EnemyGroup;
         public int EnemyIndex;
 
-        public Vector2 Position { get; set; }
+        public Vector2 InitialPosition;
+        public Vector2 Position;
+        public Vector2 RowColPosition;
         public float SpriteHeight;
         public float SpriteWidth;
 
@@ -42,7 +44,7 @@ namespace SharpInvaders.Entities
         public Dictionary<EnemyAnims, Animation[]> Animations { get; set; }
         public AnimatedSprite<EnemyAnims> AnimatedSprite;
 
-        public Enemy(SpriteBatch spriteBatch, SpriteSheet spriteSheet, EnemyGroup enemyGroup, int enemyIndex, Vector2 initialPosition)
+        public Enemy(SpriteBatch spriteBatch, SpriteSheet spriteSheet, EnemyGroup enemyGroup, int enemyIndex, Vector2 initialPosition, Vector2 rowColPosition)
         {
 
             this.SpriteBatch = spriteBatch;
@@ -50,7 +52,8 @@ namespace SharpInvaders.Entities
             this.EnemyGroup = enemyGroup;
             this.EnemyIndex = enemyIndex;
 
-            this.Position = initialPosition;
+            this.InitialPosition = this.Position = initialPosition;
+            this.RowColPosition = rowColPosition;
 
             this.Animations = AnimationDictionary();
 
@@ -81,10 +84,20 @@ namespace SharpInvaders.Entities
         }
 
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, Vector2 virtualPosition)
         {
+
             this.AnimatedSprite.Update(gameTime);
+
+
+            //new Vector2(15 + (positionX * (col) + positionX / 2), startY + (row * rowGap));
+
+            this.AnimatedSprite.Position.X = this.InitialPosition.X + virtualPosition.X;
+            this.AnimatedSprite.Position.Y = this.InitialPosition.Y + virtualPosition.Y;
+
+            // Falling from the sky
             if (!this.isHittable) this.AnimatedSprite.Position.Y += 50 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
         }
 
         public void Draw()
