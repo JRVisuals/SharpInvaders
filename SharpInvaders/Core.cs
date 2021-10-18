@@ -145,12 +145,15 @@ namespace SharpInvaders
                 Exit();
 
             var keyboardState = Keyboard.GetState();
-            var joystickState = Joystick.GetState(Joystick.LastConnectedIndex);
+
+            var joystickLci = Joystick.LastConnectedIndex;
+            var joystickState = Joystick.GetState(joystickLci);
+            var isJoystickPresent = joystickLci > -1 && Joystick.GetCapabilities(Joystick.LastConnectedIndex).IsConnected;
 
             // 8BitDo SN30 Pro Bluetooth
-            var jsHatPressLeft = joystickState.Hats[0].Left == ButtonState.Pressed;
-            var jsHatPressRight = joystickState.Hats[0].Right == ButtonState.Pressed;
-            var jsButtonPressA = joystickState.Buttons[0] == ButtonState.Pressed;
+            var jsHatPressLeft = isJoystickPresent ? joystickState.Hats[0].Left == ButtonState.Pressed : false;
+            var jsHatPressRight = isJoystickPresent ? joystickState.Hats[0].Right == ButtonState.Pressed : false;
+            var jsButtonPressA = isJoystickPresent ? joystickState.Buttons[0] == ButtonState.Pressed : false;
 
             if (keyboardState.IsKeyDown(Keys.A) || jsHatPressLeft) player.MoveLeft(deltaTime);
             if (keyboardState.IsKeyDown(Keys.D) || jsHatPressRight) player.MoveRight(deltaTime);
