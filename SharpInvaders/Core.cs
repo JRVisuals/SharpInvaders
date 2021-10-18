@@ -141,13 +141,8 @@ namespace SharpInvaders
 
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
-
-
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
-
-
 
             var keyboardState = Keyboard.GetState();
             var joystickState = Joystick.GetState(Joystick.LastConnectedIndex);
@@ -216,14 +211,3 @@ namespace SharpInvaders
 }
 
 
-// Single Sprite (not animated)
-// tpSpriteRender.Draw(
-//     tpSpriteSheet.Sprite(
-//         tpSprites.EnemyEyes_idle1
-//     ),
-//     new Vector2(350, 530),
-//     Color.White
-// );
-
-// Animated Sprite
-//testEnemy.Draw();
