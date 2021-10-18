@@ -5,7 +5,8 @@ An open source Space Invaders clone written in C# with the Monogame framework.
 ## Rationale
 This is a sandbox for me to learn C# and the Monogame (formerly Microsoft XNA) framework. 
 
-> If you can code Pong, you can code Space Invaders. If you can code Space Invaders, you can code anything. - JR
+> If you can code Pong, you can code Space Invaders.
+> If you can code Space Invaders, you can code anything. 
 
 
 ## Running and Building
