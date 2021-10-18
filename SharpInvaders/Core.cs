@@ -79,6 +79,11 @@ namespace SharpInvaders
 
             playerBulletGroup = new PlayerBulletGroup(Content, player);
 
+            Console.WriteLine($"gp: {GamePad.GetCapabilities(PlayerIndex.One).IsConnected}");
+            Console.WriteLine($"js sup: {Joystick.IsSupported}");
+            Console.WriteLine($"js lci: {Joystick.LastConnectedIndex}");
+            Console.WriteLine($"js lci: {Joystick.GetCapabilities(Joystick.LastConnectedIndex)}");
+
 
             base.Initialize();
         }
@@ -134,20 +139,27 @@ namespace SharpInvaders
         protected override void Update(GameTime gameTime)
         {
 
+            var deltaTime = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+
+
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+
+
+
             var keyboardState = Keyboard.GetState();
+            var joystickState = Joystick.GetState(Joystick.LastConnectedIndex);
 
-            if (keyboardState.IsKeyDown(Keys.A))
-                player.MoveLeft((float)gameTime.ElapsedGameTime.TotalMilliseconds);
+            // 8BitDo SN30 Pro Bluetooth
+            var jsHatPressLeft = joystickState.Hats[0].Left == ButtonState.Pressed;
+            var jsHatPressRight = joystickState.Hats[0].Right == ButtonState.Pressed;
+            var jsButtonPressA = joystickState.Buttons[0] == ButtonState.Pressed;
 
-            if (keyboardState.IsKeyDown(Keys.D))
-                player.MoveRight((float)gameTime.ElapsedGameTime.TotalMilliseconds);
-
-            if (keyboardState.IsKeyDown(Keys.I) || keyboardState.IsKeyDown(Keys.W))
-                this.FireBullet();
+            if (keyboardState.IsKeyDown(Keys.A) || jsHatPressLeft) player.MoveLeft(deltaTime);
+            if (keyboardState.IsKeyDown(Keys.D) || jsHatPressRight) player.MoveRight(deltaTime);
+            if (keyboardState.IsKeyDown(Keys.I) || jsButtonPressA) this.FireBullet();
 
             player.Update(gameTime);
 
@@ -159,7 +171,6 @@ namespace SharpInvaders
 
             CoreCollisionDetection.CollisionCheck(gameTime);
 
-            //testEnemy.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
