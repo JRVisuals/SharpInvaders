@@ -68,7 +68,6 @@ namespace SharpInvaders
             player = new Player(Content);
             bunkerGroup = new BunkerGroup(Content);
 
-
             LastBulletFireTime = DateTime.Now;
             NextBulletFireTime = DateTime.Now;
 
@@ -166,11 +165,12 @@ namespace SharpInvaders
 
             //Console.WriteLine($"jsHatPressLeft: {jsHatPressLeft}  jsHatPressRight: {jsHatPressRight}");
 
-            if (kbPressLeft || jsHatPressLeft) this.player.MoveLeft(deltaTime);
-            if (kbPressRight || jsHatPressRight) this.player.MoveRight(deltaTime);
+            var isInputControlled = false;
+            if (kbPressLeft || jsHatPressLeft) { this.player.MoveLeft(deltaTime); isInputControlled = true; }
+            if (kbPressRight || jsHatPressRight) { this.player.MoveRight(deltaTime); isInputControlled = true; }
             if (kbPressFire || jsButtonPressA) this.FireBullet();
 
-            player.Update(gameTime);
+            player.Update(gameTime, isInputControlled);
 
             LastBulletFireTime = DateTime.Now;
             playerBulletGroup.Update(gameTime);

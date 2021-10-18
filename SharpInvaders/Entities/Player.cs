@@ -33,38 +33,26 @@ namespace SharpInvaders
             base.Draw(gameTime, spriteBatch);
         }
 
-        public new void Update(GameTime gameTime)
+        public new void Update(GameTime gameTime, bool isInputControlled)
         {
-            HorizontalFriction((float)gameTime.ElapsedGameTime.TotalSeconds);
+            if (!isInputControlled) HorizontalFriction((float)gameTime.ElapsedGameTime.TotalSeconds);
             base.Update(gameTime);
         }
 
-
-
-
         public void HorizontalFriction(float timeMultiplier)
         {
-            var keyboardState = Keyboard.GetState();
-
-            if (!keyboardState.IsKeyDown(Keys.A) && !keyboardState.IsKeyDown(Keys.D))
-            {
-
-                Velocity.X += Velocity.X >= Global.PLAYER_ACCEL_X ? -Global.PLAYER_ACCEL_X * Global.PLAYER_FRICMULT_X : 0;
-                Velocity.X += Velocity.X <= -Global.PLAYER_ACCEL_X ? Global.PLAYER_ACCEL_X * Global.PLAYER_FRICMULT_X : 0;
-            }
-
-
-
+            Velocity.X += Velocity.X >= Global.PLAYER_ACCEL_X ? -Global.PLAYER_ACCEL_X * Global.PLAYER_FRICMULT_X : 0;
+            Velocity.X += Velocity.X <= -Global.PLAYER_ACCEL_X ? Global.PLAYER_ACCEL_X * Global.PLAYER_FRICMULT_X : 0;
         }
 
-        public void MoveLeft(float timeMultiplier)
+        public void MoveLeft(float deltaTime)
         {
-            if (Velocity.X > -Global.PLAYER_MAXVEL_X) Velocity.X -= Global.PLAYER_ACCEL_X * timeMultiplier;
+            if (Velocity.X > -Global.PLAYER_MAXVEL_X) Velocity.X -= Global.PLAYER_ACCEL_X * deltaTime;
         }
 
-        public void MoveRight(float timeMultiplier)
+        public void MoveRight(float deltaTime)
         {
-            if (Velocity.X < Global.PLAYER_MAXVEL_X) Velocity.X += Global.PLAYER_ACCEL_X * timeMultiplier;
+            if (Velocity.X < Global.PLAYER_MAXVEL_X) Velocity.X += Global.PLAYER_ACCEL_X * deltaTime;
         }
 
     }
