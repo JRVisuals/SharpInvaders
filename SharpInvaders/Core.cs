@@ -79,13 +79,19 @@ namespace SharpInvaders
 
             playerBulletGroup = new PlayerBulletGroup(Content, player);
 
+            base.Initialize();
+
+            // Temp Joystick debug
             Console.WriteLine($"gp: {GamePad.GetCapabilities(PlayerIndex.One).IsConnected}");
             Console.WriteLine($"js sup: {Joystick.IsSupported}");
             Console.WriteLine($"js lci: {Joystick.LastConnectedIndex}");
             Console.WriteLine($"js lci: {Joystick.GetCapabilities(Joystick.LastConnectedIndex)}");
 
+            var joystickLci = Joystick.LastConnectedIndex;
+            var joystickState = Joystick.GetState(joystickLci);
+            var isJoystickPresent = joystickLci > -1 && Joystick.GetCapabilities(Joystick.LastConnectedIndex).IsConnected;
+            Console.WriteLine($"isJoystickPresent: {isJoystickPresent}");
 
-            base.Initialize();
         }
 
         protected override void LoadContent()
@@ -145,6 +151,9 @@ namespace SharpInvaders
                 Exit();
 
             var keyboardState = Keyboard.GetState();
+            var kbPressLeft = keyboardState.IsKeyDown(Keys.A);
+            var kbPressRight = keyboardState.IsKeyDown(Keys.D);
+            var kbPressFire = keyboardState.IsKeyDown(Keys.I);
 
             var joystickLci = Joystick.LastConnectedIndex;
             var joystickState = Joystick.GetState(joystickLci);
@@ -155,9 +164,11 @@ namespace SharpInvaders
             var jsHatPressRight = isJoystickPresent ? joystickState.Hats[0].Right == ButtonState.Pressed : false;
             var jsButtonPressA = isJoystickPresent ? joystickState.Buttons[0] == ButtonState.Pressed : false;
 
-            if (keyboardState.IsKeyDown(Keys.A) || jsHatPressLeft) player.MoveLeft(deltaTime);
-            if (keyboardState.IsKeyDown(Keys.D) || jsHatPressRight) player.MoveRight(deltaTime);
-            if (keyboardState.IsKeyDown(Keys.I) || jsButtonPressA) this.FireBullet();
+            //Console.WriteLine($"jsHatPressLeft: {jsHatPressLeft}  jsHatPressRight: {jsHatPressRight}");
+
+            if (kbPressLeft || jsHatPressLeft) this.player.MoveLeft(deltaTime);
+            if (kbPressRight || jsHatPressRight) this.player.MoveRight(deltaTime);
+            if (kbPressFire || jsButtonPressA) this.FireBullet();
 
             player.Update(gameTime);
 
