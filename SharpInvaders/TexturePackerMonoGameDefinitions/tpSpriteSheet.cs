@@ -4,7 +4,7 @@
  * Contains references to each image within the sprite sheet.
  *
  * https://www.codeandweb.com/texturepacker
- * $TexturePacker:SmartUpdate:02c75979177f208949cff87340f403d0:6bea0fac264c2df817fdebac44f8d442:af633d31c3393ae9fd430138abbd6857$
+ * $TexturePacker:SmartUpdate:659c8d20e5c163b1e707fc9a23f8703d:727c3ac188fff3901ad8715f9e856a23:af633d31c3393ae9fd430138abbd6857$
  *
  */
 namespace TexturePackerMonoGameDefinitions
@@ -22,5 +22,16 @@ namespace TexturePackerMonoGameDefinitions
 		public const string EnemyEyes_pop_3 = "EnemyEyes/pop/3";
 		public const string EnemyEyes_pop_4 = "EnemyEyes/pop/4";
 		public const string EnemyEyes_pop_5 = "EnemyEyes/pop/5";
+		public const string EnemyPinks_idle_0 = "EnemyPinks/idle/0";
+		public const string EnemyPinks_idle_1 = "EnemyPinks/idle/1";
+		public const string EnemyPinks_idle_2 = "EnemyPinks/idle/2";
+		public const string EnemyPinks_idle_3 = "EnemyPinks/idle/3";
+		public const string EnemyPinks_idle_4 = "EnemyPinks/idle/4";
+		public const string EnemyPinks_pop_0 = "EnemyPinks/pop/0";
+		public const string EnemyPinks_pop_1 = "EnemyPinks/pop/1";
+		public const string EnemyPinks_pop_2 = "EnemyPinks/pop/2";
+		public const string EnemyPinks_pop_3 = "EnemyPinks/pop/3";
+		public const string EnemyPinks_pop_4 = "EnemyPinks/pop/4";
+		public const string EnemyPinks_pop_5 = "EnemyPinks/pop/5";
 	}
 }
