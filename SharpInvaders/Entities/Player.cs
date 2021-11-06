@@ -33,7 +33,7 @@ namespace SharpInvaders
             base.Draw(gameTime, spriteBatch);
         }
 
-        public new void Update(GameTime gameTime, bool isInputControlled)
+        public void Update(GameTime gameTime, bool isInputControlled)
         {
             if (!isInputControlled) HorizontalFriction((float)gameTime.ElapsedGameTime.TotalSeconds);
             base.Update(gameTime);

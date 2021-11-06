@@ -83,6 +83,21 @@ namespace SharpInvaders.Entities
             this.isHittable = false;
         }
 
+        public void Respawn(GameTime gameTime)
+        {
+            this.Position = InitialPosition;
+
+            var Anim = this.AnimatedSprite;
+            Anim.Position = this.Position;
+            Anim.CurrentAnimationSequence = this.Animations[Enemy.EnemyAnims.Idle];
+            Anim.shouldPlayOnceAndDie = false;
+            Anim.previousFrameChangeTime = gameTime.TotalGameTime;
+            this.isHittable = true;
+
+            var rand = new Random();
+            Anim.CurrentFrame = rand.Next(1, Anim.CurrentAnimationSequence[Anim.CurrentAnimation].Sprites.Length);
+            Anim.isActive = true;
+        }
 
         public void Update(GameTime gameTime, Vector2 virtualPosition)
         {

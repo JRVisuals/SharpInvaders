@@ -13,6 +13,7 @@ This is a sandbox for me to learn C# and the Monogame (formerly Microsoft XNA) f
 ### Dev
 
 * `dotnet watch run`
+* `dotnet watch run -p SharpInvaders`
 
 ### Build
 

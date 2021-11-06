@@ -3,13 +3,13 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 
 using System.Collections.Generic;
-using SharpInvaders.Constants;
 using SharpInvaders.Entities;
 using TexturePackerLoader;
 using System;
 
 namespace SharpInvaders
 {
+    using SharpInvaders.Constants;
     class EnemyGroup
     {
 
@@ -66,6 +66,15 @@ namespace SharpInvaders
             }
         }
 
+        public void ReSpawn(GameTime gameTime)
+        {
+            this.xSpeed = 0.5f;
+            this.xDir = 1;
+            Position = new Vector2(0, 0);
+            foreach (var e in Enemies) e.Respawn(gameTime);
+
+        }
+
         public void KillEnemy(int index, GameTime gameTime)
         {
             foreach (var e in Enemies)
@@ -75,53 +84,48 @@ namespace SharpInvaders
 
         }
 
+        private void GroupHitEdge(int newDir)
+        {
+            this.xDir = newDir;
+            Position.Y += yDropStep;
+            if (Position.Y > yVirtualBound) Position.Y = yVirtualBound;
+        }
+
         public void Update(GameTime gameTime)
         {
 
 
             // Check edges to adjust 
-            float xMin = Global.GAME_WIDTH;
-            float xMax = 0;
+            float xMin = 0;
+            float xMax = Constants.Global.GAME_WIDTH - 32;
 
             var countAlive = 0;
+            var edgeChecked = false;
             foreach (var e in Enemies)
             {
                 if (e.isHittable)
                 {
                     countAlive++;
+                    // Check edges
                     var eaX = e.AnimatedSprite.Position.X;
-                    if (eaX > xMax) xMax = eaX;
-                    if (eaX < xMin) xMin = eaX;
+                    if (eaX > xMax && !edgeChecked) { edgeChecked = true; GroupHitEdge(-1); }
+                    if (eaX < xMin && !edgeChecked) { edgeChecked = true; GroupHitEdge(1); }
                 }
+
             }
 
-            if (countAlive < (this.totalColumns * this.totalRows) / 2) this.xSpeed = 1.5f;
+            if (countAlive == 0)
+            {
+                ReSpawn(gameTime);
+                return;
+            }
 
-
+            if (countAlive < (this.totalColumns * this.totalRows) / 2) this.xSpeed = 1.0f;
+            if (countAlive < (this.totalColumns * this.totalRows) / 4) this.xSpeed = 1.5f;
+            if (countAlive == 1) this.xSpeed = 3.0f;
 
             // Walk them down using a virtual position
             Position.X += (xSpeed * xDir);
-
-            if (Position.X >= xVirtualBoundMax)
-            {
-                xDir = -1;
-                Position.X += (xSpeed * xDir);
-
-                Position.Y += yDropStep;
-                if (Position.Y > yVirtualBound) Position.Y = yVirtualBound;
-            }
-
-            if (Position.X <= xMin * -1000)
-            {
-
-                Console.WriteLine($"x:{Position.X} bound:{this.xVirtualBoundMin - (xMin * this.totalColumns * 1.5)}");
-
-                xDir = 1;
-                Position.X += (xSpeed * xDir);
-
-                Position.Y += yDropStep;
-                if (Position.Y > yVirtualBound) Position.Y = yVirtualBound;
-            }
 
             foreach (var e in Enemies) { e.Update(gameTime, Position); }
 
