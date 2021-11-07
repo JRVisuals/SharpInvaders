@@ -52,7 +52,21 @@ namespace SharpInvaders.Processes
                     if (bY > eY - eH / 2 && bY < eY + eH / 2 &&
                         bX > eX - eW / 2 && bX < eX + eW / 2)
                     {
-                        Game.PlayerScore += 10;
+
+                        var points = 0;
+                        switch (e.enemyType)
+                        {
+                            case (Enemy.EnemyType.Blue):
+                                points = 5;
+                                break;
+                            case (Enemy.EnemyType.Pink):
+                                points = 10;
+                                break;
+                            default:
+                                points = 1;
+                                break;
+                        }
+                        Game.PlayerScore += points;
                         this.enemyGroup.KillEnemy(e.EnemyIndex, gameTime);
                         this.playerBulletGroup.DequeueBullet(b.BulletIndex);
                         Game.sfxSquish.Play(Global.VOLUME_GLOBAL, 0.0f, 0.0f);

@@ -178,7 +178,7 @@ namespace SharpInvaders
             spriteBatch.DrawString(spriteFontAtari, $"SCORE", new Vector2(10, 10), Color.Gray);
             spriteBatch.DrawString(spriteFontAtari, $"{PlayerScore}", new Vector2(10, 35), Color.White);
 
-            spriteBatch.DrawString(spriteFontAtari, $"HIGH SCORE", new Vector2(Global.GAME_WIDTH / 2 - spriteFontAtari.MeasureString("HIGH SCORE").X / 2, 10), Color.Gray);
+            spriteBatch.DrawString(spriteFontAtari, $"HIGHSCORE", new Vector2(Global.GAME_WIDTH / 2 - spriteFontAtari.MeasureString("HIGHSCORE").X / 2, 10), Color.Gray);
             spriteBatch.DrawString(spriteFontAtari, $"{PlayerScore}", new Vector2(Global.GAME_WIDTH / 2 - spriteFontAtari.MeasureString($"{PlayerScore}").X / 2, 35), Color.White);
 
             spriteBatch.DrawString(spriteFontAtari, $"LIVES", new Vector2(Global.GAME_WIDTH - 115, 10), Color.Gray);

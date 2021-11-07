@@ -37,6 +37,7 @@ namespace SharpInvaders.Entities
         private Random random;
 
         public Boolean isActive;
+        public EnemyType enemyType;
 
         public enum EnemyType
         {
@@ -61,6 +62,8 @@ namespace SharpInvaders.Entities
             this.SpriteSheet = spriteSheet;
             this.EnemyGroup = enemyGroup;
             this.EnemyIndex = enemyIndex;
+
+            this.enemyType = enemyType;
 
             this.random = new Random();
 
@@ -87,21 +90,21 @@ namespace SharpInvaders.Entities
             // Bullets
             NextBulletFireTime = DateTime.Now.AddSeconds(this.random.Next(5, 10));
 
-            sfxFire = this.content.Load<SoundEffect>("laser2"); // <- need to pass Content in
+            sfxFire = this.content.Load<SoundEffect>("laserEnemy");
             enemyBulletGroup = new EnemyBulletGroup(this.content, this);
 
         }
 
         public void FireBullet()
         {
-            Console.WriteLine("E:FireBullet");
-            Console.WriteLine($"PI:{this.InitialPosition}");
-            Console.WriteLine($"P:{this.Position}");
-            Console.WriteLine($"GIP:{this.EnemyGroup.InitialPosition}");
-            Console.WriteLine($"GP:{this.EnemyGroup.Position}");
-            Console.WriteLine("----------");
+            // Console.WriteLine("E:FireBullet");
+            // Console.WriteLine($"PI:{this.InitialPosition}");
+            // Console.WriteLine($"P:{this.Position}");
+            // Console.WriteLine($"GIP:{this.EnemyGroup.InitialPosition}");
+            // Console.WriteLine($"GP:{this.EnemyGroup.Position}");
+            // Console.WriteLine("----------");
             var b = enemyBulletGroup.EnqueueBullet(this);
-            if (b != null) sfxFire.Play(Global.VOLUME_GLOBAL, 0.0f, 0.0f);
+            if (b != null) sfxFire.Play(Global.VOLUME_GLOBAL / 2, 0.5f, 0.0f);
         }
 
 

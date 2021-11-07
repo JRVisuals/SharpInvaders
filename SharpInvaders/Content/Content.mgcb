@@ -143,6 +143,12 @@
 /processorParam:Quality=Best
 /build:laser2.ogg
 
+#begin laserEnemy.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:laserEnemy.ogg
+
 #begin logo.png
 /importer:TextureImporter
 /processor:TextureProcessor
