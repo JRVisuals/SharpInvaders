@@ -54,13 +54,13 @@ namespace SharpInvaders
             return null;
         }
 
-        public EnemyBullet EnqueueBullet()
+        public EnemyBullet EnqueueBullet(Enemy e)
         {
 
             var b = BulletFromPool();
             if (b == null) return null;
 
-            b.Fire();
+            b.Fire(e);
 
             return b;
         }

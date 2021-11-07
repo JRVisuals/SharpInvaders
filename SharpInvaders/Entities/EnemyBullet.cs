@@ -26,20 +26,20 @@ namespace SharpInvaders
 
             BulletIndex = bulletIndex;
             BulletGroup = bulletGroup;
-
         }
 
-        public void Fire()
+        public void Fire(Enemy e)
         {
             this.Velocity = new Vector2(0, Global.ENEMY_BULLINIT_Y);
             this.isActive = true;
-            this.Position = new Vector2(this.enemy.Position.X, this.enemy.Position.Y - 60);
+            // this.Position = new Vector2(e.Position.X, e.Position.Y + 32);
+            this.Position = new Vector2(e.Position.X + e.EnemyGroup.Position.X + 16, e.Position.Y + e.EnemyGroup.Position.Y + 16);
         }
 
         public new void Update(GameTime gameTime)
         {
             if (!this.isActive) return;
-            if (Position.Y < -Texture.Height * 2) BulletGroup.DequeueBullet(BulletIndex);
+            if (Position.Y > Global.GAME_HEIGHT + Texture.Height * 2) BulletGroup.DequeueBullet(BulletIndex);
             base.Update(gameTime);
         }
 

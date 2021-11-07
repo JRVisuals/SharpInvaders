@@ -17,7 +17,6 @@ namespace SharpInvaders
 
         private ContentManager Content;
 
-        // TODO: Bullet stuff might want to be in a controller
         public PlayerBulletGroup playerBulletGroup;
         private DateTime LastBulletFireTime;
         private DateTime NextBulletFireTime;

@@ -98,7 +98,7 @@ namespace SharpInvaders
             var spriteSheetLoader = new SpriteSheetLoader(Content, GraphicsDevice);
             tpSpriteSheet = spriteSheetLoader.Load("tpSpriteSheet.png");
 
-            this.enemyGroup = new EnemyGroup(spriteBatch, tpSpriteSheet);
+            this.enemyGroup = new EnemyGroup(Content, spriteBatch, tpSpriteSheet);
 
             CoreCollisionDetection = new CoreCollisionDetection(this, this.player.playerBulletGroup, this.bunkerGroup, this.enemyGroup);
 

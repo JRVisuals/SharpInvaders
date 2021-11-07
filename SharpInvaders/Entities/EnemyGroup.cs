@@ -14,9 +14,11 @@ namespace SharpInvaders
     class EnemyGroup
     {
 
+        private ContentManager content;
         public List<Enemy> Enemies;
 
-        private Vector2 Position;
+        public Vector2 InitialPosition;
+        public Vector2 Position;
         private float xSpeed;
         private float xSpeedMax;
 
@@ -30,24 +32,28 @@ namespace SharpInvaders
         private int yVirtualBound;
         private int yDropStep;
 
-        public EnemyGroup(SpriteBatch spriteBatch, SpriteSheet spriteSheet)
+        public int countAlive;
+
+        public EnemyGroup(ContentManager content, SpriteBatch spriteBatch, SpriteSheet spriteSheet)
         {
 
-            this.startY = Constants.Global.ENEMY_STARTY;
-            this.totalColumns = Constants.Global.ENEMY_COLS;
-            this.totalRows = Constants.Global.ENEMY_ROWS;
-            this.rowGap = Constants.Global.ENEMY_ROWGAP;
-            this.xSpeed = Constants.Global.ENEMY_SPEEDX;
-            this.xSpeedMax = Constants.Global.ENEMY_SPEEDX_MAX;
-            this.yDropStep = Constants.Global.ENEMY_DROPY;
-            this.yVirtualBound = Constants.Global.ENEMY_MAXY;
+            this.content = content;
+            this.startY = Global.ENEMY_STARTY;
+            this.totalColumns = Global.ENEMY_COLS;
+            this.totalRows = Global.ENEMY_ROWS;
+            this.rowGap = Global.ENEMY_ROWGAP;
+            this.xSpeed = Global.ENEMY_SPEEDX;
+            this.xSpeedMax = Global.ENEMY_SPEEDX_MAX;
+            this.yDropStep = Global.ENEMY_DROPY;
+            this.yVirtualBound = Global.ENEMY_MAXY;
             this.xDir = 1;
+            this.countAlive = 0;
 
             var positionX = (Global.GAME_WIDTH - 50) / totalColumns;
             Enemies = new List<Enemy>(totalRows * totalColumns);
 
             // This is a virtual position for the group itself
-            Position = new Vector2(0, 0);
+            InitialPosition = Position = new Vector2(0, 0);
 
             var enemyIndex = 0;
             for (int row = 0; row < totalRows; row++)
@@ -58,7 +64,7 @@ namespace SharpInvaders
                     var initialPosition = new Vector2(15 + (positionX * (col) + positionX / 2), startY + (row * rowGap));
                     var rowColPosition = new Vector2(row, col);
                     var enemyType = row < 2 ? Enemy.EnemyType.Pink : Enemy.EnemyType.Blue;
-                    var e = new Enemy(spriteBatch, spriteSheet, this, enemyIndex, initialPosition, rowColPosition, enemyType);
+                    var e = new Enemy(this.content, spriteBatch, spriteSheet, this, enemyIndex, initialPosition, rowColPosition, enemyType);
 
                     Enemies.Add(e);
                     enemyIndex++;
@@ -97,15 +103,16 @@ namespace SharpInvaders
 
             // Check edges to adjust 
             float xMin = 0;
-            float xMax = Constants.Global.GAME_WIDTH - 32;
+            float xMax = Global.GAME_WIDTH - 32;
 
-            var countAlive = 0;
+
+            var tempCount = 0;
             var edgeChecked = false;
             foreach (var e in Enemies)
             {
                 if (e.isHittable)
                 {
-                    countAlive++;
+                    tempCount++;
                     // Check edges
                     var eaX = e.AnimatedSprite.Position.X;
                     if (eaX > xMax && !edgeChecked) { edgeChecked = true; GroupHitEdge(-1); }
@@ -113,16 +120,17 @@ namespace SharpInvaders
                 }
 
             }
+            this.countAlive = tempCount;
 
-            if (countAlive == 0)
+            if (this.countAlive == 0)
             {
                 ReSpawn(gameTime);
                 return;
             }
 
-            if (countAlive < (this.totalColumns * this.totalRows) / 2) this.xSpeed = 1.0f;
-            if (countAlive < (this.totalColumns * this.totalRows) / 4) this.xSpeed = 1.5f;
-            if (countAlive == 1) this.xSpeed = 3.0f;
+            if (this.countAlive < (this.totalColumns * this.totalRows) / 2) this.xSpeed = 1.0f;
+            if (this.countAlive < (this.totalColumns * this.totalRows) / 4) this.xSpeed = 1.5f;
+            if (this.countAlive == 1) this.xSpeed = 3.0f;
 
             // Walk them down using a virtual position
             Position.X += (xSpeed * xDir);
@@ -133,7 +141,7 @@ namespace SharpInvaders
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            foreach (var e in Enemies) { e.Draw(); }
+            foreach (var e in Enemies) { e.Draw(gameTime, spriteBatch); }
         }
 
 

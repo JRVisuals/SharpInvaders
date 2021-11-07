@@ -29,8 +29,9 @@ namespace SharpInvaders.Constants
         public const int ENEMY_ROWS = 5;
         public const int ENEMY_ROWGAP = 40;
 
-        public const int ENEMY_BULLINIT_Y = 5;
-        public const int ENEMY_BULLETMAX = 1;
+        public const float ENEMY_BULLINIT_Y = (float)(GAME_HEIGHT * 0.25);
+        public const int ENEMY_BULLETMAX = 5;
+        public const double ENEMY_BULLETDELAY = 5.0;
 
         public const int ENEMY_DROPY = 8;
         public const int ENEMY_MAXY = 250;
