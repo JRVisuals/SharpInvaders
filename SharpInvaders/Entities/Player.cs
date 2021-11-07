@@ -23,7 +23,7 @@ namespace SharpInvaders
         public SoundEffect sfxFire;
         public SoundEffect sfxDryfire;
 
-        public Player(ContentManager content)
+        public Player(ContentManager content, Core core)
         {
             Content = content;
             Texture = Content.Load<Texture2D>("playerTank");

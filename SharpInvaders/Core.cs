@@ -30,11 +30,16 @@ namespace SharpInvaders
         private Player player;
         private Entity ground;
         private Entity logo;
-        private SpriteFont spriteFont;
+        private SpriteFont spriteFontArial;
+        private SpriteFont spriteFontAtari;
         private FrameCounter frameCounter = new FrameCounter();
 
         public SoundEffect sfxBoom;
         public SoundEffect sfxSquish;
+
+
+        public int PlayerScore;
+        public int PlayerLives;
 
 
         public Core()
@@ -60,7 +65,7 @@ namespace SharpInvaders
             //graphics.IsFullScreen = true;
             graphics.ApplyChanges();
 
-            player = new Player(Content);
+            player = new Player(Content, this);
             bunkerGroup = new BunkerGroup(Content);
 
             sfxBoom = Content.Load<SoundEffect>("boom");
@@ -69,22 +74,26 @@ namespace SharpInvaders
             base.Initialize();
 
             // Temp Joystick debug
-            Console.WriteLine($"gp: {GamePad.GetCapabilities(PlayerIndex.One).IsConnected}");
-            Console.WriteLine($"js sup: {Joystick.IsSupported}");
-            Console.WriteLine($"js lci: {Joystick.LastConnectedIndex}");
-            Console.WriteLine($"js lci: {Joystick.GetCapabilities(Joystick.LastConnectedIndex)}");
+            // Console.WriteLine($"gp: {GamePad.GetCapabilities(PlayerIndex.One).IsConnected}");
+            // Console.WriteLine($"js sup: {Joystick.IsSupported}");
+            // Console.WriteLine($"js lci: {Joystick.LastConnectedIndex}");
+            // Console.WriteLine($"js lci: {Joystick.GetCapabilities(Joystick.LastConnectedIndex)}");
 
             var joystickLci = Joystick.LastConnectedIndex;
             var joystickState = Joystick.GetState(joystickLci);
             var isJoystickPresent = joystickLci > -1 && Joystick.GetCapabilities(Joystick.LastConnectedIndex).IsConnected;
-            Console.WriteLine($"isJoystickPresent: {isJoystickPresent}");
+            // Console.WriteLine($"isJoystickPresent: {isJoystickPresent}");
+
+            this.PlayerScore = 0;
+            this.PlayerLives = 3;
 
         }
 
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            spriteFont = Content.Load<SpriteFont>("Arial");
+            spriteFontArial = Content.Load<SpriteFont>("Arial");
+            spriteFontAtari = Content.Load<SpriteFont>("Atari");
             ground = new Entity();
             ground.Texture = Content.Load<Texture2D>("groundHighres");
             ground.Origin = new Vector2(ground.Texture.Width / 2, ground.Texture.Height);
@@ -166,6 +175,13 @@ namespace SharpInvaders
             player.Draw(gameTime, spriteBatch);
             enemyGroup.Draw(gameTime, spriteBatch);
 
+            spriteBatch.DrawString(spriteFontAtari, $"SCORE", new Vector2(10, 10), Color.Gray);
+            spriteBatch.DrawString(spriteFontAtari, $"{PlayerScore}", new Vector2(10, 35), Color.White);
+
+            spriteBatch.DrawString(spriteFontAtari, $"LIVES", new Vector2(Global.GAME_WIDTH - 115, 10), Color.Gray);
+            spriteBatch.DrawString(spriteFontAtari, $"{PlayerLives}", new Vector2(Global.GAME_WIDTH - 33, 35), Color.White);
+
+
             spriteBatch.End();
 
             // Debug Stuff
@@ -175,12 +191,15 @@ namespace SharpInvaders
                 var fps = string.Format("FPS: {0}", frameCounter.AverageFramesPerSecond);
 
                 spriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.AlphaBlend);
-                spriteBatch.DrawString(spriteFont, fps, new Vector2(10, 10), Color.Black);
+                spriteBatch.DrawString(spriteFontArial, fps, new Vector2(300, 10), Color.Black);
                 spriteBatch.End();
 
             }
 
             base.Draw(gameTime);
+
+
+
         }
 
 

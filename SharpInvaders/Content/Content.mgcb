@@ -20,6 +20,13 @@
 /processorParam:TextureFormat=Compressed
 /build:Arial.spritefont
 
+#begin Atari.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Atari.spritefont
+
 
 #begin tpSpriteSheet.png
 /importer:TextureImporter
