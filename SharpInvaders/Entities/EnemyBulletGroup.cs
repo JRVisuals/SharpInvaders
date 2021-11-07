@@ -13,42 +13,39 @@ using SharpInvaders.Entities;
 
 namespace SharpInvaders
 {
-    class PlayerBulletGroup
+    class EnemyBulletGroup
     {
 
         // TODO: Peep this: https://www.monogameextended.net/docs/features/object-pooling/object-pooling/
 
-        public List<PlayerBullet> Bullets;
-        private ContentManager Content;
-        private Player PlayerRef;
+        public List<EnemyBullet> bullets;
+        private ContentManager content;
+        private Enemy enemyRef;
 
-        public List<SmokePuff> Smokes;
-
-
-        public PlayerBulletGroup(ContentManager contentManager, Player player)
+        public EnemyBulletGroup(ContentManager contentManager, Enemy enemy)
         {
-            Content = contentManager;
-            Bullets = new List<PlayerBullet>(Global.PLAYER_BULLETMAX);
-            Smokes = new List<SmokePuff>(Global.PLAYER_BULLETMAX);
-            PlayerRef = player;
+            this.content = contentManager;
+            this.bullets = new List<EnemyBullet>(Global.ENEMY_BULLETMAX);
+
+            this.enemyRef = enemy;
 
             // create finite pool
-            for (int i = 0; i < Global.PLAYER_BULLETMAX; i++)
+            for (int i = 0; i < Global.ENEMY_BULLETMAX; i++)
             {
-                var b = new PlayerBullet(Content, PlayerRef, i, this);
+                var b = new EnemyBullet(this.content, this.enemyRef, i, this);
                 b.isContainedX = false;
                 b.isContainedY = false;
                 b.Velocity.X = 0;
                 b.isActive = false;
-                Bullets.Add(b);
+                this.bullets.Add(b);
             }
         }
 
-        private PlayerBullet BulletFromPool()
+        private EnemyBullet BulletFromPool()
         {
-            for (int i = 0; i < Global.PLAYER_BULLETMAX; i++)
+            for (int i = 0; i < Global.ENEMY_BULLETMAX; i++)
             {
-                var b = Bullets[i];
+                var b = this.bullets[i];
                 if (!b.isActive)
                 {
                     return b;
@@ -57,15 +54,13 @@ namespace SharpInvaders
             return null;
         }
 
-        public PlayerBullet EnqueueBullet()
+        public EnemyBullet EnqueueBullet()
         {
 
             var b = BulletFromPool();
             if (b == null) return null;
 
             b.Fire();
-            var s = new SmokePuff(Content, this, b);
-            Smokes.Add(s);
 
             return b;
         }
@@ -77,7 +72,7 @@ namespace SharpInvaders
             {
                 // Inefficient Deque
                 var bi = 0;
-                foreach (var b in Bullets)
+                foreach (var b in this.bullets)
                 {
                     if (!b.isActive) continue;
                     if (b.BulletIndex == index)
@@ -91,42 +86,28 @@ namespace SharpInvaders
             }
             catch (System.InvalidOperationException e)
             {
-                Console.WriteLine($"Tried removing player bullet but '{e}'");
+                Console.WriteLine($"Tried removing enemy bullet but '{e}'");
             }
         }
 
-        public void KillSmoke(int index)
-        {
-            Smokes.RemoveAt(0);
-        }
 
         public void Update(GameTime gameTime)
         {
-            for (int i = 0; i < Global.PLAYER_BULLETMAX; i++)
+            for (int i = 0; i < Global.ENEMY_BULLETMAX; i++)
             {
-                if (Bullets[i].isActive) Bullets[i].Update(gameTime);
+                if (this.bullets[i].isActive) this.bullets[i].Update(gameTime);
             }
-
-            for (int i = 0; i < Smokes.Count; i++)
-            {
-                Smokes[i].Update(gameTime);
-            }
-
         }
 
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
 
-            for (int i = 0; i < Bullets.Count; i++)
+            for (int i = 0; i < this.bullets.Count; i++)
             {
-                if (Bullets[i].isActive) Bullets[i].Draw(gameTime, spriteBatch);
+                if (this.bullets[i].isActive) this.bullets[i].Draw(gameTime, spriteBatch);
             }
 
-            for (int i = 0; i < Smokes.Count; i++)
-            {
-                Smokes[i].Draw(gameTime, spriteBatch);
-            }
         }
 
     }

@@ -22,10 +22,7 @@ namespace SharpInvaders
         private SpriteSheet tpSpriteSheet;
         private CoreCollisionDetection CoreCollisionDetection;
 
-        // TODO: Bullet stuff might want to be in a controller
-        private PlayerBulletGroup playerBulletGroup;
-        private DateTime LastBulletFireTime;
-        private DateTime NextBulletFireTime;
+
 
         private BunkerGroup bunkerGroup;
         private EnemyGroup enemyGroup;
@@ -36,9 +33,7 @@ namespace SharpInvaders
         private SpriteFont spriteFont;
         private FrameCounter frameCounter = new FrameCounter();
 
-        public SoundEffect sfxFire;
         public SoundEffect sfxBoom;
-        public SoundEffect sfxDryfire;
         public SoundEffect sfxSquish;
 
 
@@ -68,15 +63,8 @@ namespace SharpInvaders
             player = new Player(Content);
             bunkerGroup = new BunkerGroup(Content);
 
-            LastBulletFireTime = DateTime.Now;
-            NextBulletFireTime = DateTime.Now;
-
             sfxBoom = Content.Load<SoundEffect>("boom");
             sfxSquish = Content.Load<SoundEffect>("squish");
-            sfxFire = Content.Load<SoundEffect>("laser2");
-            sfxDryfire = Content.Load<SoundEffect>("dryfire");
-
-            playerBulletGroup = new PlayerBulletGroup(Content, player);
 
             base.Initialize();
 
@@ -112,32 +100,10 @@ namespace SharpInvaders
 
             this.enemyGroup = new EnemyGroup(spriteBatch, tpSpriteSheet);
 
-            CoreCollisionDetection = new CoreCollisionDetection(this, this.playerBulletGroup, this.bunkerGroup, this.enemyGroup);
+            CoreCollisionDetection = new CoreCollisionDetection(this, this.player.playerBulletGroup, this.bunkerGroup, this.enemyGroup);
 
         }
 
-        public void FireBullet()
-        {
-
-            if (NextBulletFireTime < LastBulletFireTime)
-            {
-                NextBulletFireTime = DateTime.Now.AddSeconds(Global.PLAYER_BULLETDELAY);
-
-                var b = playerBulletGroup.EnqueueBullet();
-                if (b == null)
-                {
-                    //Dry fire
-                    sfxDryfire.Play();
-                }
-                else
-                {
-                    sfxFire.Play(Global.VOLUME_GLOBAL, 0.0f, 0.0f);
-                }
-
-
-            }
-
-        }
 
 
 
@@ -168,12 +134,10 @@ namespace SharpInvaders
             var isInputControlled = false;
             if (kbPressLeft || jsHatPressLeft) { this.player.MoveLeft(deltaTime); isInputControlled = true; }
             if (kbPressRight || jsHatPressRight) { this.player.MoveRight(deltaTime); isInputControlled = true; }
-            if (kbPressFire || jsButtonPressA) this.FireBullet();
+            if (kbPressFire || jsButtonPressA) this.player.FireBullet();
 
             player.Update(gameTime, isInputControlled);
 
-            LastBulletFireTime = DateTime.Now;
-            playerBulletGroup.Update(gameTime);
             enemyGroup.Update(gameTime);
 
             base.Update(gameTime);
@@ -200,7 +164,6 @@ namespace SharpInvaders
             // spriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.AlphaBlend);
             bunkerGroup.Draw(gameTime, spriteBatch);
             player.Draw(gameTime, spriteBatch);
-            playerBulletGroup.Draw(gameTime, spriteBatch);
             enemyGroup.Draw(gameTime, spriteBatch);
 
             spriteBatch.End();

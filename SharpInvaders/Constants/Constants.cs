@@ -23,6 +23,21 @@ namespace SharpInvaders.Constants
         // Bunkers
         public const int BUNKERS_TOTAL = 3;
 
+        // Enemies
+        public const int ENEMY_STARTY = 180;
+        public const int ENEMY_COLS = 14;
+        public const int ENEMY_ROWS = 5;
+        public const int ENEMY_ROWGAP = 40;
+
+        public const int ENEMY_BULLINIT_Y = 5;
+        public const int ENEMY_BULLETMAX = 1;
+
+        public const int ENEMY_DROPY = 8;
+        public const int ENEMY_MAXY = 250;
+
+        public const float ENEMY_SPEEDX = 0.5f;
+        public const float ENEMY_SPEEDX_MAX = 0.5f;
+
         // Audio
         public const float VOLUME_GLOBAL = 0.5f;
     }

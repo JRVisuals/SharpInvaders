@@ -17,6 +17,13 @@ namespace SharpInvaders
 
         private ContentManager Content;
 
+        // TODO: Bullet stuff might want to be in a controller
+        public PlayerBulletGroup playerBulletGroup;
+        private DateTime LastBulletFireTime;
+        private DateTime NextBulletFireTime;
+        public SoundEffect sfxFire;
+        public SoundEffect sfxDryfire;
+
         public Player(ContentManager content)
         {
             Content = content;
@@ -25,17 +32,52 @@ namespace SharpInvaders
             Origin = new Vector2(32, 64);
             Velocity = new Vector2(0, 0);
 
+            LastBulletFireTime = DateTime.Now;
+            NextBulletFireTime = DateTime.Now;
+            sfxFire = Content.Load<SoundEffect>("laser2");
+            sfxDryfire = Content.Load<SoundEffect>("dryfire");
+            playerBulletGroup = new PlayerBulletGroup(Content, this);
+
+        }
+
+
+        public void FireBullet()
+        {
+
+            if (NextBulletFireTime < LastBulletFireTime)
+            {
+                NextBulletFireTime = DateTime.Now.AddSeconds(Global.PLAYER_BULLETDELAY);
+
+                var b = playerBulletGroup.EnqueueBullet();
+                if (b == null)
+                {
+                    //Dry fire
+                    sfxDryfire.Play();
+                }
+                else
+                {
+                    sfxFire.Play(Global.VOLUME_GLOBAL, 0.0f, 0.0f);
+                }
+
+
+            }
+
         }
 
 
         public new void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             base.Draw(gameTime, spriteBatch);
+            playerBulletGroup.Draw(gameTime, spriteBatch);
         }
 
         public void Update(GameTime gameTime, bool isInputControlled)
         {
             if (!isInputControlled) HorizontalFriction((float)gameTime.ElapsedGameTime.TotalSeconds);
+
+            LastBulletFireTime = DateTime.Now;
+            playerBulletGroup.Update(gameTime);
+
             base.Update(gameTime);
         }
 

@@ -10,6 +10,7 @@ using System;
 namespace SharpInvaders
 {
     using SharpInvaders.Constants;
+    using SharpInvaders.Entities;
     class EnemyGroup
     {
 
@@ -17,6 +18,7 @@ namespace SharpInvaders
 
         private Vector2 Position;
         private float xSpeed;
+        private float xSpeedMax;
 
         private int startY;
         private int totalColumns;
@@ -24,25 +26,22 @@ namespace SharpInvaders
         private int rowGap;
 
         private int xDir;
-        private int xVirtualBoundMax;
-        private int xVirtualBoundMin;
+
         private int yVirtualBound;
         private int yDropStep;
 
         public EnemyGroup(SpriteBatch spriteBatch, SpriteSheet spriteSheet)
         {
 
-            this.startY = 180;
-            this.totalColumns = 12;
-            this.totalRows = 4;
-            this.rowGap = 40;
-
-            this.xSpeed = 0.5f;
+            this.startY = Constants.Global.ENEMY_STARTY;
+            this.totalColumns = Constants.Global.ENEMY_COLS;
+            this.totalRows = Constants.Global.ENEMY_ROWS;
+            this.rowGap = Constants.Global.ENEMY_ROWGAP;
+            this.xSpeed = Constants.Global.ENEMY_SPEEDX;
+            this.xSpeedMax = Constants.Global.ENEMY_SPEEDX_MAX;
+            this.yDropStep = Constants.Global.ENEMY_DROPY;
+            this.yVirtualBound = Constants.Global.ENEMY_MAXY;
             this.xDir = 1;
-            this.xVirtualBoundMax = 32;
-            this.xVirtualBoundMin = -32;
-            this.yDropStep = 10;
-            this.yVirtualBound = this.yDropStep * 20;
 
             var positionX = (Global.GAME_WIDTH - 50) / totalColumns;
             Enemies = new List<Enemy>(totalRows * totalColumns);
@@ -58,7 +57,8 @@ namespace SharpInvaders
                 {
                     var initialPosition = new Vector2(15 + (positionX * (col) + positionX / 2), startY + (row * rowGap));
                     var rowColPosition = new Vector2(row, col);
-                    var e = new Enemy(spriteBatch, spriteSheet, this, enemyIndex, initialPosition, rowColPosition);
+                    var enemyType = row < 2 ? Enemy.EnemyType.Pink : Enemy.EnemyType.Blue;
+                    var e = new Enemy(spriteBatch, spriteSheet, this, enemyIndex, initialPosition, rowColPosition, enemyType);
 
                     Enemies.Add(e);
                     enemyIndex++;

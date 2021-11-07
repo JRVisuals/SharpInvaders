@@ -34,17 +34,23 @@ namespace SharpInvaders.Entities
 
         public bool isHittable;
 
-        public enum EnemyAnims
+
+        public enum EnemyType
+        {
+            Blue,
+            Pink,
+        }
+
+        public enum EnemyAnim
         {
             Idle,
             IdleFast,
             Pop,
-            Test
         }
-        public Dictionary<EnemyAnims, Animation[]> Animations { get; set; }
-        public AnimatedSprite<EnemyAnims> AnimatedSprite;
+        public Dictionary<EnemyAnim, Animation[]> Animations { get; set; }
+        public AnimatedSprite<EnemyAnim> AnimatedSprite;
 
-        public Enemy(SpriteBatch spriteBatch, SpriteSheet spriteSheet, EnemyGroup enemyGroup, int enemyIndex, Vector2 initialPosition, Vector2 rowColPosition)
+        public Enemy(SpriteBatch spriteBatch, SpriteSheet spriteSheet, EnemyGroup enemyGroup, int enemyIndex, Vector2 initialPosition, Vector2 rowColPosition, EnemyType enemyType)
         {
 
             this.SpriteBatch = spriteBatch;
@@ -55,19 +61,19 @@ namespace SharpInvaders.Entities
             this.InitialPosition = this.Position = initialPosition;
             this.RowColPosition = rowColPosition;
 
-            this.Animations = AnimationDictionary();
+            this.Animations = AnimationDictionary(enemyType);
 
             this.isHittable = true;
 
-            this.AnimatedSprite = new AnimatedSprite<EnemyAnims>(
+            this.AnimatedSprite = new AnimatedSprite<EnemyAnim>(
                 spriteBatch, spriteSheet, this.Animations,
-                this.Animations[EnemyAnims.Idle],
+                this.Animations[EnemyAnim.Idle],
                 shouldStartOnRandomFrame: true
             );
 
             this.AnimatedSprite.Position = this.Position;
 
-            this.AnimatedSprite.CurrentAnimationSequence = this.Animations[EnemyAnims.Idle];
+            this.AnimatedSprite.CurrentAnimationSequence = this.Animations[EnemyAnim.Idle];
 
             // Used for collision detection
             this.SpriteHeight = this.SpriteWidth = 32;
@@ -77,7 +83,7 @@ namespace SharpInvaders.Entities
         public void Die(GameTime gameTime)
         {
             this.AnimatedSprite.CurrentFrame = 0;
-            this.AnimatedSprite.CurrentAnimationSequence = this.Animations[Enemy.EnemyAnims.Pop];
+            this.AnimatedSprite.CurrentAnimationSequence = this.Animations[Enemy.EnemyAnim.Pop];
             this.AnimatedSprite.shouldPlayOnceAndDie = true;
             this.AnimatedSprite.previousFrameChangeTime = gameTime.TotalGameTime;
             this.isHittable = false;
@@ -89,7 +95,7 @@ namespace SharpInvaders.Entities
 
             var Anim = this.AnimatedSprite;
             Anim.Position = this.Position;
-            Anim.CurrentAnimationSequence = this.Animations[Enemy.EnemyAnims.Idle];
+            Anim.CurrentAnimationSequence = this.Animations[Enemy.EnemyAnim.Idle];
             Anim.shouldPlayOnceAndDie = false;
             Anim.previousFrameChangeTime = gameTime.TotalGameTime;
             this.isHittable = true;
@@ -117,8 +123,8 @@ namespace SharpInvaders.Entities
 
         public void Draw()
         {
-            AnimatedSprite<EnemyAnims> Anim = this.AnimatedSprite;
-            if (Anim.CurrentAnimationSequence == Anim.Animations[EnemyAnims.Pop] && Anim.CurrentFrame > 4) return;
+            AnimatedSprite<EnemyAnim> Anim = this.AnimatedSprite;
+            if (Anim.CurrentAnimationSequence == Anim.Animations[EnemyAnim.Pop] && Anim.CurrentFrame > 4) return;
             this.AnimatedSprite.Draw();
         }
 
@@ -126,38 +132,81 @@ namespace SharpInvaders.Entities
 
 
         // TODO: Is it crazy innefficient to generate these for every instance??
-        private Dictionary<EnemyAnims, Animation[]> AnimationDictionary()
+        private Dictionary<EnemyAnim, Animation[]> AnimationDictionary(EnemyType enemyType)
         {
 
+            Animation idle = null;
+            Animation idleFast = null;
+            Animation pop = null;
 
-            var EyesIdleFrames = new[] {
-                TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_idle_0,
-                TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_idle_1,
-                TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_idle_2,
-                TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_idle_3,
-                TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_idle_4,
-            };
+            string[] idleFrames = null;
+            string[] popFrames = null;
 
-            var EyesPopFrames = new[] {
-                TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_pop_0,
-                TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_pop_1,
-                TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_pop_2,
-                TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_pop_3,
-                TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_pop_4,
-                TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_pop_5,
-            };
+            switch (enemyType)
+            {
+                case EnemyType.Blue:
 
-            var idle = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 10f), SpriteEffects.None, EyesIdleFrames);
-            var idleFast = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 15f), SpriteEffects.None, EyesIdleFrames);
-            var pop = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 15f), SpriteEffects.None, EyesPopFrames);
+                    idleFrames = new[] {
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_idle_0,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_idle_1,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_idle_2,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_idle_3,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_idle_4,
+                    };
 
-            Dictionary<EnemyAnims, Animation[]> AnimationDictionary =
-                new Dictionary<EnemyAnims, Animation[]>();
+                    popFrames = new[] {
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_pop_0,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_pop_1,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_pop_2,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_pop_3,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_pop_4,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_pop_5,
+                    };
 
-            AnimationDictionary.Add(EnemyAnims.Idle, new[] { idle });
-            AnimationDictionary.Add(EnemyAnims.IdleFast, new[] { idleFast });
-            AnimationDictionary.Add(EnemyAnims.Pop, new[] { pop });
-            AnimationDictionary.Add(EnemyAnims.Test, new[] { idle, idle, idle, idle, pop });
+                    idle = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 10f), SpriteEffects.None, idleFrames);
+                    idleFast = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 15f), SpriteEffects.None, idleFrames);
+                    pop = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 15f), SpriteEffects.None, popFrames);
+
+                    break;
+
+                case EnemyType.Pink:
+
+                    idleFrames = new[] {
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemyPinks_idle_0,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemyPinks_idle_1,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemyPinks_idle_2,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemyPinks_idle_3,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemyPinks_idle_4,
+                    };
+
+                    popFrames = new[] {
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemyPinks_pop_0,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemyPinks_pop_1,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemyPinks_pop_2,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemyPinks_pop_3,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemyPinks_pop_4,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemyPinks_pop_5,
+                    };
+                    idle = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 10f), SpriteEffects.None, idleFrames);
+                    idleFast = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 15f), SpriteEffects.None, idleFrames);
+                    pop = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 15f), SpriteEffects.None, popFrames);
+
+                    break;
+
+
+                default:
+                    break;
+            }
+
+
+
+
+            Dictionary<EnemyAnim, Animation[]> AnimationDictionary =
+                new Dictionary<EnemyAnim, Animation[]>();
+
+            if (idle != null) AnimationDictionary.Add(EnemyAnim.Idle, new[] { idle });
+            if (idleFast != null) AnimationDictionary.Add(EnemyAnim.IdleFast, new[] { idleFast });
+            if (pop != null) AnimationDictionary.Add(EnemyAnim.Pop, new[] { pop });
 
             return AnimationDictionary;
         }
