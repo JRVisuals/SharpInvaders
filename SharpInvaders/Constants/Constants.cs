@@ -18,13 +18,13 @@ namespace SharpInvaders.Constants
         public const float PLAYER_FRICMULT_X = 7f;
         public const float PLAYER_BULLINIT_Y = (float)(-GAME_HEIGHT * 0.5);
         public const double PLAYER_BULLETDELAY = 0.15;
-        public const int PLAYER_BULLETMAX = 10;
+        public const int PLAYER_BULLETMAX = 5;
 
         // Bunkers
         public const int BUNKERS_TOTAL = 3;
 
         // Enemies
-        public const int ENEMY_STARTY = 180;
+        public const int ENEMY_STARTY = 160;
         public const int ENEMY_COLS = 14;
         public const int ENEMY_ROWS = 5;
         public const int ENEMY_ROWGAP = 40;
