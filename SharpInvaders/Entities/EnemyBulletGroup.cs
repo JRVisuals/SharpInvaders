@@ -1,11 +1,9 @@
+using System;
+using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
-
-using System.Collections.Generic;
-using System;
-using System.Diagnostics;
 
 using SharpInvaders.Constants;
 using SharpInvaders.Entities;

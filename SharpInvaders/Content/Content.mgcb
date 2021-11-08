@@ -125,6 +125,12 @@
 /processorParam:TextureFormat=Color
 /build:groundHighres.png
 
+#begin playerdeath.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:playerdeath.ogg
+
 #begin boom.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor

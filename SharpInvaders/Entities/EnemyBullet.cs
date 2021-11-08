@@ -1,9 +1,8 @@
+using System;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
-
-using System;
 
 using SharpInvaders.Constants;
 using SharpInvaders.Entities;
@@ -43,7 +42,7 @@ namespace SharpInvaders
 
         private bool CheckHitPlayer()
         {
-            if (this.playerRef.reSpawning) return false;
+            if (this.playerRef.reSpawning || !this.playerRef.isActive) return false;
 
 
             if (this.Position.X > this.playerRef.Position.X - 32 && this.Position.X < this.playerRef.Position.X + 32)

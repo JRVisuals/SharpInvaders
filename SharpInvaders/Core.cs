@@ -85,7 +85,7 @@ namespace SharpInvaders
             // Console.WriteLine($"isJoystickPresent: {isJoystickPresent}");
 
             this.PlayerScore = 0;
-            this.PlayerLives = 2;
+            this.PlayerLives = Global.PLAYER_START_LIVES - 1;
 
         }
 
@@ -128,6 +128,7 @@ namespace SharpInvaders
             var kbPressLeft = keyboardState.IsKeyDown(Keys.A);
             var kbPressRight = keyboardState.IsKeyDown(Keys.D);
             var kbPressFire = keyboardState.IsKeyDown(Keys.I);
+            var kbPressFireAlt = keyboardState.IsKeyDown(Keys.W);
 
             var joystickLci = Joystick.LastConnectedIndex;
             var joystickState = Joystick.GetState(joystickLci);
@@ -143,7 +144,7 @@ namespace SharpInvaders
             var isInputControlled = false;
             if (kbPressLeft || jsHatPressLeft) { this.player.MoveLeft(deltaTime); isInputControlled = true; }
             if (kbPressRight || jsHatPressRight) { this.player.MoveRight(deltaTime); isInputControlled = true; }
-            if (kbPressFire || jsButtonPressA) this.player.FireBullet();
+            if (kbPressFire || kbPressFireAlt || jsButtonPressA) this.player.FireBullet();
 
             player.Update(gameTime, isInputControlled);
 
