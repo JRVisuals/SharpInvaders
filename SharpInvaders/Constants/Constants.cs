@@ -19,6 +19,8 @@ namespace SharpInvaders.Constants
         public const float PLAYER_BULLINIT_Y = (float)(-GAME_HEIGHT * 0.5);
         public const double PLAYER_BULLETDELAY = 0.15;
         public const int PLAYER_BULLETMAX = 5;
+        public const int PLAYER_OFFSET_Y = 18;
+        public const int PLAYER_RESPAWN_SEC = 3;
 
         // Bunkers
         public const int BUNKERS_TOTAL = 3;

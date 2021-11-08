@@ -34,7 +34,9 @@ namespace SharpInvaders
 
         public int countAlive;
 
-        public EnemyGroup(ContentManager content, SpriteBatch spriteBatch, SpriteSheet spriteSheet)
+        public Player playerRef;
+
+        public EnemyGroup(ContentManager content, SpriteBatch spriteBatch, SpriteSheet spriteSheet, Player player)
         {
 
             this.content = content;
@@ -48,6 +50,8 @@ namespace SharpInvaders
             this.yVirtualBound = Global.ENEMY_MAXY;
             this.xDir = 1;
             this.countAlive = 0;
+
+            this.playerRef = player;
 
             var positionX = (Global.GAME_WIDTH - 50) / totalColumns;
             Enemies = new List<Enemy>(totalRows * totalColumns);
@@ -64,7 +68,7 @@ namespace SharpInvaders
                     var initialPosition = new Vector2(15 + (positionX * (col) + positionX / 2), startY + (row * rowGap));
                     var rowColPosition = new Vector2(row, col);
                     var enemyType = row < 2 ? Enemy.EnemyType.Pink : Enemy.EnemyType.Blue;
-                    var e = new Enemy(this.content, spriteBatch, spriteSheet, this, enemyIndex, initialPosition, rowColPosition, enemyType);
+                    var e = new Enemy(this.content, spriteBatch, spriteSheet, this, enemyIndex, initialPosition, rowColPosition, enemyType, this.playerRef);
 
                     Enemies.Add(e);
                     enemyIndex++;

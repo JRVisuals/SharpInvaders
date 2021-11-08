@@ -85,7 +85,7 @@ namespace SharpInvaders
             // Console.WriteLine($"isJoystickPresent: {isJoystickPresent}");
 
             this.PlayerScore = 0;
-            this.PlayerLives = 3;
+            this.PlayerLives = 2;
 
         }
 
@@ -107,7 +107,7 @@ namespace SharpInvaders
             var spriteSheetLoader = new SpriteSheetLoader(Content, GraphicsDevice);
             tpSpriteSheet = spriteSheetLoader.Load("tpSpriteSheet.png");
 
-            this.enemyGroup = new EnemyGroup(Content, spriteBatch, tpSpriteSheet);
+            this.enemyGroup = new EnemyGroup(Content, spriteBatch, tpSpriteSheet, this.player);
 
             CoreCollisionDetection = new CoreCollisionDetection(this, this.player.playerBulletGroup, this.bunkerGroup, this.enemyGroup);
 
@@ -182,7 +182,7 @@ namespace SharpInvaders
             spriteBatch.DrawString(spriteFontAtari, $"{PlayerScore}", new Vector2(Global.GAME_WIDTH / 2 - spriteFontAtari.MeasureString($"{PlayerScore}").X / 2, 35), Color.White);
 
             spriteBatch.DrawString(spriteFontAtari, $"LIVES", new Vector2(Global.GAME_WIDTH - 115, 10), Color.Gray);
-            spriteBatch.DrawString(spriteFontAtari, $"{PlayerLives}", new Vector2(Global.GAME_WIDTH - 33, 35), Color.White);
+            spriteBatch.DrawString(spriteFontAtari, $"{PlayerLives + 1}", new Vector2(Global.GAME_WIDTH - 33, 35), Color.White);
 
 
             spriteBatch.End();

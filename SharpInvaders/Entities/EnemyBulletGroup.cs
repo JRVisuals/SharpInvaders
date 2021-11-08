@@ -21,13 +21,15 @@ namespace SharpInvaders
         public List<EnemyBullet> bullets;
         private ContentManager content;
         private Enemy enemyRef;
+        public Player playerRef;
 
-        public EnemyBulletGroup(ContentManager contentManager, Enemy enemy)
+        public EnemyBulletGroup(ContentManager contentManager, Enemy enemy, Player player)
         {
             this.content = contentManager;
             this.bullets = new List<EnemyBullet>(Global.ENEMY_BULLETMAX);
 
             this.enemyRef = enemy;
+            this.playerRef = player;
 
             // create finite pool
             for (int i = 0; i < Global.ENEMY_BULLETMAX; i++)
