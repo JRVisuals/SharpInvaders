@@ -36,7 +36,7 @@ namespace SharpInvaders
 
         public Player playerRef;
 
-        public EnemyGroup(ContentManager content, SpriteBatch spriteBatch, SpriteSheet spriteSheet, Player player)
+        public EnemyGroup(ContentManager content, SpriteBatch spriteBatch, SpriteSheet spriteSheet, Player player, BunkerGroup bunkerGroup)
         {
 
             this.content = content;
@@ -68,7 +68,17 @@ namespace SharpInvaders
                     var initialPosition = new Vector2(15 + (positionX * (col) + positionX / 2), startY + (row * rowGap));
                     var rowColPosition = new Vector2(row, col);
                     var enemyType = row < 2 ? Enemy.EnemyType.Pink : Enemy.EnemyType.Blue;
-                    var e = new Enemy(this.content, spriteBatch, spriteSheet, this, enemyIndex, initialPosition, rowColPosition, enemyType, this.playerRef);
+                    var e = new Enemy(
+                        this.content,
+                        spriteBatch,
+                        spriteSheet,
+                        this,
+                        enemyIndex,
+                        initialPosition,
+                        rowColPosition,
+                        enemyType,
+                        this.playerRef,
+                        bunkerGroup);
 
                     Enemies.Add(e);
                     enemyIndex++;

@@ -55,7 +55,7 @@ namespace SharpInvaders.Entities
         public Dictionary<EnemyAnim, Animation[]> Animations { get; set; }
         public AnimatedSprite<EnemyAnim> AnimatedSprite;
 
-        public Enemy(ContentManager content, SpriteBatch spriteBatch, SpriteSheet spriteSheet, EnemyGroup enemyGroup, int enemyIndex, Vector2 initialPosition, Vector2 rowColPosition, EnemyType enemyType, Player player)
+        public Enemy(ContentManager content, SpriteBatch spriteBatch, SpriteSheet spriteSheet, EnemyGroup enemyGroup, int enemyIndex, Vector2 initialPosition, Vector2 rowColPosition, EnemyType enemyType, Player player, BunkerGroup bunkerGroup)
         {
 
             this.content = content;
@@ -93,7 +93,7 @@ namespace SharpInvaders.Entities
             NextBulletFireTime = DateTime.Now.AddSeconds(this.random.Next(5, 10));
 
             sfxFire = this.content.Load<SoundEffect>("laserEnemy");
-            enemyBulletGroup = new EnemyBulletGroup(this.content, this, this.playerRef);
+            enemyBulletGroup = new EnemyBulletGroup(this.content, this, this.playerRef, bunkerGroup);
 
         }
 

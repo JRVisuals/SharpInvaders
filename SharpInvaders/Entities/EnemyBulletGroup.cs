@@ -20,8 +20,9 @@ namespace SharpInvaders
         private ContentManager content;
         private Enemy enemyRef;
         public Player playerRef;
+        private BunkerGroup BunkerGroup;
 
-        public EnemyBulletGroup(ContentManager contentManager, Enemy enemy, Player player)
+        public EnemyBulletGroup(ContentManager contentManager, Enemy enemy, Player player, BunkerGroup bunkerGroup)
         {
             this.content = contentManager;
             this.bullets = new List<EnemyBullet>(Global.ENEMY_BULLETMAX);
@@ -32,7 +33,7 @@ namespace SharpInvaders
             // create finite pool
             for (int i = 0; i < Global.ENEMY_BULLETMAX; i++)
             {
-                var b = new EnemyBullet(this.content, this.enemyRef, i, this);
+                var b = new EnemyBullet(this.content, this.enemyRef, i, this, bunkerGroup);
                 b.isContainedX = false;
                 b.isContainedY = false;
                 b.Velocity.X = 0;
