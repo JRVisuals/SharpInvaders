@@ -75,6 +75,28 @@ Using `TexturePackerLoader` to help keep my old Aseprite and TexturePacker workf
     ```
 * These have been used to create a more robust and specific to my needs `AnimatedSprite.cs` 
 
+* Due to some issues with the `SpriteSheetLoader.cs` I'm bypassing the default behavior and workflow
+  * Once a sheet is exported the `.png` file can be dropped into the `Content` directory and added to `Content.mgcb` manually
+  ```
+    #begin tpSpriteSheet.png
+    /importer:TextureImporter
+    /processor:TextureProcessor
+    /processorParam:ColorKeyColor=255,0,255,255
+    /processorParam:ColorKeyEnabled=True
+    /processorParam:GenerateMipmaps=False
+    /processorParam:PremultiplyAlpha=True
+    /processorParam:ResizeToPowerOfTwo=False
+    /processorParam:MakeSquare=False
+    /processorParam:TextureFormat=Color
+    /build:tpSpriteSheet.png
+  ```
+  * The `.txt` file is another thing altogether. I've created a `Constants.Assets.SPRITESHEET_DATA` and pulled the pertinent lines out as an array. This is what the `SpriteSheetLoader` ultimately wants from the text file. Will loop back another time make this more dynamic. The end results are something like:
+  ```
+    "EnemyEyes/idle/0;0;35;136;31;32;32;32;0;0",
+    "EnemyEyes/idle/1;0;1;1;32;32;32;32;0;0",
+    "EnemyEyes/idle/2;0;33;203;30;31;32;32;0;-0.03225806451612903",
+  ```
+
 
 ### Using the Generated Spritesheeets
 
