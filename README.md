@@ -21,7 +21,11 @@ This is a sandbox for me to learn C# and the Monogame (formerly Microsoft XNA) f
 
 ### Bundle
 
-* TBD
+* [Packaging Games](https://docs.monogame.net/articles/packaging_games.html) on Monogame.net 
+    * Mac
+        * `dotnet publish -c Release -r osx-x64 /p:SingleFilePublish=true /p:PublishReadyToRun=false /p:TieredCompilation=false --self-contained`
+    * Win
+        * `dotnet publish -c Release -r win-x64 /p:PublishReadyToRun=false /p:TieredCompilation=false --self-contained`
 
 
 ## Setup

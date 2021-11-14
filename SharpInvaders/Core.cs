@@ -105,7 +105,7 @@ namespace SharpInvaders
             logo.Position = new Vector2(Global.GAME_WIDTH / 2, 50);
 
             var spriteSheetLoader = new SpriteSheetLoader(Content, GraphicsDevice);
-            tpSpriteSheet = spriteSheetLoader.Load("tpSpriteSheet.png");
+            tpSpriteSheet = spriteSheetLoader.Load("tpSpriteSheet", "tpSpriteSheet.png", Content);
 
             this.enemyGroup = new EnemyGroup(Content, spriteBatch, tpSpriteSheet, this.player, this.bunkerGroup);
 

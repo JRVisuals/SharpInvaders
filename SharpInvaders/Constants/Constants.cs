@@ -1,4 +1,4 @@
-
+using System.Collections.Generic;
 namespace SharpInvaders.Constants
 {
     public static class Global
@@ -47,4 +47,32 @@ namespace SharpInvaders.Constants
         public const float VOLUME_GLOBAL = 0.5f;
     }
 
+    public static class Assets
+    {
+        public static readonly string[] SPRITESHEET_DATA = new string[] {
+            "EnemyEyes/idle/0;0;137;1;31;32;32;32;0;0",
+            "EnemyEyes/idle/1;0;1;1;32;32;32;32;0;0",
+            "EnemyEyes/idle/2;0;185;67;30;31;32;32;0;-0.03225806451612903",
+            "EnemyEyes/idle/3;0;69;69;29;29;32;32;-0.034482758620689655;-0.06896551724137931",
+            "EnemyEyes/idle/4;0;203;1;30;31;32;32;0;0",
+            "EnemyEyes/pop/0;0;170;1;31;31;32;32;-0.03225806451612903;0",
+            "EnemyEyes/pop/1;0;1;35;32;32;32;32;0;0",
+            "EnemyEyes/pop/2;0;35;1;32;32;32;32;0;0",
+            "EnemyEyes/pop/3;0;35;35;32;32;32;32;0;0",
+            "EnemyEyes/pop/4;0;1;69;32;28;32;32;0;-0.14285714285714285",
+            "EnemyEyes/pop/5;0;131;69;25;29;32;32;-0.08;-0.10344827586206896",
+            "EnemyPinks/idle/0;0;137;35;31;32;32;32;0;0",
+            "EnemyPinks/idle/1;0;69;1;32;32;32;32;0;0",
+            "EnemyPinks/idle/2;0;203;34;30;31;32;32;0;-0.03225806451612903",
+            "EnemyPinks/idle/3;0;100;69;29;29;32;32;-0.034482758620689655;-0.06896551724137931",
+            "EnemyPinks/idle/4;0;217;67;30;31;32;32;0;0",
+            "EnemyPinks/pop/0;0;170;34;31;31;32;32;-0.03225806451612903;0",
+            "EnemyPinks/pop/1;0;69;35;32;32;32;32;0;0",
+            "EnemyPinks/pop/2;0;103;1;32;32;32;32;0;0",
+            "EnemyPinks/pop/3;0;103;35;32;32;32;32;0;0",
+            "EnemyPinks/pop/4;0;35;69;32;28;32;32;0;-0.14285714285714285",
+            "EnemyPinks/pop/5;0;158;69;25;29;32;32;-0.08;-0.10344827586206896",
+        };
+
+    }
 }

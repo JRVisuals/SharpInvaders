@@ -1,4 +1,5 @@
-﻿namespace TexturePackerLoader
+﻿using SharpInvaders.Constants;
+namespace TexturePackerLoader
 {
     using System;
     using System.Collections.Generic;
@@ -23,31 +24,35 @@
             this.graphicsDevice = graphicsDevice;
         }
 
-        public SpriteSheet MultiLoad(string imageResourceFormat, int numSheets)
+        public SpriteSheet MultiLoad(string justName, string imageResourceFormat, int numSheets)
         {
             SpriteSheet result = new SpriteSheet();
             for (int i = 0; i < numSheets; i++)
             {
                 string imageResource = string.Format(imageResourceFormat, i);
 
-                SpriteSheet tmp = Load(imageResource);
+                SpriteSheet tmp = Load(justName, imageResource, contentManager);
                 result.Add(tmp);
             }
             return result;
         }
 
 
-        public SpriteSheet Load(string imageResource)
+        public SpriteSheet Load(string justName, string imageResource, ContentManager contentManager)
         {
             var imageFile = Path.Combine(contentManager.RootDirectory, imageResource);
-            var dataFile = Path.ChangeExtension(imageFile, "txt");
 
-            FileStream fileStream = new FileStream(imageFile, FileMode.Open);
-            var texture = Texture2D.FromStream(graphicsDevice, fileStream);
-            fileStream.Dispose();
+            // var dataFile = Path.ChangeExtension(imageFile, "txt");
+            // var dataFile = Path.Combine(contentManager.RootDirectory, $"{justName}.txt");
 
 
-            var dataFileLines = ReadDataFile(dataFile);
+            var texture = contentManager.Load<Texture2D>(justName);
+            Console.WriteLine(texture);
+
+
+            // var dataFileLines = ReadDataFile(dataFile);
+            var dataFileLines = Assets.SPRITESHEET_DATA;
+            Console.WriteLine(dataFileLines);
 
             var sheet = new SpriteSheet();
 
@@ -62,7 +67,7 @@
                     throw new InvalidDataException("Incorrect format data in spritesheet data file");
                 }
 
-                var isRotated = int.Parse (cols [1]) == 1;
+                var isRotated = int.Parse(cols[1]) == 1;
                 var name = cols[0];
                 var sourceRectangle = new Rectangle(
                     int.Parse(cols[2]),
@@ -110,7 +115,7 @@
 			}
 		}
 #else
-        private string[] ReadDataFile(string dataFile) 
+        private string[] ReadDataFile(string dataFile)
         {
             return File.ReadAllLines(dataFile);
         }

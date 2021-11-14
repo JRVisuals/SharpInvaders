@@ -27,20 +27,6 @@
 /processorParam:TextureFormat=Compressed
 /build:Atari.spritefont
 
-
-#begin tpSpriteSheet.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:tpSpriteSheet.png
-
-
 #begin blackBox.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -52,6 +38,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:blackBox.png
+
+#begin boom.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:boom.ogg
 
 #begin bunker1.png
 /importer:TextureImporter
@@ -101,6 +93,18 @@
 /processorParam:Quality=Best
 /build:dryfire.ogg
 
+#begin enemyBullet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:enemyBullet.png
+
 #begin ground.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -124,18 +128,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:groundHighres.png
-
-#begin playerdeath.ogg
-/importer:OggImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:playerdeath.ogg
-
-#begin boom.ogg
-/importer:OggImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:boom.ogg
 
 #begin laser.ogg
 /importer:OggImporter
@@ -167,18 +159,6 @@
 /processorParam:TextureFormat=Color
 /build:logo.png
 
-#begin enemyBullet.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:enemyBullet.png
-
 #begin playerBullet.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -190,6 +170,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:playerBullet.png
+
+#begin playerdeath.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:playerdeath.ogg
 
 #begin playerTank.png
 /importer:TextureImporter
@@ -220,12 +206,6 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:reload.ogg
-
-#begin squish.ogg
-/importer:OggImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:squish.ogg
 
 #begin smallPuff1.png
 /importer:TextureImporter
@@ -262,4 +242,23 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:smallPuff3.png
+
+#begin squish.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:squish.ogg
+
+#begin tpSpriteSheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:tpSpriteSheet.png
+
 
