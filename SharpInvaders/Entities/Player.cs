@@ -73,8 +73,6 @@ namespace SharpInvaders
             Velocity.X = 0;
             this.Opacity = 0.25f;
 
-
-
             var s = new PlayerSmokePuff(Content, this, new Vector2(this.Position.X, this.Position.Y - 32));
             Smokes.Add(s);
             Task.Delay(100).ContinueWith((task) =>
@@ -83,7 +81,13 @@ namespace SharpInvaders
                 Smokes.Add(s1);
             });
 
-            if (coreRef.PlayerLives > -1) Task.Delay(Global.PLAYER_DEAD_MS).ContinueWith((task) => Respawn());
+            if (coreRef.PlayerLives > -1) { Task.Delay(Global.PLAYER_DEAD_MS).ContinueWith((task) => Respawn()); }
+            else
+            {
+                Task.Delay(Global.PLAYER_DEAD_MS).ContinueWith((task) => coreRef.GameOver());
+
+            }
+
         }
 
         public void Respawn()

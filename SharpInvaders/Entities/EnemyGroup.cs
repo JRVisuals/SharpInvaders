@@ -153,9 +153,55 @@ namespace SharpInvaders
 
         }
 
+        public void UpdateMenu(GameTime gameTime)
+        {
+
+
+            // Check edges to adjust 
+            float xMin = 0;
+            float xMax = Global.GAME_WIDTH - 32;
+
+
+            var tempCount = 0;
+            var edgeChecked = false;
+            foreach (var e in Enemies)
+            {
+                if (e.isHittable)
+                {
+                    tempCount++;
+                    // Check edges
+                    var eaX = e.AnimatedSprite.Position.X;
+                    if (eaX > xMax && !edgeChecked) { edgeChecked = true; GroupHitEdge(-1); }
+                    if (eaX < xMin && !edgeChecked) { edgeChecked = true; GroupHitEdge(1); }
+                }
+
+            }
+            this.countAlive = tempCount;
+
+            if (this.countAlive == 0)
+            {
+                ReSpawn(gameTime);
+                return;
+            }
+
+            if (this.countAlive < (this.totalColumns * this.totalRows) / 2) this.xSpeed = 1.0f;
+            if (this.countAlive < (this.totalColumns * this.totalRows) / 4) this.xSpeed = 1.5f;
+            if (this.countAlive == 1) this.xSpeed = 3.0f;
+
+
+
+            foreach (var e in Enemies) { e.UpdateMenu(gameTime, Position); }
+
+        }
+
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             foreach (var e in Enemies) { e.Draw(gameTime, spriteBatch); }
+        }
+
+        public void DrawMenu(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            foreach (var e in Enemies) { e.DrawMenu(gameTime, spriteBatch); }
         }
 
 

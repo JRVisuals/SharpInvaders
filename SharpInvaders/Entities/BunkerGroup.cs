@@ -24,6 +24,15 @@ namespace SharpInvaders
             }
         }
 
+        public void Respawn()
+        {
+            foreach (var b in Bunkers)
+            {
+                b.Respawn();
+            }
+
+        }
+
         public void Update(GameTime gameTime)
         {
 

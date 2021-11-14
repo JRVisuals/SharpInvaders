@@ -39,6 +39,7 @@ namespace SharpInvaders.Entities
         public Boolean isActive;
         public EnemyType enemyType;
         public Player playerRef;
+        public BunkerGroup bunkerGroupRef;
 
         public enum EnemyType
         {
@@ -65,7 +66,7 @@ namespace SharpInvaders.Entities
             this.EnemyGroup = enemyGroup;
             this.EnemyIndex = enemyIndex;
             this.playerRef = player;
-
+            this.bunkerGroupRef = bunkerGroup;
             this.enemyType = enemyType;
 
             this.random = new Random();
@@ -122,6 +123,11 @@ namespace SharpInvaders.Entities
 
         public void Respawn(GameTime gameTime)
         {
+
+            NextBulletFireTime = DateTime.Now.AddSeconds(this.random.Next(5, 10));
+            this.enemyBulletGroup = null;
+            this.enemyBulletGroup = new EnemyBulletGroup(this.content, this, this.playerRef, this.bunkerGroupRef);
+
             this.Position = InitialPosition;
 
             var Anim = this.AnimatedSprite;
@@ -195,12 +201,39 @@ namespace SharpInvaders.Entities
 
         }
 
+        public void UpdateMenu(GameTime gameTime, Vector2 virtualPosition)
+        {
+
+
+            if (this.isHittable)
+            {
+
+                //new Vector2(15 + (positionX * (col) + positionX / 2), startY + (row * rowGap));
+
+                this.AnimatedSprite.Position.X = this.InitialPosition.X + virtualPosition.X;
+                this.AnimatedSprite.Position.Y = this.InitialPosition.Y + virtualPosition.Y;
+
+            }
+
+            this.AnimatedSprite.Update(gameTime);
+
+        }
+
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             enemyBulletGroup.Draw(gameTime, spriteBatch);
             AnimatedSprite<EnemyAnim> Anim = this.AnimatedSprite;
             if (Anim.CurrentAnimationSequence == Anim.Animations[EnemyAnim.Pop] && Anim.CurrentFrame > 4) return;
-            this.AnimatedSprite.Draw();
+            Anim.Opacity = 1.0f;
+            Anim.Draw();
+        }
+
+        public void DrawMenu(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+
+            AnimatedSprite<EnemyAnim> Anim = this.AnimatedSprite;
+            if (Anim.CurrentAnimationSequence == Anim.Animations[EnemyAnim.Pop] && Anim.CurrentFrame > 4) return;
+            Anim.DrawMenu();
         }
 
 

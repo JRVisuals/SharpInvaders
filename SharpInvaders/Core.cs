@@ -15,6 +15,13 @@ using SharpInvaders.Processes;
 
 namespace SharpInvaders
 {
+
+    public enum GameState
+    {
+        MainMenu,
+        InGame,
+        GameOver
+    }
     public class Core : Game
     {
         private GraphicsDeviceManager graphics;
@@ -22,8 +29,7 @@ namespace SharpInvaders
         private SpriteSheet tpSpriteSheet;
         private CoreCollisionDetection CoreCollisionDetection;
 
-
-
+        private GameState gameState;
         private BunkerGroup bunkerGroup;
         private EnemyGroup enemyGroup;
 
@@ -37,9 +43,11 @@ namespace SharpInvaders
         public SoundEffect sfxBoom;
         public SoundEffect sfxSquish;
 
-
+        public int PlayerHighScore;
         public int PlayerScore;
         public int PlayerLives;
+
+        private Boolean isResetting;
 
 
         public Core()
@@ -60,18 +68,15 @@ namespace SharpInvaders
 
             Window.Title = "SharpInvaders";
 
+            gameState = GameState.MainMenu;
+
             graphics.PreferredBackBufferWidth = Global.GAME_WIDTH;
             graphics.PreferredBackBufferHeight = Global.GAME_HEIGHT;
             //graphics.IsFullScreen = true;
             graphics.ApplyChanges();
 
-            player = new Player(Content, this);
-            bunkerGroup = new BunkerGroup(Content);
-
             sfxBoom = Content.Load<SoundEffect>("boom");
             sfxSquish = Content.Load<SoundEffect>("squish");
-
-            base.Initialize();
 
             // Temp Joystick debug
             // Console.WriteLine($"gp: {GamePad.GetCapabilities(PlayerIndex.One).IsConnected}");
@@ -82,10 +87,16 @@ namespace SharpInvaders
             var joystickLci = Joystick.LastConnectedIndex;
             var joystickState = Joystick.GetState(joystickLci);
             var isJoystickPresent = joystickLci > -1 && Joystick.GetCapabilities(Joystick.LastConnectedIndex).IsConnected;
-            // Console.WriteLine($"isJoystickPresent: {isJoystickPresent}");
 
+            this.player = new Player(Content, this);
+            this.bunkerGroup = new BunkerGroup(Content);
+
+            this.PlayerHighScore = 0;
             this.PlayerScore = 0;
             this.PlayerLives = Global.PLAYER_START_LIVES - 1;
+
+            this.isResetting = false;
+            base.Initialize();
 
         }
 
@@ -113,16 +124,42 @@ namespace SharpInvaders
 
         }
 
+        public void GameOver()
+        {
+            Console.WriteLine("GAME OVER");
+            this.gameState = GameState.GameOver;
+            this.PlayerLives = -1;
 
+        }
 
+        public void GameStart()
+        {
+
+            Console.WriteLine("GAME START");
+            this.bunkerGroup.Respawn();
+            this.PlayerScore = 0;
+            this.PlayerLives = Global.PLAYER_START_LIVES - 1;
+
+            this.isResetting = true;
+            this.gameState = GameState.InGame;
+
+        }
 
         protected override void Update(GameTime gameTime)
         {
 
-            var deltaTime = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            if (this.isResetting)
+            {
+                Console.WriteLine("RESETTING");
+                this.isResetting = false;
+                this.player.Respawn();
+                this.enemyGroup.ReSpawn(gameTime);
+            }
 
+            var deltaTime = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
 
             var keyboardState = Keyboard.GetState();
             var kbPressLeft = keyboardState.IsKeyDown(Keys.A);
@@ -141,18 +178,41 @@ namespace SharpInvaders
 
             //Console.WriteLine($"jsHatPressLeft: {jsHatPressLeft}  jsHatPressRight: {jsHatPressRight}");
 
-            var isInputControlled = false;
-            if (kbPressLeft || jsHatPressLeft) { this.player.MoveLeft(deltaTime); isInputControlled = true; }
-            if (kbPressRight || jsHatPressRight) { this.player.MoveRight(deltaTime); isInputControlled = true; }
-            if (kbPressFire || kbPressFireAlt || jsButtonPressA) this.player.FireBullet();
+            switch (gameState)
+            {
 
-            player.Update(gameTime, isInputControlled);
+                case GameState.MainMenu: //------------------------ MAIN MENU UPDATE
 
-            enemyGroup.Update(gameTime);
+                    enemyGroup.UpdateMenu(gameTime);
+                    if (kbPressFire || kbPressFireAlt || jsButtonPressA) this.GameStart();
 
-            base.Update(gameTime);
+                    break;
 
-            CoreCollisionDetection.CollisionCheck(gameTime);
+
+                case GameState.InGame: //------------------------ IN GAME UPDATE
+
+                    var isInputControlled = false;
+
+                    if (kbPressLeft || jsHatPressLeft) { this.player.MoveLeft(deltaTime); isInputControlled = true; }
+                    if (kbPressRight || jsHatPressRight) { this.player.MoveRight(deltaTime); isInputControlled = true; }
+                    if (kbPressFire || kbPressFireAlt || jsButtonPressA) this.player.FireBullet();
+
+                    player.Update(gameTime, isInputControlled);
+                    enemyGroup.Update(gameTime);
+                    base.Update(gameTime);
+                    CoreCollisionDetection.CollisionCheck(gameTime);
+
+                    break;
+
+
+                case GameState.GameOver:  //------------------------ GAME OVER UPDATE
+
+                    enemyGroup.UpdateMenu(gameTime);
+                    if (kbPressFire || kbPressFireAlt || jsButtonPressA) this.GameStart();
+
+                    break;
+            }
+
 
         }
 
@@ -165,25 +225,61 @@ namespace SharpInvaders
 
             // Static Stuff
             spriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.AlphaBlend);
-            ground.Draw(gameTime, spriteBatch);
+            ground.Draw(gameTime, spriteBatch
+            );
+
+
+            switch (gameState)
+            {
+
+                case GameState.MainMenu: //------------------------ MAIN MENU DRAW
+
+
+                    bunkerGroup.Draw(gameTime, spriteBatch);
+                    player.Draw(gameTime, spriteBatch);
+                    enemyGroup.DrawMenu(gameTime, spriteBatch);
+
+                    spriteBatch.DrawString(spriteFontAtari, $"WELCOME TO SHARPINVADERS", new Vector2(Global.GAME_WIDTH / 2 - spriteFontAtari.MeasureString("WELCOME TO SHARPINVADERS").X / 2, 300), Color.WhiteSmoke);
+                    spriteBatch.DrawString(spriteFontAtari, $"PRESS FIRE TO BEGIN", new Vector2(Global.GAME_WIDTH / 2 - spriteFontAtari.MeasureString("PRESS FIRE TO BEGIN").X / 2, 325), Color.LimeGreen);
+
+
+                    break;
+
+
+                case GameState.InGame: //------------------------ IN GAME DRAW
+
+                    // Game Stuff
+                    bunkerGroup.Draw(gameTime, spriteBatch);
+                    player.Draw(gameTime, spriteBatch);
+                    enemyGroup.Draw(gameTime, spriteBatch);
+
+                    break;
+
+
+                case GameState.GameOver:  //------------------------ GAME OVER DRAW
+
+
+                    bunkerGroup.Draw(gameTime, spriteBatch);
+                    player.Draw(gameTime, spriteBatch);
+                    enemyGroup.DrawMenu(gameTime, spriteBatch);
+
+                    spriteBatch.DrawString(spriteFontAtari, $"GAME OVER", new Vector2(Global.GAME_WIDTH / 2 - spriteFontAtari.MeasureString("GAME OVER").X / 2, 300), Color.WhiteSmoke);
+                    spriteBatch.DrawString(spriteFontAtari, $"PRESS FIRE TO PLAY AGAIN", new Vector2(Global.GAME_WIDTH / 2 - spriteFontAtari.MeasureString("PRESS FIRE TO PLAY AGAIN").X / 2, 325), Color.LimeGreen);
+
+
+                    break;
+            }
+
             logo.Draw(gameTime, spriteBatch);
-            //spriteBatch.End();
-
-
-            // Game Stuff
-            // spriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.AlphaBlend);
-            bunkerGroup.Draw(gameTime, spriteBatch);
-            player.Draw(gameTime, spriteBatch);
-            enemyGroup.Draw(gameTime, spriteBatch);
-
             spriteBatch.DrawString(spriteFontAtari, $"SCORE", new Vector2(10, 10), Color.Gray);
             spriteBatch.DrawString(spriteFontAtari, $"{PlayerScore}", new Vector2(10, 35), Color.White);
 
             spriteBatch.DrawString(spriteFontAtari, $"HIGHSCORE", new Vector2(Global.GAME_WIDTH / 2 - spriteFontAtari.MeasureString("HIGHSCORE").X / 2, 10), Color.Gray);
-            spriteBatch.DrawString(spriteFontAtari, $"{PlayerScore}", new Vector2(Global.GAME_WIDTH / 2 - spriteFontAtari.MeasureString($"{PlayerScore}").X / 2, 35), Color.White);
+            spriteBatch.DrawString(spriteFontAtari, $"{PlayerHighScore}", new Vector2(Global.GAME_WIDTH / 2 - spriteFontAtari.MeasureString($"{PlayerHighScore}").X / 2, 35), Color.White);
 
             spriteBatch.DrawString(spriteFontAtari, $"LIVES", new Vector2(Global.GAME_WIDTH - 115, 10), Color.Gray);
             spriteBatch.DrawString(spriteFontAtari, $"{PlayerLives + 1}", new Vector2(Global.GAME_WIDTH - 33, 35), Color.White);
+
 
 
             spriteBatch.End();

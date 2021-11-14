@@ -15,13 +15,36 @@ namespace SharpInvaders
     {
 
 
+        private Color[] TextureBackup;
+
+
+
         public Bunker(ContentManager Content, Texture2D tex, float X)
         {
 
             Texture = tex;
+
+            // Back up texture data for respawn
+            this.TextureBackup = new Color[Texture.Width * Texture.Height];
+            Color[] data = new Color[Texture.Width * Texture.Height];
+            Texture.GetData(data);
+            for (int i = 0; i < data.Length; i++)
+            { this.TextureBackup[i] = data[i]; }
+
             Position = new Vector2(X, Global.GAME_HEIGHT - 115);
             Origin = new Vector2(32, 64);
             Velocity = new Vector2(0, 0);
+
+        }
+
+        public void Respawn()
+        {
+
+            Color[] data = new Color[Texture.Width * Texture.Height];
+            Texture.GetData(data);
+            for (int i = 0; i < data.Length; i++)
+            { data[i] = this.TextureBackup[i]; }
+            Texture.SetData(data);
 
         }
 
@@ -49,7 +72,7 @@ namespace SharpInvaders
                 if ((row >= rs && row <= re) &&
                     (col >= cs && col <= ce))
                 {
-                    if (data[i] != clear)
+                    if (data[i].A != 0)
                     {
                         isSolid = true;
                         data[i] = clear;

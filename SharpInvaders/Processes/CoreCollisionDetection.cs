@@ -56,6 +56,9 @@ namespace SharpInvaders.Processes
                         var points = 0;
                         switch (e.enemyType)
                         {
+                            case (Enemy.EnemyType.Green):
+                                points = 25;
+                                break;
                             case (Enemy.EnemyType.Blue):
                                 points = 5;
                                 break;
@@ -67,6 +70,7 @@ namespace SharpInvaders.Processes
                                 break;
                         }
                         Game.PlayerScore += points;
+                        if (Game.PlayerScore > Game.PlayerHighScore) Game.PlayerHighScore = Game.PlayerScore;
                         this.enemyGroup.KillEnemy(e.EnemyIndex, gameTime);
                         this.playerBulletGroup.DequeueBullet(b.BulletIndex);
                         Game.sfxSquish.Play(Global.VOLUME_GLOBAL, 0.0f, 0.0f);

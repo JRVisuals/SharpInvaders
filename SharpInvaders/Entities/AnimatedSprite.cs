@@ -127,6 +127,37 @@ namespace SharpInvaders.Entities
                 effects: SpriteEffects.None,
                 layerDepth: 0.0f
             );
+
+        }
+
+        public void DrawMenu()
+        {
+
+            if (!this.isActive) return;
+
+            // Supports rotated sprites in spritesheets
+            if (this.CurrentSprite.IsRotated)
+            {
+                this.Rotation -= ClockwiseNinetyDegreeRotation;
+                switch (this.CurrentSpriteEffects)
+                {
+                    case SpriteEffects.FlipHorizontally: this.CurrentSpriteEffects = SpriteEffects.FlipVertically; break;
+                    case SpriteEffects.FlipVertically: this.CurrentSpriteEffects = SpriteEffects.FlipHorizontally; break;
+                }
+            }
+
+            spriteBatch.Draw(
+                texture: this.CurrentSprite.Texture,
+                position: this.Position,
+                sourceRectangle: this.CurrentSprite.SourceRectangle,
+                color: new Color(0, 0, 0, 100),
+                rotation: this.Rotation,
+                origin: this.Origin,
+                scale: this.Scale,
+                effects: SpriteEffects.None,
+                layerDepth: 0.0f
+            );
+
         }
 
 

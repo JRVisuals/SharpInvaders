@@ -17,7 +17,7 @@ namespace SharpInvaders.Constants
         public const int PLAYER_BULLETMAX = 5;
         public const float PLAYER_ACCEL_X = 2f;
         public const float PLAYER_MAXVEL_X = 450f;
-        public const float PLAYER_FRICMULT_X = 7f;
+        public const float PLAYER_FRICMULT_X = 10f;
         public const float PLAYER_BULLINIT_Y = (float)(-GAME_HEIGHT * 0.5);
         public const double PLAYER_BULLETDELAY = 0.15;
         public const int PLAYER_OFFSET_Y = 18;
@@ -38,7 +38,7 @@ namespace SharpInvaders.Constants
         public const double ENEMY_BULLETDELAY = 5.0;
 
         public const int ENEMY_DROPY = 8;
-        public const int ENEMY_MAXY = 250;
+        public const int ENEMY_MAXY = 285;
 
         public const float ENEMY_SPEEDX = 0.5f;
         public const float ENEMY_SPEEDX_MAX = 0.5f;
