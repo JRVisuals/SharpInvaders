@@ -4,7 +4,7 @@
  * Contains references to each image within the sprite sheet.
  *
  * https://www.codeandweb.com/texturepacker
- * $TexturePacker:SmartUpdate:659c8d20e5c163b1e707fc9a23f8703d:727c3ac188fff3901ad8715f9e856a23:af633d31c3393ae9fd430138abbd6857$
+ * $TexturePacker:SmartUpdate:56a2765f2c7afa3d39d593a12842b4bd:773c50afdd525f60a2b0d734bc5d0379:af633d31c3393ae9fd430138abbd6857$
  *
  */
 namespace TexturePackerMonoGameDefinitions
@@ -33,5 +33,16 @@ namespace TexturePackerMonoGameDefinitions
 		public const string EnemyPinks_pop_3 = "EnemyPinks/pop/3";
 		public const string EnemyPinks_pop_4 = "EnemyPinks/pop/4";
 		public const string EnemyPinks_pop_5 = "EnemyPinks/pop/5";
+		public const string EnemySquid_idle_0 = "EnemySquid/idle/0";
+		public const string EnemySquid_idle_1 = "EnemySquid/idle/1";
+		public const string EnemySquid_idle_2 = "EnemySquid/idle/2";
+		public const string EnemySquid_idle_3 = "EnemySquid/idle/3";
+		public const string EnemySquid_idle_4 = "EnemySquid/idle/4";
+		public const string EnemySquid_pop_0 = "EnemySquid/pop/0";
+		public const string EnemySquid_pop_1 = "EnemySquid/pop/1";
+		public const string EnemySquid_pop_2 = "EnemySquid/pop/2";
+		public const string EnemySquid_pop_3 = "EnemySquid/pop/3";
+		public const string EnemySquid_pop_4 = "EnemySquid/pop/4";
+		public const string EnemySquid_pop_5 = "EnemySquid/pop/5";
 	}
 }

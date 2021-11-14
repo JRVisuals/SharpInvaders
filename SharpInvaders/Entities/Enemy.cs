@@ -42,6 +42,7 @@ namespace SharpInvaders.Entities
 
         public enum EnemyType
         {
+            Green,
             Blue,
             Pink,
         }
@@ -218,6 +219,32 @@ namespace SharpInvaders.Entities
 
             switch (enemyType)
             {
+                case EnemyType.Green:
+
+                    idleFrames = new[] {
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemySquid_idle_0,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemySquid_idle_1,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemySquid_idle_2,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemySquid_idle_3,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemySquid_idle_4,
+                    };
+
+                    popFrames = new[] {
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemySquid_pop_0,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemySquid_pop_1,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemySquid_pop_2,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemySquid_pop_3,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemySquid_pop_4,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemySquid_pop_5,
+                    };
+
+                    idle = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 10f), SpriteEffects.None, idleFrames);
+                    idleFast = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 15f), SpriteEffects.None, idleFrames);
+                    pop = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 15f), SpriteEffects.None, popFrames);
+
+                    break;
+
+
                 case EnemyType.Blue:
 
                     idleFrames = new[] {

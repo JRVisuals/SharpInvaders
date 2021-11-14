@@ -67,7 +67,7 @@ namespace SharpInvaders
                 {
                     var initialPosition = new Vector2(15 + (positionX * (col) + positionX / 2), startY + (row * rowGap));
                     var rowColPosition = new Vector2(row, col);
-                    var enemyType = row < 2 ? Enemy.EnemyType.Pink : Enemy.EnemyType.Blue;
+                    var enemyType = row < 3 ? row == 0 ? Enemy.EnemyType.Green : Enemy.EnemyType.Pink : Enemy.EnemyType.Blue;
                     var e = new Enemy(
                         this.content,
                         spriteBatch,

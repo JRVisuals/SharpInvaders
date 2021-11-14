@@ -24,33 +24,27 @@ namespace TexturePackerLoader
             this.graphicsDevice = graphicsDevice;
         }
 
-        public SpriteSheet MultiLoad(string justName, string imageResourceFormat, int numSheets)
+        public SpriteSheet MultiLoad(string imageResourceFormat, int numSheets)
         {
             SpriteSheet result = new SpriteSheet();
             for (int i = 0; i < numSheets; i++)
             {
                 string imageResource = string.Format(imageResourceFormat, i);
 
-                SpriteSheet tmp = Load(justName, imageResource, contentManager);
+                SpriteSheet tmp = Load(imageResource, contentManager);
                 result.Add(tmp);
             }
             return result;
         }
 
 
-        public SpriteSheet Load(string justName, string imageResource, ContentManager contentManager)
+        public SpriteSheet Load(string imageResource, ContentManager contentManager)
         {
-            var imageFile = Path.Combine(contentManager.RootDirectory, imageResource);
 
-            // var dataFile = Path.ChangeExtension(imageFile, "txt");
-            // var dataFile = Path.Combine(contentManager.RootDirectory, $"{justName}.txt");
-
-
-            var texture = contentManager.Load<Texture2D>(justName);
-            Console.WriteLine(texture);
-
-
-            // var dataFileLines = ReadDataFile(dataFile);
+            // This texture load and dataFileLines implementation avoids a pathing bug where for some reason the file stream was attempting to load from my /User directory rather than relative to the executable
+            // Keep in mind that sprite sheet data has to be converted manually to an array in the Constants.ts file
+            // If TexturePackerLoader is ever updated, we need to be careful here.
+            var texture = contentManager.Load<Texture2D>(imageResource);
             var dataFileLines = Assets.SPRITESHEET_DATA;
             Console.WriteLine(dataFileLines);
 
