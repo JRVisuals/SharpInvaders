@@ -29,18 +29,22 @@ namespace SharpInvaders
         public Player playerRef;
         public EnemySaucer saucerRef;
         public EnemyGroup enemyGroupRef;
+        public Core gameRef;
 
         private DateTime nextSpawnCheckTime;
         private Random random;
 
-        public EnemySaucerMind(EnemySaucer saucer, Player player, EnemyGroup enemyGroup)
+        public EnemySaucerMind(
+            Core game, EnemySaucer saucer, Player player, EnemyGroup enemyGroup)
         {
+
             this.startY = Global.ENEMYSAUCER_STARTY;
             this.xSpeed = Global.ENEMYSAUCER_SPEEDX;
             this.xSpeedMax = Global.ENEMYSAUCER_SPEEDX_MAX;
 
             this.xDir = 1;
 
+            this.gameRef = game;
             this.saucerRef = saucer;
             this.playerRef = player;
             this.enemyGroupRef = enemyGroup;
@@ -78,8 +82,11 @@ namespace SharpInvaders
                 // Handle movement out here
                 if (this.saucerRef.isHittable)
                 {
-                    Anim.Position.X -= this.saucerRef.moveSpeed;
-                    if (Anim.Position.X < -64)
+                    var waveSpeed = (float)(this.gameRef.PlayerWave * 0.5);
+                    var saucerSpeed = this.xSpeed + waveSpeed > this.xSpeedMax ? this.xSpeedMax : this.xSpeed + waveSpeed;
+                    Anim.Position.X -= saucerSpeed;
+                    this.saucerRef.sfxLoop.Pitch = (float)(saucerSpeed * 0.1);
+                    if (Anim.Position.X < -256)
                     {
                         this.saucerRef.sfxLoop.Stop();
                         this.saucerRef.isActive = false;

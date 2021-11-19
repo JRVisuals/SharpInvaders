@@ -45,8 +45,8 @@ namespace SharpInvaders.Constants
 
         // Enemy Saucer
         public const int ENEMYSAUCER_STARTY = 80;
-        public const float ENEMYSAUCER_SPEEDX = 1.0f;
-        public const float ENEMYSAUCER_SPEEDX_MAX = 4.0f;
+        public const float ENEMYSAUCER_SPEEDX = 0.5f;
+        public const float ENEMYSAUCER_SPEEDX_MAX = 3.0f;
 
         // Audio
         public const float VOLUME_GLOBAL = 0.5f;

@@ -54,7 +54,7 @@ namespace SharpInvaders.Processes
                         bX > eX - eW / 2 && bX < eX + eW / 2)
                     {
 
-                        var points = 250;
+                        var points = 250 + ((this.Game.PlayerWave - 1) * 25);
 
                         Game.AddScore(points);
 

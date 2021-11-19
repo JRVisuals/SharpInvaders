@@ -136,7 +136,7 @@ namespace SharpInvaders
 
             this.enemyGroup = new EnemyGroup(this, Content, spriteBatch, tpSpriteSheet, this.player, this.bunkerGroup);
             this.enemySaucer = new EnemySaucer(Content, spriteBatch, tpSpriteSheet, new Vector2(x: Global.GAME_WIDTH + 10, y: Global.ENEMYSAUCER_STARTY), this.player);
-            this.enemySaucerMind = new EnemySaucerMind(this.enemySaucer, this.player, this.enemyGroup);
+            this.enemySaucerMind = new EnemySaucerMind(this, this.enemySaucer, this.player, this.enemyGroup);
 
 
             CoreCollisionDetection = new CoreCollisionDetection(this, this.player.playerBulletGroup, this.bunkerGroup, this.enemyGroup, this.enemySaucerMind);
