@@ -44,8 +44,8 @@ namespace SharpInvaders.Processes
                 if (saucerRefLocal.AnimatedSprite.isActive && saucerRefLocal.isHittable)
                 {
 
-                    var eW = saucerRefLocal.SpriteWidth;
-                    var eH = saucerRefLocal.SpriteHeight;
+                    var eW = saucerRefLocal.spriteWidth;
+                    var eH = saucerRefLocal.spriteHeight;
                     var eX = saucerRefLocal.AnimatedSprite.Position.X + eW / 2;
                     var eY = saucerRefLocal.AnimatedSprite.Position.Y + eH / 2;
 
@@ -56,8 +56,8 @@ namespace SharpInvaders.Processes
 
                         var points = 250;
 
-                        Game.PlayerScore += points;
-                        if (Game.PlayerScore > Game.PlayerHighScore) Game.PlayerHighScore = Game.PlayerScore;
+                        Game.AddScore(points);
+
                         this.enemySaucerMind.KillEnemy(gameTime);
                         this.playerBulletGroup.DequeueBullet(b.BulletIndex);
                         Game.sfxSquish.Play(Global.VOLUME_GLOBAL, 0.0f, 0.0f);
@@ -98,8 +98,9 @@ namespace SharpInvaders.Processes
                                 points = 1;
                                 break;
                         }
-                        Game.PlayerScore += points;
-                        if (Game.PlayerScore > Game.PlayerHighScore) Game.PlayerHighScore = Game.PlayerScore;
+
+                        Game.AddScore(points);
+
                         this.enemyGroup.KillEnemy(e.EnemyIndex, gameTime);
                         this.playerBulletGroup.DequeueBullet(b.BulletIndex);
                         Game.sfxSquish.Play(Global.VOLUME_GLOBAL, 0.0f, 0.0f);

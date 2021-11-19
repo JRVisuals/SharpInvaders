@@ -249,6 +249,36 @@
 /processorParam:Quality=Best
 /build:squish.ogg
 
+#begin saucerloop.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:saucerloop.ogg
+
+#begin saucerDie.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:saucerDie.ogg
+
+#begin freeguy.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:freeguy.ogg
+
+#begin bgloop.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:bgloop.ogg
+
+#begin waveup.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:waveup.ogg
+
 #begin tpSpriteSheet.png
 /importer:TextureImporter
 /processor:TextureProcessor

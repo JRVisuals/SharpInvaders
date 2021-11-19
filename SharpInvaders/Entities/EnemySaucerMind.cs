@@ -53,7 +53,7 @@ namespace SharpInvaders
         public void KillEnemy(GameTime gameTime)
         {
             this.saucerRef.Die(gameTime);
-            this.nextSpawnCheckTime = DateTime.Now.AddSeconds(3);
+            this.nextSpawnCheckTime = DateTime.Now.AddSeconds(this.random.Next(8, 12));
         }
 
         private double getRandomSeconds()
@@ -81,6 +81,7 @@ namespace SharpInvaders
                     Anim.Position.X -= this.saucerRef.moveSpeed;
                     if (Anim.Position.X < -64)
                     {
+                        this.saucerRef.sfxLoop.Stop();
                         this.saucerRef.isActive = false;
                         this.nextSpawnCheckTime = DateTime.Now.AddSeconds(this.getRandomSeconds());
                     }
@@ -99,7 +100,6 @@ namespace SharpInvaders
             {
                 if (DateTime.Now > nextSpawnCheckTime)
                 {
-                    Console.WriteLine("respawn at mind");
                     this.saucerRef.Respawn(gameTime);
                 }
             }

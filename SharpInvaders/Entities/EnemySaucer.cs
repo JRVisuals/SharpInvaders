@@ -18,20 +18,22 @@ namespace SharpInvaders.Entities
 
         private ContentManager content;
 
-        public SpriteBatch SpriteBatch;
-        public SpriteSheet SpriteSheet;
+        public SpriteBatch spriteBatch;
+        public SpriteSheet spriteSheet;
 
-        public Vector2 InitialPosition;
-        public Vector2 Position;
+        public Vector2 initialPosition;
+        public Vector2 position;
 
 
-        public float SpriteHeight;
-        public float SpriteWidth;
+        public float spriteHeight;
+        public float spriteWidth;
 
         public bool isHittable;
 
 
-        public SoundEffect sfxSaucer;
+        private SoundEffect sfxSaucerDie;
+        private SoundEffect sfxSaucer;
+        public SoundEffectInstance sfxLoop;
         public int moveSpeed;
 
         private Random random;
@@ -53,14 +55,14 @@ namespace SharpInvaders.Entities
         {
 
             this.content = content;
-            this.SpriteBatch = spriteBatch;
-            this.SpriteSheet = spriteSheet;
+            this.spriteBatch = spriteBatch;
+            this.spriteSheet = spriteSheet;
 
             this.playerRef = player;
 
             this.random = new Random();
 
-            this.InitialPosition = this.Position = initialPosition;
+            this.initialPosition = this.position = initialPosition;
 
             this.moveSpeed = 1;
 
@@ -72,21 +74,27 @@ namespace SharpInvaders.Entities
             this.AnimatedSprite = new AnimatedSprite<EnemyAnim>(
                 spriteBatch, spriteSheet, this.Animations, this.Animations[EnemyAnim.Idle], false, false, "saucer");
 
-            this.AnimatedSprite.Position = this.Position;
+            this.AnimatedSprite.Position = this.position;
 
             this.AnimatedSprite.CurrentAnimationSequence = this.Animations[EnemyAnim.Idle];
 
             // Used for collision detection
-            this.SpriteHeight = 32;
-            this.SpriteWidth = 64;
+            this.spriteHeight = 32;
+            this.spriteWidth = 64;
 
-            //sfxFire = this.content.Load<SoundEffect>("laserEnemy");
+            this.sfxSaucerDie = this.content.Load<SoundEffect>("saucerDie");
+            this.sfxSaucer = this.content.Load<SoundEffect>("saucerloop");
+            this.sfxLoop = sfxSaucer.CreateInstance();
+            this.sfxLoop.IsLooped = true;
+
 
         }
 
 
         public void Die(GameTime gameTime)
         {
+            this.sfxLoop.Stop();
+            this.sfxSaucerDie.Play();
             var Anim = this.AnimatedSprite;
             Anim.CurrentFrame = 0;
             Anim.CurrentAnimationSequence = this.Animations[EnemySaucer.EnemyAnim.Pop];
@@ -94,39 +102,30 @@ namespace SharpInvaders.Entities
             Anim.previousFrameChangeTime = gameTime.TotalGameTime;
             this.isHittable = false;
             this.isActive = true; // false works but no death anim
-            Task.Delay(1000).ContinueWith((task) => this.isActive = false);
+            Task.Delay(250).ContinueWith((task) => this.isActive = false);
         }
 
         public void Respawn(GameTime gameTime)
         {
-            Console.WriteLine("RESPAWN SAUCER");
-
+            this.sfxLoop.Play();
             this.isHittable = true;
             this.isActive = true;
 
-            this.Position = InitialPosition;
+            this.position = initialPosition;
 
             var Anim = this.AnimatedSprite;
             Anim.CurrentFrame = 0;
             Anim.CurrentAnimationSequence = this.Animations[EnemySaucer.EnemyAnim.Idle];
             Anim.shouldPlayOnceAndDie = false;
-            Anim.Position = this.Position;
+            Anim.Position = this.position;
             Anim.previousFrameChangeTime = gameTime.TotalGameTime;
-
-
-
-            Console.WriteLine(this.Position);
 
         }
 
         public void Update(GameTime gameTime)
         {
-
             if (!this.isActive) return;
-
-            var Anim = this.AnimatedSprite;
-            Anim.Update(gameTime);
-
+            this.AnimatedSprite.Update(gameTime);
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)

@@ -44,10 +44,15 @@ namespace SharpInvaders
 
         public SoundEffect sfxBoom;
         public SoundEffect sfxSquish;
+        public SoundEffect sfxFreeguy;
+        public SoundEffect sfxWaveup;
+        public SoundEffect sfxBgLoop;
+        public SoundEffectInstance bgLoop;
 
         public int PlayerHighScore;
         public int PlayerScore;
         public int PlayerLives;
+        public int PlayerWave;
 
         private Boolean isResetting;
 
@@ -79,6 +84,13 @@ namespace SharpInvaders
 
             sfxBoom = Content.Load<SoundEffect>("boom");
             sfxSquish = Content.Load<SoundEffect>("squish");
+            sfxFreeguy = Content.Load<SoundEffect>("freeguy");
+            sfxWaveup = Content.Load<SoundEffect>("waveup");
+            sfxBgLoop = Content.Load<SoundEffect>("bgloop");
+
+            this.bgLoop = sfxBgLoop.CreateInstance();
+            this.bgLoop.Pitch = -0.25f;
+            this.bgLoop.IsLooped = true;
 
             // Temp Joystick debug
             // Console.WriteLine($"gp: {GamePad.GetCapabilities(PlayerIndex.One).IsConnected}");
@@ -96,6 +108,7 @@ namespace SharpInvaders
             this.PlayerHighScore = 0;
             this.PlayerScore = 0;
             this.PlayerLives = Global.PLAYER_START_LIVES - 1;
+            this.PlayerWave = 0;
 
             this.isResetting = false;
 
@@ -121,7 +134,7 @@ namespace SharpInvaders
             var spriteSheetLoader = new SpriteSheetLoader(Content, GraphicsDevice);
             tpSpriteSheet = spriteSheetLoader.Load("tpSpriteSheet", Content);
 
-            this.enemyGroup = new EnemyGroup(Content, spriteBatch, tpSpriteSheet, this.player, this.bunkerGroup);
+            this.enemyGroup = new EnemyGroup(this, Content, spriteBatch, tpSpriteSheet, this.player, this.bunkerGroup);
             this.enemySaucer = new EnemySaucer(Content, spriteBatch, tpSpriteSheet, new Vector2(x: Global.GAME_WIDTH + 10, y: Global.ENEMYSAUCER_STARTY), this.player);
             this.enemySaucerMind = new EnemySaucerMind(this.enemySaucer, this.player, this.enemyGroup);
 
@@ -130,12 +143,33 @@ namespace SharpInvaders
 
         }
 
+        public void AddScore(int points)
+        {
+            var preScore = this.PlayerScore;
+            this.PlayerScore += points;
+            if (this.PlayerScore > this.PlayerHighScore) this.PlayerHighScore = this.PlayerScore;
+            if (preScore < 5000 && this.PlayerScore >= 5000 || preScore < 10000 && this.PlayerScore >= 10000 || preScore < 20000 && this.PlayerScore >= 20000 || preScore < 50000 && this.PlayerScore >= 50000)
+            {
+                this.PlayerLives += 1;
+                this.sfxFreeguy.Play();
+
+            };
+
+        }
+
+        public void AddWave()
+        {
+            this.PlayerWave += 1;
+            this.sfxWaveup.Play();
+        }
+
         public void GameOver()
         {
             Console.WriteLine("GAME OVER");
             this.gameState = GameState.GameOver;
             this.PlayerLives = -1;
-
+            this.enemySaucer.sfxLoop.Stop();
+            this.bgLoop.Stop();
         }
 
         public void GameStart()
@@ -145,9 +179,11 @@ namespace SharpInvaders
             this.bunkerGroup.Respawn();
             this.PlayerScore = 0;
             this.PlayerLives = Global.PLAYER_START_LIVES - 1;
-
+            this.PlayerWave = 0;
             this.isResetting = true;
             this.gameState = GameState.InGame;
+
+            this.bgLoop.Play();
 
         }
 
@@ -208,6 +244,10 @@ namespace SharpInvaders
                     enemySaucerMind.Update(gameTime);
                     base.Update(gameTime);
                     CoreCollisionDetection.CollisionCheck(gameTime);
+
+
+                    this.bgLoop.Pitch = -0.25f + (float)(this.enemyGroup.xSpeed * 0.25);
+
 
                     break;
 
@@ -280,6 +320,9 @@ namespace SharpInvaders
 
             spriteBatch.DrawString(spriteFontAtari, $"SCORE", new Vector2(10, 10), Color.Gray);
             spriteBatch.DrawString(spriteFontAtari, $"{PlayerScore}", new Vector2(10, 35), Color.White);
+
+            spriteBatch.DrawString(spriteFontAtari, $"WAVE", new Vector2(10, 70), Color.Gray);
+            spriteBatch.DrawString(spriteFontAtari, $"{PlayerWave}", new Vector2(10, 105), Color.White);
 
             spriteBatch.DrawString(spriteFontAtari, $"HIGHSCORE", new Vector2(Global.GAME_WIDTH / 2 - spriteFontAtari.MeasureString("HIGHSCORE").X / 2, 10), Color.Gray);
             spriteBatch.DrawString(spriteFontAtari, $"{PlayerHighScore}", new Vector2(Global.GAME_WIDTH / 2 - spriteFontAtari.MeasureString($"{PlayerHighScore}").X / 2, 35), Color.White);

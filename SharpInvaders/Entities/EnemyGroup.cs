@@ -19,7 +19,7 @@ namespace SharpInvaders
 
         public Vector2 InitialPosition;
         public Vector2 Position;
-        private float xSpeed;
+        public float xSpeed;
         private float xSpeedMax;
 
         private int startY;
@@ -36,9 +36,12 @@ namespace SharpInvaders
 
         public Player playerRef;
 
-        public EnemyGroup(ContentManager content, SpriteBatch spriteBatch, SpriteSheet spriteSheet, Player player, BunkerGroup bunkerGroup)
+        private Core game;
+
+        public EnemyGroup(Core Game, ContentManager content, SpriteBatch spriteBatch, SpriteSheet spriteSheet, Player player, BunkerGroup bunkerGroup)
         {
 
+            this.game = Game;
             this.content = content;
             this.startY = Global.ENEMY_STARTY;
             this.totalColumns = Global.ENEMY_COLS;
@@ -88,6 +91,8 @@ namespace SharpInvaders
 
         public void ReSpawn(GameTime gameTime)
         {
+
+            this.game.AddWave();
             this.xSpeed = 0.5f;
             this.xDir = 1;
             Position = new Vector2(0, 0);
