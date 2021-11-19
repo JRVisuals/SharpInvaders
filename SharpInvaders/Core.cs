@@ -32,6 +32,8 @@ namespace SharpInvaders
         private GameState gameState;
         private BunkerGroup bunkerGroup;
         private EnemyGroup enemyGroup;
+        private EnemySaucerMind enemySaucerMind;
+        private EnemySaucer enemySaucer;
 
         private Player player;
         private Entity ground;
@@ -96,6 +98,7 @@ namespace SharpInvaders
             this.PlayerLives = Global.PLAYER_START_LIVES - 1;
 
             this.isResetting = false;
+
             base.Initialize();
 
         }
@@ -119,8 +122,11 @@ namespace SharpInvaders
             tpSpriteSheet = spriteSheetLoader.Load("tpSpriteSheet", Content);
 
             this.enemyGroup = new EnemyGroup(Content, spriteBatch, tpSpriteSheet, this.player, this.bunkerGroup);
+            this.enemySaucer = new EnemySaucer(Content, spriteBatch, tpSpriteSheet, new Vector2(x: Global.GAME_WIDTH + 10, y: Global.ENEMYSAUCER_STARTY), this.player);
+            this.enemySaucerMind = new EnemySaucerMind(this.enemySaucer, this.player, this.enemyGroup);
 
-            CoreCollisionDetection = new CoreCollisionDetection(this, this.player.playerBulletGroup, this.bunkerGroup, this.enemyGroup);
+
+            CoreCollisionDetection = new CoreCollisionDetection(this, this.player.playerBulletGroup, this.bunkerGroup, this.enemyGroup, this.enemySaucerMind);
 
         }
 
@@ -199,6 +205,7 @@ namespace SharpInvaders
 
                     player.Update(gameTime, isInputControlled);
                     enemyGroup.Update(gameTime);
+                    enemySaucerMind.Update(gameTime);
                     base.Update(gameTime);
                     CoreCollisionDetection.CollisionCheck(gameTime);
 
@@ -242,7 +249,7 @@ namespace SharpInvaders
                     spriteBatch.DrawString(spriteFontAtari, $"WELCOME TO SHARPINVADERS", new Vector2(Global.GAME_WIDTH / 2 - spriteFontAtari.MeasureString("WELCOME TO SHARPINVADERS").X / 2, 300), Color.WhiteSmoke);
                     spriteBatch.DrawString(spriteFontAtari, $"PRESS FIRE TO BEGIN", new Vector2(Global.GAME_WIDTH / 2 - spriteFontAtari.MeasureString("PRESS FIRE TO BEGIN").X / 2, 325), Color.LimeGreen);
 
-
+                    logo.Draw(gameTime, spriteBatch);
                     break;
 
 
@@ -252,7 +259,7 @@ namespace SharpInvaders
                     bunkerGroup.Draw(gameTime, spriteBatch);
                     player.Draw(gameTime, spriteBatch);
                     enemyGroup.Draw(gameTime, spriteBatch);
-
+                    enemySaucerMind.Draw(gameTime, spriteBatch);
                     break;
 
 
@@ -266,11 +273,11 @@ namespace SharpInvaders
                     spriteBatch.DrawString(spriteFontAtari, $"GAME OVER", new Vector2(Global.GAME_WIDTH / 2 - spriteFontAtari.MeasureString("GAME OVER").X / 2, 300), Color.WhiteSmoke);
                     spriteBatch.DrawString(spriteFontAtari, $"PRESS FIRE TO PLAY AGAIN", new Vector2(Global.GAME_WIDTH / 2 - spriteFontAtari.MeasureString("PRESS FIRE TO PLAY AGAIN").X / 2, 325), Color.LimeGreen);
 
-
+                    logo.Draw(gameTime, spriteBatch);
                     break;
             }
 
-            logo.Draw(gameTime, spriteBatch);
+
             spriteBatch.DrawString(spriteFontAtari, $"SCORE", new Vector2(10, 10), Color.Gray);
             spriteBatch.DrawString(spriteFontAtari, $"{PlayerScore}", new Vector2(10, 35), Color.White);
 

@@ -25,9 +25,17 @@ namespace SharpInvaders.Entities
 
         private const float ClockwiseNinetyDegreeRotation = (float)(Math.PI / 2.0f);
 
+        public SpriteFrame CurrentSprite { get; private set; }
+        public SpriteEffects CurrentSpriteEffects { get; private set; }
+        public int CurrentFrame { get; set; }
+        public int CurrentAnimation { get; private set; }
 
-        public AnimatedSprite(SpriteBatch spriteBatch, SpriteSheet spriteSheet, Dictionary<AnimKeys, Animation[]> animationDictionary, Animation[] defaultAnimationSequence, bool shouldStartOnRandomFrame = false, bool shouldPlayOnceAndDie = false)
+        public string Name { get; set; }
+
+
+        public AnimatedSprite(SpriteBatch spriteBatch, SpriteSheet spriteSheet, Dictionary<AnimKeys, Animation[]> animationDictionary, Animation[] defaultAnimationSequence, bool shouldStartOnRandomFrame = false, bool shouldPlayOnceAndDie = false, string name = "generic")
         {
+            this.Name = name;
             this.Animations = animationDictionary;
             this.spriteSheet = spriteSheet;
             this.CurrentAnimationSequence = defaultAnimationSequence;
@@ -41,15 +49,11 @@ namespace SharpInvaders.Entities
                 CurrentFrame = rand.Next(1, this.CurrentAnimationSequence[this.CurrentAnimation].Sprites.Length);
             }
 
+            // Force animation update - otherwise we have an issue with sprites that are instantiated but not updated/drawn until later 
+            var animation = this.CurrentAnimationSequence[this.CurrentAnimation];
+            this.CurrentSprite = this.spriteSheet.Sprite(animation.Sprites[this.CurrentFrame]);
 
         }
-
-
-        public SpriteFrame CurrentSprite { get; private set; }
-        public SpriteEffects CurrentSpriteEffects { get; private set; }
-        public int CurrentFrame { get; set; }
-        public int CurrentAnimation { get; private set; }
-
 
         public override void Update(GameTime gameTime)
         {

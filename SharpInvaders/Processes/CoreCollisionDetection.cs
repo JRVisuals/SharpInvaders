@@ -14,14 +14,15 @@ namespace SharpInvaders.Processes
         private PlayerBulletGroup playerBulletGroup;
         private BunkerGroup bunkerGroup;
         private EnemyGroup enemyGroup;
+        private EnemySaucerMind enemySaucerMind;
 
-        public CoreCollisionDetection(Core game, PlayerBulletGroup playerBulletGroup, BunkerGroup bunkerGroup, EnemyGroup enemyGroup)
+        public CoreCollisionDetection(Core game, PlayerBulletGroup playerBulletGroup, BunkerGroup bunkerGroup, EnemyGroup enemyGroup, EnemySaucerMind enemySaucerMind)
         {
             this.Game = game;
             this.playerBulletGroup = playerBulletGroup;
             this.bunkerGroup = bunkerGroup;
             this.enemyGroup = enemyGroup;
-
+            this.enemySaucerMind = enemySaucerMind;
         }
         public void CollisionCheck(GameTime gameTime)
         {
@@ -36,6 +37,34 @@ namespace SharpInvaders.Processes
                 var bW = b.Texture.Width;
 
                 var bTb = b.Texture.Bounds; // TODO: Are there efficiencies pulling bounding rects and checking intersections, etc over the mathy way I'm doing below
+
+
+                // Saucer
+                var saucerRefLocal = this.enemySaucerMind.saucerRef;
+                if (saucerRefLocal.AnimatedSprite.isActive && saucerRefLocal.isHittable)
+                {
+
+                    var eW = saucerRefLocal.SpriteWidth;
+                    var eH = saucerRefLocal.SpriteHeight;
+                    var eX = saucerRefLocal.AnimatedSprite.Position.X + eW / 2;
+                    var eY = saucerRefLocal.AnimatedSprite.Position.Y + eH / 2;
+
+                    // Check for overlap
+                    if (bY > eY - eH / 2 && bY < eY + eH / 2 &&
+                        bX > eX - eW / 2 && bX < eX + eW / 2)
+                    {
+
+                        var points = 250;
+
+                        Game.PlayerScore += points;
+                        if (Game.PlayerScore > Game.PlayerHighScore) Game.PlayerHighScore = Game.PlayerScore;
+                        this.enemySaucerMind.KillEnemy(gameTime);
+                        this.playerBulletGroup.DequeueBullet(b.BulletIndex);
+                        Game.sfxSquish.Play(Global.VOLUME_GLOBAL, 0.0f, 0.0f);
+                        return;
+                    }
+                }
+
 
                 // Enemies
                 foreach (Enemy e in this.enemyGroup.Enemies)

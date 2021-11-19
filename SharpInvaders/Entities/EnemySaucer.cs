@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Audio;
+using System.Threading.Tasks;
 
 using TexturePackerLoader;
 using SharpInvaders.Constants;
@@ -23,6 +24,7 @@ namespace SharpInvaders.Entities
         public Vector2 InitialPosition;
         public Vector2 Position;
 
+
         public float SpriteHeight;
         public float SpriteWidth;
 
@@ -30,11 +32,14 @@ namespace SharpInvaders.Entities
 
 
         public SoundEffect sfxSaucer;
+        public int moveSpeed;
+
         private Random random;
 
         public Boolean isActive;
 
         public Player playerRef;
+
 
         public enum EnemyAnim
         {
@@ -44,7 +49,7 @@ namespace SharpInvaders.Entities
         public Dictionary<EnemyAnim, Animation[]> Animations { get; set; }
         public AnimatedSprite<EnemyAnim> AnimatedSprite;
 
-        public EnemySaucer(ContentManager content, SpriteBatch spriteBatch, SpriteSheet spriteSheet, Vector2 initialPosition, Vector2 rowColPosition, Player player,)
+        public EnemySaucer(ContentManager content, SpriteBatch spriteBatch, SpriteSheet spriteSheet, Vector2 initialPosition, Player player)
         {
 
             this.content = content;
@@ -57,16 +62,15 @@ namespace SharpInvaders.Entities
 
             this.InitialPosition = this.Position = initialPosition;
 
+            this.moveSpeed = 1;
 
-            this.Animations = AnimationDictionary();
+            this.Animations = this.AnimationDictionary();
 
-            this.isHittable = true;
+            this.isActive = false;
+            this.isHittable = false;
 
             this.AnimatedSprite = new AnimatedSprite<EnemyAnim>(
-                spriteBatch, spriteSheet, this.Animations,
-                this.Animations[EnemyAnim.Idle],
-                shouldStartOnRandomFrame: true
-            );
+                spriteBatch, spriteSheet, this.Animations, this.Animations[EnemyAnim.Idle], false, false, "saucer");
 
             this.AnimatedSprite.Position = this.Position;
 
@@ -81,70 +85,63 @@ namespace SharpInvaders.Entities
         }
 
 
-
-
         public void Die(GameTime gameTime)
         {
-            this.AnimatedSprite.CurrentFrame = 0;
-            this.AnimatedSprite.CurrentAnimationSequence = this.Animations[EnemySaucer.EnemyAnim.Pop];
-            this.AnimatedSprite.shouldPlayOnceAndDie = true;
-            this.AnimatedSprite.previousFrameChangeTime = gameTime.TotalGameTime;
+            var Anim = this.AnimatedSprite;
+            Anim.CurrentFrame = 0;
+            Anim.CurrentAnimationSequence = this.Animations[EnemySaucer.EnemyAnim.Pop];
+            Anim.shouldPlayOnceAndDie = true;
+            Anim.previousFrameChangeTime = gameTime.TotalGameTime;
             this.isHittable = false;
+            this.isActive = true; // false works but no death anim
+            Task.Delay(1000).ContinueWith((task) => this.isActive = false);
         }
 
         public void Respawn(GameTime gameTime)
         {
+            Console.WriteLine("RESPAWN SAUCER");
 
+            this.isHittable = true;
+            this.isActive = true;
 
             this.Position = InitialPosition;
 
             var Anim = this.AnimatedSprite;
-            Anim.Position = this.Position;
+            Anim.CurrentFrame = 0;
             Anim.CurrentAnimationSequence = this.Animations[EnemySaucer.EnemyAnim.Idle];
             Anim.shouldPlayOnceAndDie = false;
+            Anim.Position = this.Position;
             Anim.previousFrameChangeTime = gameTime.TotalGameTime;
-            this.isHittable = true;
 
-            var rand = new Random();
-            Anim.CurrentFrame = rand.Next(1, Anim.CurrentAnimationSequence[Anim.CurrentAnimation].Sprites.Length);
-            Anim.isActive = true;
+
+
+            Console.WriteLine(this.Position);
+
         }
 
-
-        public void Update(GameTime gameTime, Vector2 virtualPosition)
+        public void Update(GameTime gameTime)
         {
 
+            if (!this.isActive) return;
 
-            if (this.isHittable)
-            {
-                this.AnimatedSprite.Position.X = this.InitialPosition.X + virtualPosition.X;
-
-
-            }
-            else
-            {
-                // Falling from the sky
-                this.AnimatedSprite.Position.Y += 50 * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            }
-
-
-            this.AnimatedSprite.Update(gameTime);
+            var Anim = this.AnimatedSprite;
+            Anim.Update(gameTime);
 
         }
-
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            AnimatedSprite<EnemyAnim> Anim = this.AnimatedSprite;
+            if (!this.isActive) return;
+
+            var Anim = this.AnimatedSprite;
+
             if (Anim.CurrentAnimationSequence == Anim.Animations[EnemyAnim.Pop] && Anim.CurrentFrame > 4) return;
             Anim.Opacity = 1.0f;
             Anim.Draw();
         }
 
-
         private Dictionary<EnemyAnim, Animation[]> AnimationDictionary()
         {
-
             Animation idle = null;
             Animation pop = null;
 
