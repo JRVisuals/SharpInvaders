@@ -47,7 +47,7 @@ namespace SharpInvaders.Entities
         // Contain Entity Within Screen Bounds
         public bool isContainedX;
         public bool isContainedY;
-        public bool isMovable;
+        public bool isMovable; // Set to false if parent is being animated by a separate controller
 
 
         public virtual void Update(GameTime gameTime)
