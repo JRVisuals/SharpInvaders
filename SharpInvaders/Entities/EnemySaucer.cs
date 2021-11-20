@@ -75,6 +75,7 @@ namespace SharpInvaders.Entities
                 spriteBatch, spriteSheet, this.Animations, this.Animations[EnemyAnim.Idle], false, false, "saucer");
 
             this.AnimatedSprite.Position = this.position;
+            this.AnimatedSprite.isMovable = false;
 
             this.AnimatedSprite.CurrentAnimationSequence = this.Animations[EnemyAnim.Idle];
 

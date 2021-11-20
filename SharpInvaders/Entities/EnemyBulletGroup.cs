@@ -5,6 +5,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 
+using TexturePackerLoader;
+
 using SharpInvaders.Constants;
 using SharpInvaders.Entities;
 
@@ -22,7 +24,10 @@ namespace SharpInvaders
         public Player playerRef;
         private BunkerGroup BunkerGroup;
 
-        public EnemyBulletGroup(ContentManager contentManager, Enemy enemy, Player player, BunkerGroup bunkerGroup)
+        public SpriteBatch spriteBatch;
+        public SpriteSheet spriteSheet;
+
+        public EnemyBulletGroup(ContentManager contentManager, SpriteBatch spriteBatch, SpriteSheet spriteSheet, Enemy enemy, Player player, BunkerGroup bunkerGroup)
         {
             this.content = contentManager;
             this.bullets = new List<EnemyBullet>(Global.ENEMY_BULLETMAX);
@@ -30,13 +35,16 @@ namespace SharpInvaders
             this.enemyRef = enemy;
             this.playerRef = player;
 
+            this.spriteSheet = spriteSheet;
+            this.spriteBatch = spriteBatch;
+
             // create finite pool
             for (int i = 0; i < Global.ENEMY_BULLETMAX; i++)
             {
-                var b = new EnemyBullet(this.content, this.enemyRef, i, this, bunkerGroup);
-                b.isContainedX = false;
-                b.isContainedY = false;
-                b.Velocity.X = 0;
+                var b = new EnemyBullet(this.content, this.spriteBatch, this.spriteSheet, this.enemyRef, i, this, bunkerGroup);
+                b.AnimatedSprite.isContainedX = false;
+                b.AnimatedSprite.isContainedY = false;
+                b.AnimatedSprite.Velocity.X = 0;
                 b.isActive = false;
                 this.bullets.Add(b);
             }

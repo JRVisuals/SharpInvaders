@@ -1,16 +1,20 @@
 using System;
+using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using TexturePackerLoader;
 
 using SharpInvaders.Constants;
-using SharpInvaders.Entities;
 
-namespace SharpInvaders
+namespace SharpInvaders.Entities
 {
-    class EnemyBullet : Entity
+    class EnemyBullet
     {
+
+        public SpriteBatch spriteBatch;
+        public SpriteSheet spriteSheet;
 
         public int BulletIndex;
         private EnemyBulletGroup BulletGroup;
@@ -19,27 +23,50 @@ namespace SharpInvaders
         private Enemy enemy;
         private Player playerRef;
 
-        public EnemyBullet(ContentManager Content, Enemy enemy, int bulletIndex, EnemyBulletGroup bulletGroup, BunkerGroup bunkerGroup)
+        public enum BulletAnim
         {
-            Texture = Content.Load<Texture2D>("enemyBullet");
+            Idle,
+        }
+        public Dictionary<BulletAnim, Animation[]> Animations { get; set; }
+        public AnimatedSprite<BulletAnim> AnimatedSprite;
+
+        public EnemyBullet(ContentManager Content, SpriteBatch spriteBatch, SpriteSheet spriteSheet, Enemy enemy, int bulletIndex, EnemyBulletGroup bulletGroup, BunkerGroup bunkerGroup)
+        {
+
             this.enemy = enemy;
-            Origin = new Vector2(3, 0);
-            Velocity = new Vector2(0, Global.PLAYER_BULLINIT_Y);
-            isContainedY = false;
+
+
 
             BulletIndex = bulletIndex;
             BulletGroup = bulletGroup;
             BunkerGroup = bunkerGroup;
 
             this.playerRef = this.BulletGroup.playerRef;
+
+            this.spriteSheet = spriteSheet;
+            this.spriteBatch = spriteBatch;
+
+            this.Animations = this.AnimationDictionary();
+
+            this.AnimatedSprite = new AnimatedSprite<BulletAnim>(
+               this.spriteBatch, this.spriteSheet, this.Animations, this.Animations[BulletAnim.Idle], false, false, "bullet");
+
+            this.AnimatedSprite.Origin = new Vector2(3, 0);
+            this.AnimatedSprite.Velocity = new Vector2(0, Global.PLAYER_BULLINIT_Y);
+            this.AnimatedSprite.isContainedY = false;
+            this.AnimatedSprite.isMovable = true;
+
+            this.AnimatedSprite.CurrentAnimationSequence = this.Animations[BulletAnim.Idle];
+
         }
+
 
         public void Fire(Enemy e)
         {
-            this.Velocity = new Vector2(0, Global.ENEMY_BULLINIT_Y);
+            this.AnimatedSprite.Velocity = new Vector2(0, Global.ENEMY_BULLINIT_Y);
             this.isActive = true;
             // this.Position = new Vector2(e.Position.X, e.Position.Y + 32);
-            this.Position = new Vector2(e.Position.X + e.EnemyGroup.Position.X + 16, e.Position.Y + e.EnemyGroup.Position.Y + 16);
+            this.AnimatedSprite.Position = new Vector2(e.Position.X + e.EnemyGroup.Position.X + 16, e.Position.Y + e.EnemyGroup.Position.Y + 16);
         }
 
         private bool CheckHitPlayer()
@@ -47,7 +74,7 @@ namespace SharpInvaders
             if (this.playerRef.reSpawning || !this.playerRef.isActive) return false;
 
 
-            if (this.Position.X > this.playerRef.Position.X - 32 && this.Position.X < this.playerRef.Position.X + 32)
+            if (this.AnimatedSprite.Position.X > this.playerRef.Position.X - 32 && this.AnimatedSprite.Position.X < this.playerRef.Position.X + 32)
             {
                 this.BulletGroup.DequeueBullet(this.BulletIndex);
                 return true;
@@ -59,10 +86,10 @@ namespace SharpInvaders
         private void CheckBunkers()
         {
             // Bunkers
-            var bX = this.Position.X;
-            var bY = this.Position.Y;
-            var bH = this.Texture.Height;
-            var bW = this.Texture.Width;
+            var bX = this.AnimatedSprite.Position.X;
+            var bY = this.AnimatedSprite.Position.Y;
+            var bH = 13; //this.AnimatedSprite.CurrentSprite.Texture.Height;
+            var bW = 6; //this.AnimatedSprite.CurrentSprite.Texture.Width;
 
             foreach (Bunker k in this.BunkerGroup.Bunkers)
             {
@@ -91,15 +118,15 @@ namespace SharpInvaders
             }
         }
 
-        public new void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             if (!this.isActive) return;
 
-
+            this.AnimatedSprite.Update(gameTime);
 
             CheckBunkers();
 
-            if (Position.Y > Global.GAME_HEIGHT - Global.PLAYER_OFFSET_Y - 48 && Position.Y < Global.GAME_HEIGHT - Global.PLAYER_OFFSET_Y)
+            if (this.AnimatedSprite.Position.Y > Global.GAME_HEIGHT - Global.PLAYER_OFFSET_Y - 48 && this.AnimatedSprite.Position.Y < Global.GAME_HEIGHT - Global.PLAYER_OFFSET_Y)
             {
                 if (CheckHitPlayer())
                 {
@@ -108,10 +135,36 @@ namespace SharpInvaders
                 }
             }
 
-            if (Position.Y > Global.GAME_HEIGHT + Texture.Height * 2) BulletGroup.DequeueBullet(BulletIndex);
+            if (this.AnimatedSprite.Position.Y > Global.GAME_HEIGHT + this.AnimatedSprite.CurrentSprite.Texture.Height * 2) BulletGroup.DequeueBullet(BulletIndex);
 
+        }
 
-            base.Update(gameTime);
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            if (!this.isActive) return;
+            var Anim = this.AnimatedSprite;
+            Anim.Draw();
+        }
+
+        private Dictionary<BulletAnim, Animation[]> AnimationDictionary()
+        {
+            Animation idle = null;
+
+            string[] idleFrames = null;
+
+            idleFrames = new[] {
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemyBullet_idle_0,
+                        TexturePackerMonoGameDefinitions.tpSprites.EnemyBullet_idle_1,
+                    };
+
+            idle = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 10f), SpriteEffects.None, idleFrames);
+
+            Dictionary<BulletAnim, Animation[]> AnimationDictionary =
+                new Dictionary<BulletAnim, Animation[]>();
+
+            if (idle != null) AnimationDictionary.Add(BulletAnim.Idle, new[] { idle });
+
+            return AnimationDictionary;
         }
 
     }

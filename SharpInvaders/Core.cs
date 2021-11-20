@@ -135,7 +135,7 @@ namespace SharpInvaders
             tpSpriteSheet = spriteSheetLoader.Load("tpSpriteSheet", Content);
 
             this.enemyGroup = new EnemyGroup(this, Content, spriteBatch, tpSpriteSheet, this.player, this.bunkerGroup);
-            this.enemySaucer = new EnemySaucer(Content, spriteBatch, tpSpriteSheet, new Vector2(x: Global.GAME_WIDTH + 10, y: Global.ENEMYSAUCER_STARTY), this.player);
+            this.enemySaucer = new EnemySaucer(Content, spriteBatch, tpSpriteSheet, new Vector2(x: Global.GAME_WIDTH + 256, y: Global.ENEMYSAUCER_STARTY), this.player);
             this.enemySaucerMind = new EnemySaucerMind(this, this.enemySaucer, this.player, this.enemyGroup);
 
 

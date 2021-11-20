@@ -96,7 +96,7 @@ namespace SharpInvaders
                 else
                 {
                     // Falling from the sky
-                    Anim.Position.Y += 50 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    Anim.Position.Y += 100 * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
 
 

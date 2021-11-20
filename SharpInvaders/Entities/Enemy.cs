@@ -17,8 +17,8 @@ namespace SharpInvaders.Entities
 
         private ContentManager content;
 
-        public SpriteBatch SpriteBatch;
-        public SpriteSheet SpriteSheet;
+        public SpriteBatch spriteBatch;
+        public SpriteSheet spriteSheet;
         public EnemyGroup EnemyGroup;
         public int EnemyIndex;
 
@@ -61,8 +61,8 @@ namespace SharpInvaders.Entities
         {
 
             this.content = content;
-            this.SpriteBatch = spriteBatch;
-            this.SpriteSheet = spriteSheet;
+            this.spriteBatch = spriteBatch;
+            this.spriteSheet = spriteSheet;
             this.EnemyGroup = enemyGroup;
             this.EnemyIndex = enemyIndex;
             this.playerRef = player;
@@ -85,6 +85,7 @@ namespace SharpInvaders.Entities
             );
 
             this.AnimatedSprite.Position = this.Position;
+            this.AnimatedSprite.isMovable = false;
 
             this.AnimatedSprite.CurrentAnimationSequence = this.Animations[EnemyAnim.Idle];
 
@@ -95,7 +96,7 @@ namespace SharpInvaders.Entities
             NextBulletFireTime = DateTime.Now.AddSeconds(this.random.Next(5, 10));
 
             sfxFire = this.content.Load<SoundEffect>("laserEnemy");
-            enemyBulletGroup = new EnemyBulletGroup(this.content, this, this.playerRef, bunkerGroup);
+            enemyBulletGroup = new EnemyBulletGroup(this.content, this.spriteBatch, this.spriteSheet, this, this.playerRef, bunkerGroup);
 
         }
 
@@ -126,7 +127,7 @@ namespace SharpInvaders.Entities
 
             NextBulletFireTime = DateTime.Now.AddSeconds(this.random.Next(5, 10));
             this.enemyBulletGroup = null;
-            this.enemyBulletGroup = new EnemyBulletGroup(this.content, this, this.playerRef, this.bunkerGroupRef);
+            this.enemyBulletGroup = new EnemyBulletGroup(this.content, this.spriteBatch, this.spriteSheet, this, this.playerRef, this.bunkerGroupRef);
 
             this.Position = InitialPosition;
 

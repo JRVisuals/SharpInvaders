@@ -4,13 +4,15 @@
  * Contains references to each image within the sprite sheet.
  *
  * https://www.codeandweb.com/texturepacker
- * $TexturePacker:SmartUpdate:c32694e203d8d64101388942425f241d:aed3f5359008402d93dd29da52fa0070:af633d31c3393ae9fd430138abbd6857$
+ * $TexturePacker:SmartUpdate:ff8b5c12ac03844fcef94095fb715d54:d17118a06c68109036756f8f82708af5:af633d31c3393ae9fd430138abbd6857$
  *
  */
 namespace TexturePackerMonoGameDefinitions
 {
 	public class tpSprites
 	{
+		public const string EnemyBullet_idle_0 = "EnemyBullet/idle/0";
+		public const string EnemyBullet_idle_1 = "EnemyBullet/idle/1";
 		public const string EnemyEyes_idle_0 = "EnemyEyes/idle/0";
 		public const string EnemyEyes_idle_1 = "EnemyEyes/idle/1";
 		public const string EnemyEyes_idle_2 = "EnemyEyes/idle/2";
@@ -52,5 +54,9 @@ namespace TexturePackerMonoGameDefinitions
 		public const string EnemySquid_pop_3 = "EnemySquid/pop/3";
 		public const string EnemySquid_pop_4 = "EnemySquid/pop/4";
 		public const string EnemySquid_pop_5 = "EnemySquid/pop/5";
+		public const string Player_fire_0 = "Player/fire/0";
+		public const string Player_fire_1 = "Player/fire/1";
+		public const string Player_idle_0 = "Player/idle/0";
+		public const string Player_idle_1 = "Player/idle/1";
 	}
 }

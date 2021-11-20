@@ -65,9 +65,9 @@ namespace SharpInvaders.Entities
             {
                 Position.X += Velocity.X * deltaTime;
                 var rightBound = Global.GAME_WIDTH - Texture.Width / 2;
-                if (Position.X > rightBound) { Position.X = rightBound; Velocity.X = (float)(Velocity.X * -.5); }
+                if (Position.X > rightBound) { Position.X = rightBound; Velocity.X = (float)(Velocity.X * -1); }
                 var leftBound = Texture.Width / 2;
-                if (Position.X < leftBound) { Position.X = leftBound; Velocity.X = (float)(Velocity.X * -.5); }
+                if (Position.X < leftBound) { Position.X = leftBound; Velocity.X = (float)(Velocity.X * -1); }
             }
             else
             {

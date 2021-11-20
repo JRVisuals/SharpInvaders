@@ -95,6 +95,8 @@ namespace SharpInvaders.Entities
 
             this.CurrentSprite = this.spriteSheet.Sprite(animation.Sprites[this.CurrentFrame]);
             this.previousMovementTime = nowTime;
+
+            base.Update(gameTime);
         }
 
         public void Draw()
