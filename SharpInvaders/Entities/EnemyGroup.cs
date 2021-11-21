@@ -133,7 +133,7 @@ namespace SharpInvaders
                 {
                     tempCount++;
                     // Check edges
-                    var eaX = e.AnimatedSprite.Position.X;
+                    var eaX = e.AnimatedEntity.Position.X;
                     if (eaX > xMax && !edgeChecked) { edgeChecked = true; GroupHitEdge(-1); }
                     if (eaX < xMin && !edgeChecked) { edgeChecked = true; GroupHitEdge(1); }
                 }
@@ -175,7 +175,7 @@ namespace SharpInvaders
                 {
                     tempCount++;
                     // Check edges
-                    var eaX = e.AnimatedSprite.Position.X;
+                    var eaX = e.AnimatedEntity.Position.X;
                     if (eaX > xMax && !edgeChecked) { edgeChecked = true; GroupHitEdge(-1); }
                     if (eaX < xMin && !edgeChecked) { edgeChecked = true; GroupHitEdge(1); }
                 }

@@ -49,7 +49,7 @@ namespace SharpInvaders.Entities
             Pop,
         }
         public Dictionary<EnemyAnim, Animation[]> Animations { get; set; }
-        public AnimatedSprite<EnemyAnim> AnimatedSprite;
+        public AnimatedEntity<EnemyAnim> AnimatedEntity;
 
         public EnemySaucer(ContentManager content, SpriteBatch spriteBatch, SpriteSheet spriteSheet, Vector2 initialPosition, Player player)
         {
@@ -71,13 +71,13 @@ namespace SharpInvaders.Entities
             this.isActive = false;
             this.isHittable = false;
 
-            this.AnimatedSprite = new AnimatedSprite<EnemyAnim>(
-                spriteBatch, spriteSheet, this.Animations, this.Animations[EnemyAnim.Idle], false, false, "saucer");
+            this.AnimatedEntity = new AnimatedEntity<EnemyAnim>(
+                spriteBatch, spriteSheet, this.Animations, this.Animations[EnemyAnim.Idle], false, false, false, "saucer");
 
-            this.AnimatedSprite.Position = this.position;
-            this.AnimatedSprite.isMovable = false;
+            this.AnimatedEntity.Position = this.position;
+            this.AnimatedEntity.isMovable = false;
 
-            this.AnimatedSprite.CurrentAnimationSequence = this.Animations[EnemyAnim.Idle];
+            this.AnimatedEntity.CurrentAnimationSequence = this.Animations[EnemyAnim.Idle];
 
             // Used for collision detection
             this.spriteHeight = 32;
@@ -96,7 +96,7 @@ namespace SharpInvaders.Entities
         {
             this.sfxLoop.Stop();
             this.sfxSaucerDie.Play();
-            var Anim = this.AnimatedSprite;
+            var Anim = this.AnimatedEntity;
             Anim.CurrentFrame = 0;
             Anim.CurrentAnimationSequence = this.Animations[EnemySaucer.EnemyAnim.Pop];
             Anim.shouldPlayOnceAndDie = true;
@@ -114,7 +114,7 @@ namespace SharpInvaders.Entities
 
             this.position = initialPosition;
 
-            var Anim = this.AnimatedSprite;
+            var Anim = this.AnimatedEntity;
             Anim.CurrentFrame = 0;
             Anim.CurrentAnimationSequence = this.Animations[EnemySaucer.EnemyAnim.Idle];
             Anim.shouldPlayOnceAndDie = false;
@@ -126,14 +126,14 @@ namespace SharpInvaders.Entities
         public void Update(GameTime gameTime)
         {
             if (!this.isActive) return;
-            this.AnimatedSprite.Update(gameTime);
+            this.AnimatedEntity.Update(gameTime);
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if (!this.isActive) return;
 
-            var Anim = this.AnimatedSprite;
+            var Anim = this.AnimatedEntity;
 
             if (Anim.CurrentAnimationSequence == Anim.Animations[EnemyAnim.Pop] && Anim.CurrentFrame > 4) return;
             Anim.Opacity = 1.0f;

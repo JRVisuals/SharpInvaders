@@ -4,7 +4,7 @@
  * Contains references to each image within the sprite sheet.
  *
  * https://www.codeandweb.com/texturepacker
- * $TexturePacker:SmartUpdate:ff8b5c12ac03844fcef94095fb715d54:d17118a06c68109036756f8f82708af5:af633d31c3393ae9fd430138abbd6857$
+ * $TexturePacker:SmartUpdate:13a9a28b6f3be8d2ff899707f98b6842:ff831f2945f1dfb255db320bc4177f7b:af633d31c3393ae9fd430138abbd6857$
  *
  */
 namespace TexturePackerMonoGameDefinitions
@@ -56,7 +56,12 @@ namespace TexturePackerMonoGameDefinitions
 		public const string EnemySquid_pop_5 = "EnemySquid/pop/5";
 		public const string Player_fire_0 = "Player/fire/0";
 		public const string Player_fire_1 = "Player/fire/1";
+		public const string Player_fire_2 = "Player/fire/2";
+		public const string Player_hit_0 = "Player/hit/0";
+		public const string Player_hit_1 = "Player/hit/1";
+		public const string Player_hit_2 = "Player/hit/2";
 		public const string Player_idle_0 = "Player/idle/0";
-		public const string Player_idle_1 = "Player/idle/1";
+		public const string Player_moving_0 = "Player/moving/0";
+		public const string Player_moving_1 = "Player/moving/1";
 	}
 }

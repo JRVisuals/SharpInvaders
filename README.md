@@ -73,7 +73,7 @@ Using `TexturePackerLoader` to help keep my old Aseprite and TexturePacker workf
         Animation.cs
         AnimationManager.cs
     ```
-* These have been used to create a more robust and specific to my needs `AnimatedSprite.cs` 
+* These have been used to create a more robust and specific to my needs `AnimatedEntity.cs` 
 
 * Due to some issues with the `SpriteSheetLoader.cs` I'm bypassing the default behavior and workflow
   * Once a sheet is exported the `.png` file can be dropped into the `Content` directory and added to `Content.mgcb` manually

@@ -32,9 +32,9 @@ namespace SharpInvaders
 
         public void Fire()
         {
-            this.Velocity = new Vector2((float)(this.Player.Velocity.X * 0.25), Global.PLAYER_BULLINIT_Y);
+            this.Velocity = new Vector2((float)(this.Player.AnimatedEntity.Velocity.X * 0.25), Global.PLAYER_BULLINIT_Y);
             this.isActive = true;
-            this.Position = new Vector2(this.Player.Position.X, this.Player.Position.Y - 60);
+            this.Position = new Vector2(this.Player.AnimatedEntity.Position.X, this.Player.AnimatedEntity.Position.Y - 60);
         }
 
         public new void Update(GameTime gameTime)

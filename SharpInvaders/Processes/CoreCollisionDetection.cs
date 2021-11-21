@@ -41,13 +41,13 @@ namespace SharpInvaders.Processes
 
                 // Saucer
                 var saucerRefLocal = this.enemySaucerMind.saucerRef;
-                if (saucerRefLocal.AnimatedSprite.isActive && saucerRefLocal.isHittable)
+                if (saucerRefLocal.AnimatedEntity.isActive && saucerRefLocal.isHittable)
                 {
 
                     var eW = saucerRefLocal.spriteWidth;
                     var eH = saucerRefLocal.spriteHeight;
-                    var eX = saucerRefLocal.AnimatedSprite.Position.X + eW / 2;
-                    var eY = saucerRefLocal.AnimatedSprite.Position.Y + eH / 2;
+                    var eX = saucerRefLocal.AnimatedEntity.Position.X + eW / 2;
+                    var eY = saucerRefLocal.AnimatedEntity.Position.Y + eH / 2;
 
                     // Check for overlap
                     if (bY > eY - eH / 2 && bY < eY + eH / 2 &&
@@ -70,12 +70,12 @@ namespace SharpInvaders.Processes
                 foreach (Enemy e in this.enemyGroup.Enemies)
                 {
 
-                    if (!e.AnimatedSprite.isActive || !e.isHittable) continue;
+                    if (!e.AnimatedEntity.isActive || !e.isHittable) continue;
 
                     var eW = e.SpriteWidth;
                     var eH = e.SpriteHeight;
-                    var eX = e.AnimatedSprite.Position.X + eW / 2;
-                    var eY = e.AnimatedSprite.Position.Y + eH / 2;
+                    var eX = e.AnimatedEntity.Position.X + eW / 2;
+                    var eY = e.AnimatedEntity.Position.Y + eH / 2;
 
                     // Check for overlap
                     if (bY > eY - eH / 2 && bY < eY + eH / 2 &&

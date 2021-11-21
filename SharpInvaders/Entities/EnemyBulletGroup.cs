@@ -42,9 +42,9 @@ namespace SharpInvaders
             for (int i = 0; i < Global.ENEMY_BULLETMAX; i++)
             {
                 var b = new EnemyBullet(this.content, this.spriteBatch, this.spriteSheet, this.enemyRef, i, this, bunkerGroup);
-                b.AnimatedSprite.isContainedX = false;
-                b.AnimatedSprite.isContainedY = false;
-                b.AnimatedSprite.Velocity.X = 0;
+                b.AnimatedEntity.isContainedX = false;
+                b.AnimatedEntity.isContainedY = false;
+                b.AnimatedEntity.Velocity.X = 0;
                 b.isActive = false;
                 this.bullets.Add(b);
             }

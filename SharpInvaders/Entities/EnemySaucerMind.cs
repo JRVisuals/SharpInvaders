@@ -77,7 +77,7 @@ namespace SharpInvaders
             if (this.saucerRef.isActive)
             {
 
-                var Anim = this.saucerRef.AnimatedSprite;
+                var Anim = this.saucerRef.AnimatedEntity;
 
                 // Handle movement out here
                 if (this.saucerRef.isHittable)

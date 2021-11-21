@@ -10,12 +10,14 @@ using TexturePackerLoader;
 namespace SharpInvaders.Entities
 {
 
-    class AnimatedSprite<AnimKeys> : Entity
+    class AnimatedEntity<AnimKeys> : Entity
     {
 
         public Dictionary<AnimKeys, Animation[]> Animations { get; set; }
         public Animation[] CurrentAnimationSequence { get; set; }
+        public Animation[] DefaultAnimationSequence { get; set; }
         public bool shouldPlayOnceAndDie;
+        public bool shouldPlayOnceAndIdle;
         public bool isActive;
 
         public TimeSpan previousFrameChangeTime = TimeSpan.Zero;
@@ -33,14 +35,15 @@ namespace SharpInvaders.Entities
         public string Name { get; set; }
 
 
-        public AnimatedSprite(SpriteBatch spriteBatch, SpriteSheet spriteSheet, Dictionary<AnimKeys, Animation[]> animationDictionary, Animation[] defaultAnimationSequence, bool shouldStartOnRandomFrame = false, bool shouldPlayOnceAndDie = false, string name = "generic")
+        public AnimatedEntity(SpriteBatch spriteBatch, SpriteSheet spriteSheet, Dictionary<AnimKeys, Animation[]> animationDictionary, Animation[] defaultAnimationSequence, bool shouldStartOnRandomFrame = false, bool shouldPlayOnceAndDie = false, bool shouldPlayOnceAndIdle = false, string name = "generic")
         {
             this.Name = name;
             this.Animations = animationDictionary;
             this.spriteSheet = spriteSheet;
-            this.CurrentAnimationSequence = defaultAnimationSequence;
+            this.DefaultAnimationSequence = this.CurrentAnimationSequence = defaultAnimationSequence;
             this.spriteBatch = spriteBatch;
             this.shouldPlayOnceAndDie = shouldPlayOnceAndDie;
+            this.shouldPlayOnceAndIdle = shouldPlayOnceAndIdle;
             this.isActive = true;
 
             if (shouldStartOnRandomFrame)
@@ -76,12 +79,16 @@ namespace SharpInvaders.Entities
                     if (!this.shouldPlayOnceAndDie)
                     {
                         this.CurrentFrame = 0;
+
                         if (++this.CurrentAnimation >= this.CurrentAnimationSequence.Length)
                         {
                             this.CurrentAnimation = 0;
                         }
 
+                        if (this.shouldPlayOnceAndIdle) this.CurrentAnimationSequence = this.DefaultAnimationSequence;
+
                         animation = this.CurrentAnimationSequence[this.CurrentAnimation];
+
                     }
                     else
                     {
@@ -95,6 +102,7 @@ namespace SharpInvaders.Entities
 
             this.CurrentSprite = this.spriteSheet.Sprite(animation.Sprites[this.CurrentFrame]);
             this.previousMovementTime = nowTime;
+            Texture = this.CurrentSprite.Texture;
 
             base.Update(gameTime);
         }

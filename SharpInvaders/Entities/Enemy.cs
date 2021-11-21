@@ -55,7 +55,7 @@ namespace SharpInvaders.Entities
             Pop,
         }
         public Dictionary<EnemyAnim, Animation[]> Animations { get; set; }
-        public AnimatedSprite<EnemyAnim> AnimatedSprite;
+        public AnimatedEntity<EnemyAnim> AnimatedEntity;
 
         public Enemy(ContentManager content, SpriteBatch spriteBatch, SpriteSheet spriteSheet, EnemyGroup enemyGroup, int enemyIndex, Vector2 initialPosition, Vector2 rowColPosition, EnemyType enemyType, Player player, BunkerGroup bunkerGroup)
         {
@@ -78,16 +78,16 @@ namespace SharpInvaders.Entities
 
             this.isHittable = true;
 
-            this.AnimatedSprite = new AnimatedSprite<EnemyAnim>(
+            this.AnimatedEntity = new AnimatedEntity<EnemyAnim>(
                 spriteBatch, spriteSheet, this.Animations,
                 this.Animations[EnemyAnim.Idle],
                 shouldStartOnRandomFrame: true
             );
 
-            this.AnimatedSprite.Position = this.Position;
-            this.AnimatedSprite.isMovable = false;
+            this.AnimatedEntity.Position = this.Position;
+            this.AnimatedEntity.isMovable = false;
 
-            this.AnimatedSprite.CurrentAnimationSequence = this.Animations[EnemyAnim.Idle];
+            this.AnimatedEntity.CurrentAnimationSequence = this.Animations[EnemyAnim.Idle];
 
             // Used for collision detection
             this.SpriteHeight = this.SpriteWidth = 32;
@@ -115,10 +115,10 @@ namespace SharpInvaders.Entities
 
         public void Die(GameTime gameTime)
         {
-            this.AnimatedSprite.CurrentFrame = 0;
-            this.AnimatedSprite.CurrentAnimationSequence = this.Animations[Enemy.EnemyAnim.Pop];
-            this.AnimatedSprite.shouldPlayOnceAndDie = true;
-            this.AnimatedSprite.previousFrameChangeTime = gameTime.TotalGameTime;
+            this.AnimatedEntity.CurrentFrame = 0;
+            this.AnimatedEntity.CurrentAnimationSequence = this.Animations[Enemy.EnemyAnim.Pop];
+            this.AnimatedEntity.shouldPlayOnceAndDie = true;
+            this.AnimatedEntity.previousFrameChangeTime = gameTime.TotalGameTime;
             this.isHittable = false;
         }
 
@@ -131,7 +131,7 @@ namespace SharpInvaders.Entities
 
             this.Position = InitialPosition;
 
-            var Anim = this.AnimatedSprite;
+            var Anim = this.AnimatedEntity;
             Anim.Position = this.Position;
             Anim.CurrentAnimationSequence = this.Animations[Enemy.EnemyAnim.Idle];
             Anim.shouldPlayOnceAndDie = false;
@@ -187,18 +187,18 @@ namespace SharpInvaders.Entities
 
                 //new Vector2(15 + (positionX * (col) + positionX / 2), startY + (row * rowGap));
 
-                this.AnimatedSprite.Position.X = this.InitialPosition.X + virtualPosition.X;
-                this.AnimatedSprite.Position.Y = this.InitialPosition.Y + virtualPosition.Y;
+                this.AnimatedEntity.Position.X = this.InitialPosition.X + virtualPosition.X;
+                this.AnimatedEntity.Position.Y = this.InitialPosition.Y + virtualPosition.Y;
 
             }
             else
             {
                 // Falling from the sky
-                this.AnimatedSprite.Position.Y += 50 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                this.AnimatedEntity.Position.Y += 50 * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
             enemyBulletGroup.Update(gameTime);
-            this.AnimatedSprite.Update(gameTime);
+            this.AnimatedEntity.Update(gameTime);
 
         }
 
@@ -211,19 +211,19 @@ namespace SharpInvaders.Entities
 
                 //new Vector2(15 + (positionX * (col) + positionX / 2), startY + (row * rowGap));
 
-                this.AnimatedSprite.Position.X = this.InitialPosition.X + virtualPosition.X;
-                this.AnimatedSprite.Position.Y = this.InitialPosition.Y + virtualPosition.Y;
+                this.AnimatedEntity.Position.X = this.InitialPosition.X + virtualPosition.X;
+                this.AnimatedEntity.Position.Y = this.InitialPosition.Y + virtualPosition.Y;
 
             }
 
-            this.AnimatedSprite.Update(gameTime);
+            this.AnimatedEntity.Update(gameTime);
 
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             enemyBulletGroup.Draw(gameTime, spriteBatch);
-            AnimatedSprite<EnemyAnim> Anim = this.AnimatedSprite;
+            AnimatedEntity<EnemyAnim> Anim = this.AnimatedEntity;
             if (Anim.CurrentAnimationSequence == Anim.Animations[EnemyAnim.Pop] && Anim.CurrentFrame > 4) return;
             Anim.Opacity = 1.0f;
             Anim.Draw();
@@ -232,7 +232,7 @@ namespace SharpInvaders.Entities
         public void DrawMenu(GameTime gameTime, SpriteBatch spriteBatch)
         {
 
-            AnimatedSprite<EnemyAnim> Anim = this.AnimatedSprite;
+            AnimatedEntity<EnemyAnim> Anim = this.AnimatedEntity;
             if (Anim.CurrentAnimationSequence == Anim.Animations[EnemyAnim.Pop] && Anim.CurrentFrame > 4) return;
             Anim.DrawMenu();
         }

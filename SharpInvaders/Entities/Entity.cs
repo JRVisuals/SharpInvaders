@@ -52,6 +52,7 @@ namespace SharpInvaders.Entities
 
         public virtual void Update(GameTime gameTime)
         {
+
             if (this.isMovable) MoveEntity((float)gameTime.ElapsedGameTime.TotalSeconds);
 
         }
@@ -64,9 +65,9 @@ namespace SharpInvaders.Entities
             if (this.isContainedX)
             {
                 Position.X += Velocity.X * deltaTime;
-                var rightBound = Global.GAME_WIDTH - Texture.Width / 2;
+                var rightBound = Global.GAME_WIDTH - 32;
                 if (Position.X > rightBound) { Position.X = rightBound; Velocity.X = (float)(Velocity.X * -1); }
-                var leftBound = Texture.Width / 2;
+                var leftBound = 32;
                 if (Position.X < leftBound) { Position.X = leftBound; Velocity.X = (float)(Velocity.X * -1); }
             }
             else

@@ -28,7 +28,7 @@ namespace SharpInvaders.Entities
             Idle,
         }
         public Dictionary<BulletAnim, Animation[]> Animations { get; set; }
-        public AnimatedSprite<BulletAnim> AnimatedSprite;
+        public AnimatedEntity<BulletAnim> AnimatedEntity;
 
         public EnemyBullet(ContentManager Content, SpriteBatch spriteBatch, SpriteSheet spriteSheet, Enemy enemy, int bulletIndex, EnemyBulletGroup bulletGroup, BunkerGroup bunkerGroup)
         {
@@ -48,25 +48,24 @@ namespace SharpInvaders.Entities
 
             this.Animations = this.AnimationDictionary();
 
-            this.AnimatedSprite = new AnimatedSprite<BulletAnim>(
-               this.spriteBatch, this.spriteSheet, this.Animations, this.Animations[BulletAnim.Idle], false, false, "bullet");
+            this.AnimatedEntity = new AnimatedEntity<BulletAnim>(this.spriteBatch, this.spriteSheet, this.Animations, this.Animations[BulletAnim.Idle], false, false, false, "bullet");
 
-            this.AnimatedSprite.Origin = new Vector2(3, 0);
-            this.AnimatedSprite.Velocity = new Vector2(0, Global.PLAYER_BULLINIT_Y);
-            this.AnimatedSprite.isContainedY = false;
-            this.AnimatedSprite.isMovable = true;
+            this.AnimatedEntity.Origin = new Vector2(3, 0);
+            this.AnimatedEntity.Velocity = new Vector2(0, Global.PLAYER_BULLINIT_Y);
+            this.AnimatedEntity.isContainedY = false;
+            this.AnimatedEntity.isMovable = true;
 
-            this.AnimatedSprite.CurrentAnimationSequence = this.Animations[BulletAnim.Idle];
+            this.AnimatedEntity.CurrentAnimationSequence = this.Animations[BulletAnim.Idle];
 
         }
 
 
         public void Fire(Enemy e)
         {
-            this.AnimatedSprite.Velocity = new Vector2(0, Global.ENEMY_BULLINIT_Y);
+            this.AnimatedEntity.Velocity = new Vector2(0, Global.ENEMY_BULLINIT_Y);
             this.isActive = true;
             // this.Position = new Vector2(e.Position.X, e.Position.Y + 32);
-            this.AnimatedSprite.Position = new Vector2(e.Position.X + e.EnemyGroup.Position.X + 16, e.Position.Y + e.EnemyGroup.Position.Y + 16);
+            this.AnimatedEntity.Position = new Vector2(e.Position.X + e.EnemyGroup.Position.X + 16, e.Position.Y + e.EnemyGroup.Position.Y + 16);
         }
 
         private bool CheckHitPlayer()
@@ -74,7 +73,7 @@ namespace SharpInvaders.Entities
             if (this.playerRef.reSpawning || !this.playerRef.isActive) return false;
 
 
-            if (this.AnimatedSprite.Position.X > this.playerRef.Position.X - 32 && this.AnimatedSprite.Position.X < this.playerRef.Position.X + 32)
+            if (this.AnimatedEntity.Position.X > this.playerRef.AnimatedEntity.Position.X - 32 && this.AnimatedEntity.Position.X < this.playerRef.AnimatedEntity.Position.X + 32)
             {
                 this.BulletGroup.DequeueBullet(this.BulletIndex);
                 return true;
@@ -86,10 +85,10 @@ namespace SharpInvaders.Entities
         private void CheckBunkers()
         {
             // Bunkers
-            var bX = this.AnimatedSprite.Position.X;
-            var bY = this.AnimatedSprite.Position.Y;
-            var bH = 13; //this.AnimatedSprite.CurrentSprite.Texture.Height;
-            var bW = 6; //this.AnimatedSprite.CurrentSprite.Texture.Width;
+            var bX = this.AnimatedEntity.Position.X;
+            var bY = this.AnimatedEntity.Position.Y;
+            var bH = 13; //this.AnimatedEntity.CurrentSprite.Texture.Height;
+            var bW = 6; //this.AnimatedEntity.CurrentSprite.Texture.Width;
 
             foreach (Bunker k in this.BunkerGroup.Bunkers)
             {
@@ -122,11 +121,11 @@ namespace SharpInvaders.Entities
         {
             if (!this.isActive) return;
 
-            this.AnimatedSprite.Update(gameTime);
+            this.AnimatedEntity.Update(gameTime);
 
             CheckBunkers();
 
-            if (this.AnimatedSprite.Position.Y > Global.GAME_HEIGHT - Global.PLAYER_OFFSET_Y - 48 && this.AnimatedSprite.Position.Y < Global.GAME_HEIGHT - Global.PLAYER_OFFSET_Y)
+            if (this.AnimatedEntity.Position.Y > Global.GAME_HEIGHT - Global.PLAYER_OFFSET_Y - 48 && this.AnimatedEntity.Position.Y < Global.GAME_HEIGHT - Global.PLAYER_OFFSET_Y)
             {
                 if (CheckHitPlayer())
                 {
@@ -135,15 +134,14 @@ namespace SharpInvaders.Entities
                 }
             }
 
-            if (this.AnimatedSprite.Position.Y > Global.GAME_HEIGHT + this.AnimatedSprite.CurrentSprite.Texture.Height * 2) BulletGroup.DequeueBullet(BulletIndex);
+            if (this.AnimatedEntity.Position.Y > Global.GAME_HEIGHT + this.AnimatedEntity.CurrentSprite.Texture.Height * 2) BulletGroup.DequeueBullet(BulletIndex);
 
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if (!this.isActive) return;
-            var Anim = this.AnimatedSprite;
-            Anim.Draw();
+            this.AnimatedEntity.Draw();
         }
 
         private Dictionary<BulletAnim, Animation[]> AnimationDictionary()

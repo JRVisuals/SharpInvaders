@@ -102,8 +102,6 @@ namespace SharpInvaders
             var joystickState = Joystick.GetState(joystickLci);
             var isJoystickPresent = joystickLci > -1 && Joystick.GetCapabilities(Joystick.LastConnectedIndex).IsConnected;
 
-            this.player = new Player(Content, this);
-            this.bunkerGroup = new BunkerGroup(Content);
 
             this.PlayerHighScore = 0;
             this.PlayerScore = 0;
@@ -133,6 +131,10 @@ namespace SharpInvaders
 
             var spriteSheetLoader = new SpriteSheetLoader(Content, GraphicsDevice);
             tpSpriteSheet = spriteSheetLoader.Load("tpSpriteSheet", Content);
+
+
+            this.player = new Player(Content, this, spriteBatch, tpSpriteSheet);
+            this.bunkerGroup = new BunkerGroup(Content);
 
             this.enemyGroup = new EnemyGroup(this, Content, spriteBatch, tpSpriteSheet, this.player, this.bunkerGroup);
             this.enemySaucer = new EnemySaucer(Content, spriteBatch, tpSpriteSheet, new Vector2(x: Global.GAME_WIDTH + 256, y: Global.ENEMYSAUCER_STARTY), this.player);
@@ -237,7 +239,7 @@ namespace SharpInvaders
 
                     if (kbPressLeft || jsHatPressLeft) { this.player.MoveLeft(deltaTime); isInputControlled = true; }
                     if (kbPressRight || jsHatPressRight) { this.player.MoveRight(deltaTime); isInputControlled = true; }
-                    if (kbPressFire || kbPressFireAlt || jsButtonPressA) this.player.FireBullet();
+                    if (kbPressFire || kbPressFireAlt || jsButtonPressA) this.player.FireBullet(gameTime);
 
                     player.Update(gameTime, isInputControlled);
                     enemyGroup.Update(gameTime);
@@ -321,8 +323,8 @@ namespace SharpInvaders
             spriteBatch.DrawString(spriteFontAtari, $"SCORE", new Vector2(10, 10), Color.Gray);
             spriteBatch.DrawString(spriteFontAtari, $"{PlayerScore}", new Vector2(10, 35), Color.White);
 
-            spriteBatch.DrawString(spriteFontAtari, $"WAVE", new Vector2(10, 70), Color.Gray);
-            spriteBatch.DrawString(spriteFontAtari, $"{PlayerWave}", new Vector2(10, 105), Color.White);
+            spriteBatch.DrawString(spriteFontAtari, $"WAVE", new Vector2(10, 70), Color.DimGray);
+            spriteBatch.DrawString(spriteFontAtari, $"{PlayerWave}", new Vector2(10, 95), Color.WhiteSmoke);
 
             spriteBatch.DrawString(spriteFontAtari, $"HIGHSCORE", new Vector2(Global.GAME_WIDTH / 2 - spriteFontAtari.MeasureString("HIGHSCORE").X / 2, 10), Color.Gray);
             spriteBatch.DrawString(spriteFontAtari, $"{PlayerHighScore}", new Vector2(Global.GAME_WIDTH / 2 - spriteFontAtari.MeasureString($"{PlayerHighScore}").X / 2, 35), Color.White);
