@@ -1,6 +1,7 @@
 # SharpInvaders
 An open source Space Invaders clone written in C# with the Monogame framework.
 
+[Watch a demo video on YouTube.](https://www.youtube.com/watch?v=u0PpvAS_lXM)
 
 ## Rationale
 This is a sandbox for me to learn C# and the Monogame (formerly Microsoft XNA) framework. 
