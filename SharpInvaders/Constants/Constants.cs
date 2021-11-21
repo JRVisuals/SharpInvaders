@@ -40,7 +40,7 @@ namespace SharpInvaders.Constants
         public const int ENEMY_DROPY = 8;
         public const int ENEMY_MAXY = 592;
 
-        public const float ENEMY_SPEEDX = 0.5f;
+        public const float ENEMY_SPEEDX = 0.3f;
         public const float ENEMY_SPEEDX_MAX = 0.5f;
 
         // Enemy Saucer

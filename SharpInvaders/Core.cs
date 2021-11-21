@@ -6,12 +6,14 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 
+
 using TexturePackerLoader;
 using TexturePackerMonoGameDefinitions;
 
 using SharpInvaders.Constants;
 using SharpInvaders.Entities;
 using SharpInvaders.Processes;
+
 
 namespace SharpInvaders
 {
@@ -54,8 +56,12 @@ namespace SharpInvaders
         public int PlayerLives;
         public int PlayerWave;
 
-        private Boolean isResetting;
+        private Matrix gameScale;
+        private Texture2D fillRectangle;
+        private float scaleRatio;
 
+
+        private Boolean isResetting;
 
         public Core()
         {
@@ -70,17 +76,31 @@ namespace SharpInvaders
             if (Global.USE_FIXED_STEP) TargetElapsedTime = TimeSpan.FromMilliseconds(Global.FIXED_STEP_MS);
         }
 
+
+        private void setScaleRatio(float newRatio)
+        {
+            this.scaleRatio = newRatio;
+            graphics.PreferredBackBufferWidth = (int)(Global.GAME_WIDTH * this.scaleRatio); //GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width; //graphics.GraphicsDevice.Viewport.Width; //Global.GAME_WIDTH;
+            graphics.PreferredBackBufferHeight = (int)(Global.GAME_HEIGHT * this.scaleRatio); // GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height; //graphics.GraphicsDevice.Viewport.Height; //Global.GAME_HEIGHT;
+
+            this.gameScale = Matrix.CreateScale(
+                new Vector3(
+                    graphics.PreferredBackBufferWidth / Global.GAME_WIDTH * this.scaleRatio,
+                    graphics.PreferredBackBufferHeight / Global.GAME_HEIGHT * this.scaleRatio,
+                    1)
+                );
+            graphics.ApplyChanges();
+        }
         protected override void Initialize()
         {
 
             Window.Title = "SharpInvaders";
 
-            gameState = GameState.MainMenu;
+            setScaleRatio(1.0f);
 
-            graphics.PreferredBackBufferWidth = Global.GAME_WIDTH;
-            graphics.PreferredBackBufferHeight = Global.GAME_HEIGHT;
-            //graphics.IsFullScreen = true;
-            graphics.ApplyChanges();
+            //  Window.Position = new Point(GraphicsDevice.Adapter.CurrentDisplayMode.Width / 2 - Global.GAME_WIDTH * 1 / 2, GraphicsDevice.Adapter.CurrentDisplayMode.Height / 2 - Global.GAME_HEIGHT * 1 / 2);
+
+            gameState = GameState.MainMenu;
 
             sfxBoom = Content.Load<SoundEffect>("boom");
             sfxSquish = Content.Load<SoundEffect>("squish");
@@ -143,6 +163,9 @@ namespace SharpInvaders
 
             CoreCollisionDetection = new CoreCollisionDetection(this, this.player.playerBulletGroup, this.bunkerGroup, this.enemyGroup, this.enemySaucerMind);
 
+            this.fillRectangle = new Texture2D(GraphicsDevice, 1, 1);
+            this.fillRectangle.SetData(new[] { Color.White });
+
         }
 
         public void AddScore(int points)
@@ -201,13 +224,28 @@ namespace SharpInvaders
             }
 
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape) || Keyboard.GetState().IsKeyDown(Keys.Q))
                 Exit();
+
+            if (Keyboard.GetState().IsKeyDown(Keys.F11) || Keyboard.GetState().IsKeyDown(Keys.F))
+            {
+                graphics.ToggleFullScreen();
+                if (graphics.IsFullScreen)
+                {
+                    setScaleRatio(1.5f);
+                }
+                else
+                {
+                    setScaleRatio(1.0f);
+                }
+            }
 
 
             var keyboardState = Keyboard.GetState();
             var kbPressLeft = keyboardState.IsKeyDown(Keys.A);
             var kbPressRight = keyboardState.IsKeyDown(Keys.D);
+            var kbPressLeftAlt = keyboardState.IsKeyDown(Keys.Left);
+            var kbPressRightAlt = keyboardState.IsKeyDown(Keys.Right);
             var kbPressFire = keyboardState.IsKeyDown(Keys.I);
             var kbPressFireAlt = keyboardState.IsKeyDown(Keys.W);
 
@@ -237,8 +275,8 @@ namespace SharpInvaders
 
                     var isInputControlled = false;
 
-                    if (kbPressLeft || jsHatPressLeft) { this.player.MoveLeft(deltaTime); isInputControlled = true; }
-                    if (kbPressRight || jsHatPressRight) { this.player.MoveRight(deltaTime); isInputControlled = true; }
+                    if (kbPressLeft || kbPressLeftAlt || jsHatPressLeft) { this.player.MoveLeft(deltaTime); isInputControlled = true; }
+                    if (kbPressRight || kbPressRightAlt || jsHatPressRight) { this.player.MoveRight(deltaTime); isInputControlled = true; }
                     if (kbPressFire || kbPressFireAlt || jsButtonPressA) this.player.FireBullet(gameTime);
 
                     player.Update(gameTime, isInputControlled);
@@ -273,9 +311,10 @@ namespace SharpInvaders
             GraphicsDevice.Clear(new Color(30, 30, 40));
 
             // Static Stuff
-            spriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.AlphaBlend);
-            ground.Draw(gameTime, spriteBatch
-            );
+            //samplerState: SamplerState.PointClamp,
+            //spriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.AlphaBlend);
+            spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, this.gameScale);
+            ground.Draw(gameTime, spriteBatch);
 
 
             switch (gameState)
@@ -283,13 +322,18 @@ namespace SharpInvaders
 
                 case GameState.MainMenu: //------------------------ MAIN MENU DRAW
 
-
                     bunkerGroup.Draw(gameTime, spriteBatch);
                     player.Draw(gameTime, spriteBatch);
                     enemyGroup.DrawMenu(gameTime, spriteBatch);
 
-                    spriteBatch.DrawString(spriteFontAtari, $"WELCOME TO SHARPINVADERS", new Vector2(Global.GAME_WIDTH / 2 - spriteFontAtari.MeasureString("WELCOME TO SHARPINVADERS").X / 2, 300), Color.WhiteSmoke);
-                    spriteBatch.DrawString(spriteFontAtari, $"PRESS FIRE TO BEGIN", new Vector2(Global.GAME_WIDTH / 2 - spriteFontAtari.MeasureString("PRESS FIRE TO BEGIN").X / 2, 325), Color.LimeGreen);
+                    string str = $"WELCOME TO SHARPINVADERS";
+                    spriteBatch.DrawString(spriteFontAtari, str, new Vector2(Global.GAME_WIDTH / 2 - spriteFontAtari.MeasureString(str).X / 2, 300), Color.WhiteSmoke);
+                    str = $"PRESS FIRE TO BEGIN";
+                    spriteBatch.DrawString(spriteFontAtari, str, new Vector2(Global.GAME_WIDTH / 2 - spriteFontAtari.MeasureString(str).X / 2, 325), Color.LimeGreen);
+                    str = $"'Q' TO QUIT";
+                    spriteBatch.DrawString(spriteFontAtari, str, new Vector2(90, 375), Color.Gray);
+                    str = $"'F' TOGGLE FULL SCREEN";
+                    spriteBatch.DrawString(spriteFontAtari, str, new Vector2(90, 400), Color.Gray);
 
                     logo.Draw(gameTime, spriteBatch);
                     break;
@@ -319,7 +363,6 @@ namespace SharpInvaders
                     break;
             }
 
-
             spriteBatch.DrawString(spriteFontAtari, $"SCORE", new Vector2(10, 10), Color.Gray);
             spriteBatch.DrawString(spriteFontAtari, $"{PlayerScore}", new Vector2(10, 35), Color.White);
 
@@ -332,7 +375,8 @@ namespace SharpInvaders
             spriteBatch.DrawString(spriteFontAtari, $"LIVES", new Vector2(Global.GAME_WIDTH - 115, 10), Color.Gray);
             spriteBatch.DrawString(spriteFontAtari, $"{PlayerLives + 1}", new Vector2(Global.GAME_WIDTH - 33, 35), Color.White);
 
-
+            spriteBatch.Draw(this.fillRectangle, new Rectangle(Global.GAME_WIDTH, 0, Global.GAME_WIDTH, Global.GAME_HEIGHT),
+                       Color.Black);
 
             spriteBatch.End();
 
@@ -349,8 +393,6 @@ namespace SharpInvaders
             }
 
             base.Draw(gameTime);
-
-
 
         }
 

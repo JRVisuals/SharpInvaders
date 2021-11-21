@@ -50,6 +50,7 @@ namespace SharpInvaders.Entities
 
         public enum EnemyAnim
         {
+            IdleSlow,
             Idle,
             IdleFast,
             Pop,
@@ -87,7 +88,7 @@ namespace SharpInvaders.Entities
             this.AnimatedEntity.Position = this.Position;
             this.AnimatedEntity.isMovable = false;
 
-            this.AnimatedEntity.CurrentAnimationSequence = this.Animations[EnemyAnim.Idle];
+            this.AnimatedEntity.CurrentAnimationSequence = this.Animations[EnemyAnim.IdleSlow];
 
             // Used for collision detection
             this.SpriteHeight = this.SpriteWidth = 32;
@@ -133,7 +134,7 @@ namespace SharpInvaders.Entities
 
             var Anim = this.AnimatedEntity;
             Anim.Position = this.Position;
-            Anim.CurrentAnimationSequence = this.Animations[Enemy.EnemyAnim.Idle];
+            Anim.CurrentAnimationSequence = this.Animations[Enemy.EnemyAnim.IdleSlow];
             Anim.shouldPlayOnceAndDie = false;
             Anim.previousFrameChangeTime = gameTime.TotalGameTime;
             this.isHittable = true;
@@ -238,12 +239,11 @@ namespace SharpInvaders.Entities
         }
 
 
-
-
         // TODO: Is it crazy innefficient to generate these for every instance??
         private Dictionary<EnemyAnim, Animation[]> AnimationDictionary(EnemyType enemyType)
         {
 
+            Animation idleSlow = null;
             Animation idle = null;
             Animation idleFast = null;
             Animation pop = null;
@@ -272,8 +272,9 @@ namespace SharpInvaders.Entities
                         TexturePackerMonoGameDefinitions.tpSprites.EnemySquid_pop_5,
                     };
 
+                    idleSlow = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 8f), SpriteEffects.None, idleFrames);
                     idle = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 10f), SpriteEffects.None, idleFrames);
-                    idleFast = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 15f), SpriteEffects.None, idleFrames);
+                    idleFast = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 18f), SpriteEffects.None, idleFrames);
                     pop = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 15f), SpriteEffects.None, popFrames);
 
                     break;
@@ -298,6 +299,7 @@ namespace SharpInvaders.Entities
                         TexturePackerMonoGameDefinitions.tpSprites.EnemyEyes_pop_5,
                     };
 
+                    idleSlow = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 8f), SpriteEffects.None, idleFrames);
                     idle = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 10f), SpriteEffects.None, idleFrames);
                     idleFast = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 15f), SpriteEffects.None, idleFrames);
                     pop = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 15f), SpriteEffects.None, popFrames);
@@ -322,6 +324,7 @@ namespace SharpInvaders.Entities
                         TexturePackerMonoGameDefinitions.tpSprites.EnemyPinks_pop_4,
                         TexturePackerMonoGameDefinitions.tpSprites.EnemyPinks_pop_5,
                     };
+                    idleSlow = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 8f), SpriteEffects.None, idleFrames);
                     idle = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 10f), SpriteEffects.None, idleFrames);
                     idleFast = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 15f), SpriteEffects.None, idleFrames);
                     pop = new Animation(timePerFrame: TimeSpan.FromSeconds(1f / 15f), SpriteEffects.None, popFrames);
@@ -339,9 +342,10 @@ namespace SharpInvaders.Entities
             Dictionary<EnemyAnim, Animation[]> AnimationDictionary =
                 new Dictionary<EnemyAnim, Animation[]>();
 
-            if (idle != null) AnimationDictionary.Add(EnemyAnim.Idle, new[] { idle });
-            if (idleFast != null) AnimationDictionary.Add(EnemyAnim.IdleFast, new[] { idleFast });
-            if (pop != null) AnimationDictionary.Add(EnemyAnim.Pop, new[] { pop });
+            AnimationDictionary.Add(EnemyAnim.IdleSlow, new[] { idleSlow });
+            AnimationDictionary.Add(EnemyAnim.Idle, new[] { idle });
+            AnimationDictionary.Add(EnemyAnim.IdleFast, new[] { idleFast });
+            AnimationDictionary.Add(EnemyAnim.Pop, new[] { pop });
 
             return AnimationDictionary;
         }

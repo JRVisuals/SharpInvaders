@@ -36,12 +36,12 @@ namespace SharpInvaders
 
         public Player playerRef;
 
-        private Core game;
+        private Core core;
 
-        public EnemyGroup(Core Game, ContentManager content, SpriteBatch spriteBatch, SpriteSheet spriteSheet, Player player, BunkerGroup bunkerGroup)
+        public EnemyGroup(Core core, ContentManager content, SpriteBatch spriteBatch, SpriteSheet spriteSheet, Player player, BunkerGroup bunkerGroup)
         {
 
-            this.game = Game;
+            this.core = core;
             this.content = content;
             this.startY = Global.ENEMY_STARTY;
             this.totalColumns = Global.ENEMY_COLS;
@@ -92,8 +92,8 @@ namespace SharpInvaders
         public void ReSpawn(GameTime gameTime)
         {
 
-            this.game.AddWave();
-            this.xSpeed = 0.5f;
+            this.core.AddWave();
+            this.xSpeed = Global.ENEMY_SPEEDX;
             this.xDir = 1;
             Position = new Vector2(0, 0);
             foreach (var e in Enemies) e.Respawn(gameTime);
@@ -147,13 +147,34 @@ namespace SharpInvaders
                 return;
             }
 
-            if (this.countAlive < (this.totalColumns * this.totalRows) / 2) this.xSpeed = 1.0f;
-            if (this.countAlive < (this.totalColumns * this.totalRows) / 4) this.xSpeed = 1.5f;
-            if (this.countAlive == 1) this.xSpeed = 3.0f;
+            if (this.countAlive < (this.totalColumns * this.totalRows) / 2 && this.xSpeed != 0.9f)
+            {
+                this.xSpeed = 0.9f;
+                foreach (var e in Enemies)
+                {
+                    if (e.isHittable && e.AnimatedEntity.CurrentAnimationSequence == e.AnimatedEntity.Animations[Enemy.EnemyAnim.IdleSlow])
+                    {
+                        e.AnimatedEntity.CurrentAnimationSequence = e.AnimatedEntity.Animations[Enemy.EnemyAnim.Idle];
+                    }
+                };
+            }
+            if (this.countAlive < (this.totalColumns * this.totalRows) / 4) this.xSpeed = 1.4f;
+            if (this.countAlive == 1 && this.xSpeed != 2.9f)
+            {
+                this.xSpeed = 2.9f;
+                foreach (var e in Enemies)
+                {
+                    if (e.isHittable && e.AnimatedEntity.CurrentAnimationSequence == e.AnimatedEntity.Animations[Enemy.EnemyAnim.Idle])
+                    {
+                        e.AnimatedEntity.CurrentAnimationSequence = e.AnimatedEntity.Animations[Enemy.EnemyAnim.IdleFast];
+                    }
+                };
+            }
 
             // Walk them down using a virtual position
-            Position.X += (xSpeed * xDir);
-
+            float waveSpeed = this.core.PlayerWave * 0.1f;
+            float moveX = (xSpeed + waveSpeed) * xDir;
+            Position.X += moveX;
             foreach (var e in Enemies) { e.Update(gameTime, Position); }
 
         }
